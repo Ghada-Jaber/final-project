@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserRouter, Route, Switch, HashRouter} from 'react-router-dom';
 //import Login from './Login';
-import Register from './Register';
+import Home from './Home';
 
 function App(){
 
@@ -12,7 +12,7 @@ function App(){
         <Switch>
             {/* <Route exact path='/' component={Login}/>
             <Route exact path='/login' component={Login}/> */}
-            <Route exact path='/register' component={Register} />
+            <Route exact path='/home' component={Home} />
 
         </Switch>
     </BrowserRouter>

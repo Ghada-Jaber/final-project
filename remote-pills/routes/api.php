@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\PharmacyController;
+use App\Http\Controllers\CountryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +20,11 @@ use App\Http\Controllers\PharmacyController;
 Route::post('/login', [AuthenticationController::class, 'login']);
 
 Route::post('/register', [AuthenticationController::class, 'register']);
+
+
+Route::get('/country', [CountryController::class, 'getAllCountry']);
+
+
 
 Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_ADMIN])->group(function() {
 

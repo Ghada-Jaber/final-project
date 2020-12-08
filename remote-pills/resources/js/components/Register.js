@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {Link, useHistory} from 'react-router-dom';
 import api from '../api';
 import CookieService from '../Service/CookieService';
+import Header from './layouts/Header';
 
 export  default function Register(){
 
@@ -84,6 +85,7 @@ export  default function Register(){
 
     return(
         <div className="logincontainer">
+        <Header />
             <div className="container-fluid">
                 <div className="row">
                     <div className="col-md-3 login">
