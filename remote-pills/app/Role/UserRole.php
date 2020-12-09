@@ -6,28 +6,22 @@ namespace App\Role;
 class UserRole 
 {
     const ROLE_ADMIN = 'ROLE_ADMIN';
-    const ROLE_MANAGEMENT = 'ROLE_MANAGEMENT';
-    const ROLE_FINANCE = 'ROLE_FINANCE';
-    const ROLE_ACCOUNT_MANAGER = 'ROLE_ACCOUNT_MANAGER';
-    const ROLE_SUPPORT = 'ROLE_SUPPORT';
+    const ROLE_PHARMACY = 'ROLE_PHARMACY';
+    const ROLE_DOCTOR = 'ROLE_DOCTOR';
+    const ROLE_NORMALUSER = 'ROLE_NORMALUSER';
 
     /**
      * @var array
      */
     protected static $roleHierarchy = [
         self::ROLE_ADMIN => ['*'],
-        self::ROLE_MANAGEMENT => [
-            self::ROLE_ACCOUNT_MANAGER,
-            self::ROLE_FINANCE,
-            self::ROLE_SUPPORT,
+        self::ROLE_PHARMACY => [
+            self::ROLE_NORMALUSER,
         ],
-        self::ROLE_ACCOUNT_MANAGER => [
-            self::ROLE_SUPPORT
+        self::ROLE_DOCTOR => [
+            self::ROLE_NORMALUSER
         ],
-        self::ROLE_FINANCE => [
-            self::ROLE_SUPPORT
-        ],
-        self::ROLE_SUPPORT => []
+        self::ROLE_NORMALUSER => []
     ];
 
     /**
@@ -50,10 +44,9 @@ class UserRole
     {
         return [
             static::ROLE_ADMIN =>'Admin',
-            static::ROLE_MANAGEMENT => 'Management',
-            static::ROLE_ACCOUNT_MANAGER => 'Account Manager',
-            static::ROLE_FINANCE => 'Finance',
-            static::ROLE_SUPPORT => 'Support',
+            static::ROLE_PHARMACY => 'Pharmacy',
+            static::ROLE_DOCTOR => 'Doctor',
+            static::ROLE_NORMALUSER => 'Patient/Customer',
         ];
     }
 }

@@ -14,3 +14,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::view('{path?}', 'app');
+
+
+Route::view('medicine/info', 'app');

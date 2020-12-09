@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
+use Exception;
 use App\Models\User;
 use Illuminate\Database\QueryException;
 
@@ -53,6 +54,16 @@ class AuthenticationController extends Controller
         ],200);
 
     }
+
+
+    public function logout(){
+        $user = Auth::user();
+        if($user instanceOf User)
+            $user->token()->revoke();
+        return response()->json([
+            'information' => 'you are logout'
+        ], 201);
+    }
     
     public function register(Request $request){
 
@@ -66,6 +77,7 @@ class AuthenticationController extends Controller
             'image' => 'required'
         ]);
 
+        try {
 
         if($request->hasFile('image')){
             $img = $request->file('image');
@@ -87,40 +99,50 @@ class AuthenticationController extends Controller
             $fileNameToStore = "NoImage.jpg";
         }
 
+        
 
-        try {
+        
+            
+            
         $user = User::create([
             'name' => $request['name'],
             'email' => $request['email'],
             'password' => bcrypt($request['password']),
             'image' => $fileNameToStore,
+            'birthday' => $request['birthday'],
+            'country_id' => $request['country_id'],
           ]);
 
-          $user->setRoles([$request['roles']]);
+        
+          $user->setRoles(['ROLE_CUSTOMER']);
           $user->save();
 
-        } catch (QueryException $e){
+
+          if($user instanceOf User)
+          $getToken = $user->createToken('personal token');
+      $token = $getToken->token;
+
+
+      $token->save();
+
+      return response()->json([
+          'access' => $getToken->accessToken,
+          'token' => 'Bearer',
+          'expires' => Carbon::parse(
+              $token->expires_at
+          )->toDateTimeString()
+      ],200);
+
+        } catch (Exception $e){
+            return response()->json(["test" => $e], 200);
             $errorCode = $e->errorInfo[1];
             if($errorCode == 1062){
                 return response()->json(['email' =>'already taken'], 200);
             }
           }
-    
 
-        if($user instanceOf User)
-            $getToken = $user->createToken('personal token');
-        $token = $getToken->token;
-
-
-        $token->save();
-
-        return response()->json([
-            'access' => $getToken->accessToken,
-            'token' => 'Bearer',
-            'expires' => Carbon::parse(
-                $token->expires_at
-            )->toDateTimeString()
-        ],200);
+          
+          
     }
 
 

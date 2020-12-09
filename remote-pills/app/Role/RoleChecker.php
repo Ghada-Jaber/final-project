@@ -23,11 +23,11 @@ class RoleChecker
             
             return true;
         }
-        else if($user->hasRole(UserRole::ROLE_MANAGEMENT)) {
+        else if($user->hasRole(UserRole::ROLE_PHARMACY)) {
             
-            $managementRoles = UserRole::getAllowedRoles(UserRole::ROLE_MANAGEMENT);
+            $pharmacyRoles = UserRole::getAllowedRoles(UserRole::ROLE_PHARMACY);
 
-            if (in_array($role, $managementRoles)) {
+            if (in_array($role, $pharmacyRoles)) {
                 return true;
             }
         }

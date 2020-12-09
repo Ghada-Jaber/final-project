@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from 'react';
-import {Link} from 'react-router-dom';
+import {Link, useHistory } from 'react-router-dom';
 import SignIn from '../auth/SignIn';
 import SignUp from '../auth/SignUp';
 import ForgetPassword from '../auth/ForgetPassword';
+import api from '../../api';
 // import styles from './../../../css/templatemo-style.css';
 // import s2 from './../../../css/font-awesome.min.css';
 // import classNames from 'classnames/bind';
@@ -11,10 +12,37 @@ import ForgetPassword from '../auth/ForgetPassword';
 export default function Header(){
 
   const [page, setCurrentPage] = useState('');
+  const history = useHistory();
+  const [name, setName] = useState('');
+    const [check, setCheck] = useState('');
+    const [image, setImage] = useState('');
 
   useEffect(() => {
     setCurrentPage(window.location.pathname); 
+    details();
  },[]);
+
+
+ function details(){
+  api.details().then(response => {
+      setName(response.data.name)
+      setImage(response.data.image)
+      setCheck(true)
+  }).catch(error => {
+      setCheck(false)
+     history.push('/');
+  })
+}
+
+
+function handleLogout() {
+  api.logout().then((response) => {
+      CookieService.remove('access_token')
+      history.push('/login');
+      window.location.reload();
+  });
+}
+
 
  
 
@@ -38,28 +66,54 @@ export default function Header(){
     document.getElementById("signup").classList.remove('show');
 }
 
-        return (
-            
-            <nav className="navbar navbar-inverse navbar-fixed-top">
-            <div className="container-fluid">
-              <div className="navbar-header  " style={{ marginRight:'5px' }}>
-                <button type="button" className="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                  <span className="icon-bar"></span>
-                  <span className="icon-bar"></span>
-                  <span className="icon-bar"></span>                        
-                </button>
-                    <h1>
-                      <img src="images/logo.png" width="50" height="50" alt="" style={{ marginRight:'5px' }}/>
-                      <b>
-                        <font color="#2375b8">remote pills</font>
-                      </b>
-                    </h1>
-                    <font color="white" style={{ position:'absolute' }} >with us you are always comfortable</font>
-                    <br/>
-              </div>
-              {/* className in this div ili ta7et ma ilu da3i */}
-              <div className="collapse navbar-collapse" id="myNavbar">
-                <ul className="nav navbar-nav " >
+
+function auth(){
+  return (
+    <i> 
+     
+  <ul className="nav navbar-nav navbar-right">
+
+      <div className="panel-group" id="accordion">
+			  <div className="panel panel-default  offset-0" style={{ padding: '5px'}} >
+{/* {salutation} */}
+<img src={`./images/userimage/${image}`} width="50px" height="50px"/> &nbsp;
+        <li className="nav-item dropdown">
+                    <a id="navbarDropdown" className="nav-link dropdown-toggle" href="#"
+                    role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {name}
+                    </a>
+                    <div className="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                         <a className="dropdown-item" >
+                         <i className="fa fa-id-badge fa-fw"></i>Profile</a><br/>
+                        <a className="dropdown-item" onClick= {() => handleLogout()}>
+                        <i className="fa fa-sign-out fa-fw"></i>Logout</a>
+                    </div>
+                </li>
+			  </div>
+			  </div>
+  </ul>
+
+  <ul className="nav navbar-nav navbar-right" >
+
+    <li className="nav-item dropdown">
+                    <a id="navbarDropdown" className="nav-link dropdown-toggle" href="#"
+                    role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i className="fa fa-bell fa-fw"></i>
+                    </a>
+                    <div className="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                         <a className="dropdown-item" >
+                         Notification</a><br/>
+                    </div>
+                </li>
+    </ul>
+  </i>
+  )
+}
+
+function guest(){
+return(
+  <i>
+     <ul className="nav navbar-nav " >
                       <li className= {`${(page =='/home' || page =='/') ? 'active' : '' }`}>
                       <a href="/home" ><i className="fa fa-home fa-fw"></i>Home</a></li>
                        <li className="dropdown">
@@ -115,6 +169,34 @@ export default function Header(){
               </div>
               </div>
               </ul>
+  </i>
+)
+}
+
+        return (
+            
+            <nav className="navbar navbar-inverse navbar-fixed-top">
+            <div className="container-fluid">
+              <div className="navbar-header  " style={{ marginRight:'5px' }}>
+                <button type="button" className="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                  <span className="icon-bar"></span>
+                  <span className="icon-bar"></span>
+                  <span className="icon-bar"></span>                        
+                </button>
+                    <h1>
+                      <img src="images/logo.png" width="50" height="50" alt="" style={{ marginRight:'5px' }}/>
+                      <b>
+                        <font color="#2375b8">remote pills</font>
+                      </b>
+                    </h1>
+                    <font color="white" style={{ position:'absolute' }} >with us you are always comfortable</font>
+                    <br/>
+              </div>
+              {/* className in this div ili ta7et ma ilu da3i */}
+              <div className="collapse navbar-collapse" id="myNavbar">
+               
+
+              { check==true ? auth() : guest() }
                 
                </div>
                

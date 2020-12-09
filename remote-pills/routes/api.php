@@ -42,6 +42,6 @@ Route::group(['middleware' => 'auth:api'], function () {
 
 });
 
-Route::get('admin/finance', function () {
-    //
-})->middleware('check_user_role:' . \App\Role\UserRole::ROLE_FINANCE);
+// Route::get('admin/finance', function () {
+//     //
+// })->middleware('check_user_role:' . \App\Role\UserRole::ROLE_FINANCE);
