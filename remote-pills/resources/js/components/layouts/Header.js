@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, {useState, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 import SignIn from '../auth/SignIn';
 import SignUp from '../auth/SignUp';
@@ -9,6 +9,14 @@ import ForgetPassword from '../auth/ForgetPassword';
 // const cx = classNames.bind(styles);
 //<div className={ cx('widget-item-container') }>
 export default function Header(){
+
+  const [page, setCurrentPage] = useState('');
+
+  useEffect(() => {
+    setCurrentPage(window.location.pathname); 
+ },[]);
+
+ 
 
 
   function displayFormSignIn(){
@@ -34,21 +42,26 @@ export default function Header(){
             
             <nav className="navbar navbar-inverse navbar-fixed-top">
             <div className="container-fluid">
-              <div className="navbar-header  ">
+              <div className="navbar-header  " style={{ marginRight:'5px' }}>
                 <button type="button" className="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
                   <span className="icon-bar"></span>
                   <span className="icon-bar"></span>
                   <span className="icon-bar"></span>                        
                 </button>
-                
-                
-                    <h1><img src="images/logo.png" width="50" height="50" alt="" /><b><font color="#13895F">GAD</font></b></h1>
+                    <h1>
+                      <img src="images/logo.png" width="50" height="50" alt="" style={{ marginRight:'5px' }}/>
+                      <b>
+                        <font color="#2375b8">remote pills</font>
+                      </b>
+                    </h1>
                     <font color="white" style={{ position:'absolute' }} >with us you are always comfortable</font>
                     <br/>
               </div>
+              {/* className in this div ili ta7et ma ilu da3i */}
               <div className="collapse navbar-collapse" id="myNavbar">
                 <ul className="nav navbar-nav " >
-                      <li><a href="index.php" ><i className="fa fa-home fa-fw"></i>Home</a></li>
+                      <li className= {`${(page =='/home' || page =='/') ? 'active' : '' }`}>
+                      <a href="/home" ><i className="fa fa-home fa-fw"></i>Home</a></li>
                        <li className="dropdown">
                     <a className="dropdown-toggle" data-toggle="dropdown" href="#"><i className="fa fa-bar-chart fa-fw"></i>About<span className="caret"></span></a>
                     <ul className="dropdown-menu">
@@ -61,20 +74,19 @@ export default function Header(){
                      
                     </ul>
                   </li>
-                      <li><a href="gallery.php"><i className="fa fa-photo fa-fw"></i>Gallery</a></li>
-                      <li><a href="pricelist.php"><i className="fa fa-money fa-fw"></i>Price List</a></li>
+                      <li className= {`${(page =='/medicine') ? 'active' : '' }`}>
+                      <a href="medicine"><i className="fa fa-money fa-fw"></i>Price List</a></li>
                    
-                      <li><a href="service.php"><i className="fa fa-server fa-fw"></i>Service</a></li>
+                      <li><a href="service"><i className="fa fa-server fa-fw"></i>Service</a></li>
                        <li className="dropdown">
                     <a className="dropdown-toggle" data-toggle="dropdown" href="#"><i className="fa fa-sliders fa-fw"></i>Blog<span className="caret"></span></a>
                     <ul className="dropdown-menu">
-                    <li><a href="expert_blog.php">Expert Blog</a></li>
-                    <li><a href="client.php">Client</a></li>
-                    <li><a href="oursponsor.php">Our Sponsor</a></li>
+                    <li><a href="blog">Pharmacy Blog</a></li>
+                    <li><a href="client">Client</a></li>
                     </ul>
                   </li>
                       
-                      <li><a href="contact.php"><i className="fa fa-book fa-fw"></i>Contact</a></li>
+                      <li><a href="contact"><i className="fa fa-book fa-fw"></i>Contact</a></li>
                  
                       
                 </ul>

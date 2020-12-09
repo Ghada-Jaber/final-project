@@ -55,14 +55,17 @@ class AuthenticationController extends Controller
     }
     
     public function register(Request $request){
+
+        
         
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email', //|exists:users
             'password' => 'required',
-            'c_password' => 'required|same:password',
-            'image' => 'required',
+            'confirm_password' => 'required|same:password',
+            'image' => 'required'
         ]);
+
 
         if($request->hasFile('image')){
             $img = $request->file('image');

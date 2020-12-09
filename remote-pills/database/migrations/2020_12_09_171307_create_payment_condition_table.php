@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMedicineTable extends Migration
+class CreatePaymentConditionTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateMedicineTable extends Migration
      */
     public function up()
     {
-        Schema::create('medicine', function (Blueprint $table) {
+        Schema::create('payment_condition', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->boolean('prescription');
+            $table->foreignId('payment_id')->constrained('payment')->onDelete('cascade');
+            $table->foreignId('payment_type_id')->constrained('payment_type')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -28,6 +28,6 @@ class CreateMedicineTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('medicine');
+        Schema::dropIfExists('payment_condition');
     }
 }

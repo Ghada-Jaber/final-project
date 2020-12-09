@@ -6,7 +6,7 @@ import {Link, useHistory} from 'react-router-dom';
 export  default function SignIn(){
 
     return(
-        <i>
+        <div>
         <div className="templatemo-content-widget templatemo-login-widget no-padding">
 	
 	        <form  className="templatemo-login-form" method="post">
@@ -35,11 +35,11 @@ export  default function SignIn(){
 	        </form>
 		</div>
 		<div className="templatemo-content-widget templatemo-login-widget templatemo-register-widget white-bg">
-			<p>Not a registered user yet? <strong><a data-toggle="collapse" data-parent="#accordion" href="#signup">Sign up now!</a></strong><br />
-			<a data-toggle="collapse" data-parent="#accordion" href="#forpass" className="blue-text">Forget Password!</a></p>
+			<p>Not a registered user yet? <strong><a data-toggle="collapse" data-parent="#accordion" href="#signup" >Sign up now!</a></strong><br />
+			<a data-toggle="collapse" data-parent="#accordion" href="#forpass">Forget Password!</a></p>
 		</div>
 
-        </i>
+        </div>
 
     )
 

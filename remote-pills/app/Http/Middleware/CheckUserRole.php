@@ -37,6 +37,7 @@ class CheckUserRole
         $user = Auth::guard()->user();
 
         if ( ! $this->roleChecker->check($user, $role)) {
+            
             throw new AuthorizationException('You do not have permission to view this page');
         }
 
