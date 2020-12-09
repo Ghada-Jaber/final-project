@@ -70375,6 +70375,10 @@ __webpack_require__.r(__webpack_exports__);
 function App() {
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["BrowserRouter"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Switch"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
     exact: true,
+    path: "/",
+    component: _Home__WEBPACK_IMPORTED_MODULE_3__["default"]
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
+    exact: true,
     path: "/home",
     component: _Home__WEBPACK_IMPORTED_MODULE_3__["default"]
   })));
@@ -70443,16 +70447,16 @@ function Home() {
 
 /***/ }),
 
-/***/ "./resources/js/components/auth/Login.js":
-/*!***********************************************!*\
-  !*** ./resources/js/components/auth/Login.js ***!
-  \***********************************************/
+/***/ "./resources/js/components/auth/ForgetPassword.js":
+/*!********************************************************!*\
+  !*** ./resources/js/components/auth/ForgetPassword.js ***!
+  \********************************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Login; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return ForgetPassword; });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
@@ -70460,7 +70464,85 @@ __webpack_require__.r(__webpack_exports__);
  // import api from '../api';
 // import CookieService from '../Service/CookieService';
 
-function Login() {
+function ForgetPassword() {
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "templatemo-content-widget templatemo-login-widget  no-padding "
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+    action: "<?php echo $_SERVER['PHP_SELF'];?>",
+    className: "templatemo-login-form",
+    method: "post"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "form-group"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "input-group"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "input-group-addon"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+    className: "fa fa-user fa-fw"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "text",
+    className: "form-control",
+    name: "username",
+    placeholder: "Username",
+    required: true
+  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "form-group"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "input-group"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "input-group-addon"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+    className: "fa fa-key fa-fw"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "password",
+    className: "form-control",
+    name: "password",
+    placeholder: "New Passwrod",
+    required: true
+  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "form-group"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "input-group"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "input-group-addon"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+    className: "fa fa-key fa-fw"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "password",
+    className: "form-control",
+    name: "secret",
+    placeholder: "Secret Sentence",
+    required: true
+  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "form-group"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "submit",
+    className: "templatemo-blue-button width-100",
+    value: "Change My Pass!",
+    name: "forgetpassword"
+  }))));
+}
+
+/***/ }),
+
+/***/ "./resources/js/components/auth/SignIn.js":
+/*!************************************************!*\
+  !*** ./resources/js/components/auth/SignIn.js ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return SignIn; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+
+ // import api from '../api';
+// import CookieService from '../Service/CookieService';
+
+function SignIn() {
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "templatemo-content-widget templatemo-login-widget no-padding"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
@@ -70757,8 +70839,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
-/* harmony import */ var _auth_Login__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./../auth/Login */ "./resources/js/components/auth/Login.js");
-/* harmony import */ var _auth_SignUp__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./../auth/SignUp */ "./resources/js/components/auth/SignUp.js");
+/* harmony import */ var _auth_SignIn__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../auth/SignIn */ "./resources/js/components/auth/SignIn.js");
+/* harmony import */ var _auth_SignUp__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../auth/SignUp */ "./resources/js/components/auth/SignUp.js");
+/* harmony import */ var _auth_ForgetPassword__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../auth/ForgetPassword */ "./resources/js/components/auth/ForgetPassword.js");
+
 
 
 
@@ -70770,42 +70854,18 @@ __webpack_require__.r(__webpack_exports__);
 
 function Header() {
   function displayFormSignIn() {
-    if (document.getElementById("signin").style.display == "block") {
-      document.getElementById("signin").style.display = "none";
-    } else {
-      document.getElementById("signin").style.display = "block";
-
-      if (document.getElementById("signup").style.display == "" || document.getElementById("forpass").style.display == "") {
-        document.getElementById("signup").style.display = "none";
-        document.getElementById("forpass").style.display = "none";
-      }
-    }
+    document.getElementById("signup").classList.remove('show');
+    document.getElementById("forpass").classList.remove('show');
   }
 
   function displayFormSignUp() {
-    if (document.getElementById("signup").style.display == "block") {
-      document.getElementById("signup").style.display = "none";
-    } else {
-      document.getElementById("signup").style.display = "block";
-
-      if (document.getElementById("forpass").style.display == "" || document.getElementById("signin").style.display == "") {
-        document.getElementById("forpass").style.display = "none";
-        document.getElementById("signin").style.display = "none";
-      }
-    }
+    document.getElementById("signin").classList.remove('show');
+    document.getElementById("forpass").classList.remove('show');
   }
 
   function displayFormForgetPass() {
-    if (document.getElementById("forpass").style.display == "block") {
-      document.getElementById("forpass").style.display = "none";
-    } else {
-      document.getElementById("forpass").style.display = "block";
-
-      if (document.getElementById("signup").style.display == "" || document.getElementById("signin").style.display == "") {
-        document.getElementById("signup").style.display = "none";
-        document.getElementById("signin").style.display = "none";
-      }
-    }
+    document.getElementById("signin").classList.remove('show');
+    document.getElementById("signup").classList.remove('show');
   }
 
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("nav", {
@@ -70944,7 +71004,7 @@ function Header() {
     className: "panel-collapse collapse"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "panel-body"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_auth_Login__WEBPACK_IMPORTED_MODULE_2__["default"], null))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_auth_SignIn__WEBPACK_IMPORTED_MODULE_2__["default"], null))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     id: "signup",
     className: "panel-collapse collapse"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -70954,7 +71014,7 @@ function Header() {
     className: "panel-collapse collapse"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "panel-body"
-  }, "forget"))))))));
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_auth_ForgetPassword__WEBPACK_IMPORTED_MODULE_4__["default"], null)))))))));
 }
 
 /***/ }),

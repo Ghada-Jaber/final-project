@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import {Link} from 'react-router-dom';
-import Login from './../auth/Login';
-import SignUp from './../auth/SignUp';
+import SignIn from '../auth/SignIn';
+import SignUp from '../auth/SignUp';
+import ForgetPassword from '../auth/ForgetPassword';
 // import styles from './../../../css/templatemo-style.css';
 // import s2 from './../../../css/font-awesome.min.css';
 // import classNames from 'classnames/bind';
@@ -11,40 +12,22 @@ export default function Header(){
 
 
   function displayFormSignIn(){
-    if (document.getElementById("signin").style.display =="block"){
-      document.getElementById("signin").style.display="none";} 
-        else{
-      document.getElementById("signin").style.display = "block";
-        if (document.getElementById("signup").style.display==""||document.getElementById("forpass").style.display==""){
-        document.getElementById("signup").style.display="none";
-        document.getElementById("forpass").style.display="none";
-      }
-        }
+    
+
+    document.getElementById("signup").classList.remove('show');
+
+    document.getElementById("forpass").classList.remove('show');
   }
 
   function displayFormSignUp(){
-    if (document.getElementById("signup").style.display =="block"){
-      document.getElementById("signup").style.display="none";} 
-        else{
-      document.getElementById("signup").style.display = "block";
-        if (document.getElementById("forpass").style.display==""||document.getElementById("signin").style.display==""){
-        document.getElementById("forpass").style.display="none";
-        document.getElementById("signin").style.display="none";
-      }
-  }
+    document.getElementById("signin").classList.remove('show');
+    document.getElementById("forpass").classList.remove('show');
 }
 
 
   function displayFormForgetPass(){
-    if (document.getElementById("forpass").style.display =="block"){
-      document.getElementById("forpass").style.display="none";} 
-        else{
-      document.getElementById("forpass").style.display = "block";
-        if (document.getElementById("signup").style.display==""||document.getElementById("signin").style.display==""){
-        document.getElementById("signup").style.display="none";
-        document.getElementById("signin").style.display="none";
-      }
-  }
+    document.getElementById("signin").classList.remove('show');
+    document.getElementById("signup").classList.remove('show');
 }
 
         return (
@@ -104,7 +87,7 @@ export default function Header(){
                         <div className="panel panel-default  templatemo-content-widget  no-padding templatemo-overflow-hidden offset-0" style={{ float: 'right' }}>
                      <div id="signin" className="panel-collapse collapse">
               <div className="panel-body">
-              <Login />
+              <SignIn />
               </div>
           </div>
                      <div id="signup" className="panel-collapse collapse">
@@ -113,7 +96,9 @@ export default function Header(){
               </div>
           </div>
                      <div id="forpass" className="panel-collapse collapse">
-              <div className="panel-body">forget</div>
+              <div className="panel-body">
+                <ForgetPassword />
+              </div>
               </div>
               </div>
               </div>

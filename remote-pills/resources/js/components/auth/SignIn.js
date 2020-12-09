@@ -3,7 +3,7 @@ import {Link, useHistory} from 'react-router-dom';
 // import api from '../api';
 // import CookieService from '../Service/CookieService';
 
-export  default function Login(){
+export  default function SignIn(){
 
     return(
         <i>
