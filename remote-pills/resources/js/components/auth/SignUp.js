@@ -29,6 +29,24 @@ export  default function SignUp(){
         api.getCountry().then(response => {
 			setCountry(response.data);
 			setCountryId(response.data[0].id);
+			api.getCity(response.data[0].id).then(res => {
+				if(res.data.length ==0){
+					setCityId('0')
+				}else{
+					setCityId(res.data[0].id)
+				}
+				
+				setCity(res.data);
+				api.getStreet(res.data[0].id).then(re => {
+					if(re.data.length ==0){
+						setStreetId('0')
+					}else{
+						setStreetId(re.data[0].id)
+					}
+					
+					setStreet(re.data)
+				})
+			})
         }) .catch(error => {
 
         })
@@ -129,7 +147,7 @@ export  default function SignUp(){
 	        	<div className="form-group">
 	        		<div className="input-group">
 		        		<div className="input-group-addon"><i className="fa fa-user fa-fw"></i></div>	        		
-		              	<input type="text" className="form-control" placeholder="Username" 
+		              	<input type="email" className="form-control" placeholder="Username" 
 						  name="usern" required 
 						  onChange={handleEmailChange} value={email}
 						  /> 

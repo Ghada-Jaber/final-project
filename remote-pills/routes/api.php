@@ -23,6 +23,8 @@ Route::post('/register', [AuthenticationController::class, 'register']);
 
 
 Route::get('/country', [CountryController::class, 'getAllCountry']);
+Route::get('/city/{country_id}', [CountryController::class, 'getAllCity']);
+Route::get('/street/{city_id}', [CountryController::class, 'getAllStreet']);
 
 
 
@@ -32,6 +34,7 @@ Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_ADM
     
 
 });
+
 
 Route::group(['middleware' => 'auth:api'], function () {
 

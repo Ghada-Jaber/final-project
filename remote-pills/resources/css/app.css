@@ -723,3 +723,55 @@ select option{
 
 
 
+  .div1 { width: 850px;height: 587px; border: 4px solid #15f7f7;;}
+  .hh1 {font-size: 20px;color: #13895F;font-family: 'Roboto Condensed', sans-serif;text-align: center;}
+  .hh2 {font-size: 20px;color: #990033;font-family: 'Roboto Condensed', sans-serif;text-align: center;}
+  .hh3 {font-size: 20px;color: #cc0066;font-family: 'Roboto Condensed', sans-serif;text-align: center;}
+  .msg_container_base{
+	background: #e5e5e5;
+	margin: 0;
+	padding: 0 10px 10px;
+	max-height:150px;
+	overflow-x:hidden;
+  }
+  
+  .msg_receive{
+	  padding-left:0;
+	  margin-left:0;
+  }
+  
+  .messages {
+	background: white;
+	padding: 10px;
+	border-radius: 2px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+	max-width:100%;
+  }
+  .messages > p {
+	  font-size: 13px;
+	  margin: 0 0 0.2rem 0;
+	}
+  .messages > time {
+	  font-size: 11px;
+	  color: #ccc;
+  }
+  .msg_container {
+	  padding: 10px;
+	  overflow: hidden;
+	  display: flex;
+  }
+  
+  
+  .msg_sent > time{
+	  float: right;
+  }
+  
+  
+  
+  
+  
+  select.icon-menu option{
+  background-repeat: no-repeat;
+  background-position:bottom left;
+  padding-left: 20px;
+  }

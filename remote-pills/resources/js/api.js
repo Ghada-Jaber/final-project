@@ -31,4 +31,10 @@ export default{
     getCountry: () =>
     axios.get(`${BASE_URL}/country`),
 
+    getCity: (country_id) =>
+    axios.get(`${BASE_URL}/city/${country_id}`),
+
+    getStreet: (city_id) =>
+    axios.get(`${BASE_URL}/street/${city_id}`),
+
 }

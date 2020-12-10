@@ -70277,6 +70277,12 @@ var token = {
   },
   getCountry: function getCountry() {
     return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(BASE_URL, "/country"));
+  },
+  getCity: function getCity(country_id) {
+    return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(BASE_URL, "/city/").concat(country_id));
+  },
+  getStreet: function getStreet(city_id) {
+    return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(BASE_URL, "/street/").concat(city_id));
   }
 });
 
@@ -71868,6 +71874,24 @@ function SignUp() {
     _api__WEBPACK_IMPORTED_MODULE_2__["default"].getCountry().then(function (response) {
       setCountry(response.data);
       setCountryId(response.data[0].id);
+      _api__WEBPACK_IMPORTED_MODULE_2__["default"].getCity(response.data[0].id).then(function (res) {
+        if (res.data.length == 0) {
+          setCityId('0');
+        } else {
+          setCityId(res.data[0].id);
+        }
+
+        setCity(res.data);
+        _api__WEBPACK_IMPORTED_MODULE_2__["default"].getStreet(res.data[0].id).then(function (re) {
+          if (re.data.length == 0) {
+            setStreetId('0');
+          } else {
+            setStreetId(re.data[0].id);
+          }
+
+          setStreet(re.data);
+        });
+      });
     })["catch"](function (error) {});
   }
 
@@ -71987,7 +72011,7 @@ function SignUp() {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
     className: "fa fa-user fa-fw"
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-    type: "text",
+    type: "email",
     className: "form-control",
     placeholder: "Username",
     name: "usern",

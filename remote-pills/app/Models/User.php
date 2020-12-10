@@ -127,4 +127,27 @@ class User extends Authenticatable
 
         return $roles;
     }
+
+
+
+    public function pharmacy(){
+        return $this->hasMany(Customer::class);
+    }
+
+
+    public function customer(){
+        return $this->hasMany(Customer::class);
+    }
+
+    public function detail(){
+        return $this->hasMany(Detail::class);
+    }
+
+    public function patient(){
+        return $this->hasMany(Pateint::class);
+    }
+
+    public function doctor(){
+        return $this->hasMany(Doctor::class);
+    }
 }

@@ -8,4 +8,43 @@ use Illuminate\Database\Eloquent\Model;
 class Medicine extends Model
 {
     use HasFactory;
+
+    protected $table = 'medicine';
+
+    /**
+    * The database primary key value.
+    *
+    * @var string
+    */
+    protected $primaryKey = 'id';
+
+
+    /**
+     * Attributes that should be mass-assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+                  'name',
+                  'prescription'
+              ];
+
+
+    public function detail(){
+        return $this->hasMany(Reservation::class);
+    }
+
+
+    public function prescription(){
+        return $this->hasMany(Reservation::class);//yimken hasOne
+    }
+
+    public function medicineSymtom(){
+        return $this->hasMany(MedicineSymtom::class);
+    }
+
+    public function reservation(){
+        return $this->hasMany(Reservation::class);
+    }
+   
 }
