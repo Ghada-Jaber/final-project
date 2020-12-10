@@ -30,6 +30,7 @@ export  default function Home(){
                     </font></h2>
 					
                     <p>Info</p>  
+                   
                   </div>        
                 </div>                 
                   </div>          
@@ -39,10 +40,11 @@ export  default function Home(){
   
        </div>                       
             </div> 
-        
                      
              <Footer />
           </div>
+
+          
         </div>
 
     )

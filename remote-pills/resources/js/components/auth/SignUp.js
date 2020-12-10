@@ -6,6 +6,11 @@ import api from './../../api';
 export  default function SignUp(){
 
 	const [country, setCountry] = useState([]);
+	const [countryId, setCountryId] = useState('');
+	const [city, setCity] = useState([]);
+	const [cityId, setCityId] = useState('');
+	const [street, setStreet] = useState([]);
+	const [streetId, setStreetId] = useState('');
 	
 	const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -22,7 +27,8 @@ export  default function SignUp(){
 
      function fetchCountry(){
         api.getCountry().then(response => {
-            setCountry(response.data);
+			setCountry(response.data);
+			setCountryId(response.data[0].id);
         }) .catch(error => {
 
         })
@@ -33,8 +39,7 @@ export  default function SignUp(){
         return  country.map(country => {
             return(
                 <option key={country.id} value={country.id}
-                style={{backgroundImage: `url(country/${country.name}.png)`,backgroundRepeat: 'no-repeat',
-                backgroundPosition:'bottom left', paddingLeft: '20px' }}>
+                style={{backgroundImage: `url(country/${country.name}.png)` }}>
                     {country.name}
                 </option>
             )
@@ -76,7 +81,11 @@ export  default function SignUp(){
                 </span>
             )
         }
-    }
+	}
+	
+	function handleCountryChange(event){
+		setCountryId(event.target.value);
+	}
 	
 
 	function handleCreateNewUser (event) {
@@ -165,12 +174,45 @@ export  default function SignUp(){
 				<div className="form-group">
 	        		<div className="input-group">
 		        		<div className="input-group-addon"><i className="fa fa-flag fa-fw"></i></div>	        		
-		              	<select className="form-control" size="3" name="category"  name="category" required> 
+		              	<select className="form-control select" size="4" 
+						  value={countryId} 
+						  required onChange={handleCountryChange}> 
+						  <optgroup label="select country" style={{ color:'gray' }}>
                             {renderCountry()}
+							</optgroup>
                         					
                          </select>						
 		          	</div>	
 	        	</div>
+
+				<div className="form-group">
+	        		<div className="input-group">
+		        		<div className="input-group-addon"><i className="fa fa-building fa-fw"></i></div>	        		
+		              	<select className="form-control"   
+						//   value={countryId} 
+						  required onChange={handleCountryChange}> 
+						  <optgroup label="select city">
+                            <option>s</option>
+							</optgroup>
+                        					
+                         </select>						
+		          	</div>	
+	        	</div>
+
+				<div className="form-group">
+	        		<div className="input-group">
+		        		<div className="input-group-addon"><i className="fa fa-street-view fa-fw"></i></div>	        		
+		              	<select className="form-control"  
+						//   value={countryId} 
+						  required onChange={handleCountryChange}> 
+						  <optgroup label="select street">
+                            <option>s</option>
+							</optgroup>
+                        					
+                         </select>						
+		          	</div>	
+	        	</div>
+
 <div className="form-group">
 	        		<div className="input-group">
 		        		<div className="input-group-addon"><i className="fa fa-photo fa-fw"></i></div>	        		

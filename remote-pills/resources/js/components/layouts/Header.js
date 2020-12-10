@@ -4,6 +4,7 @@ import SignIn from '../auth/SignIn';
 import SignUp from '../auth/SignUp';
 import ForgetPassword from '../auth/ForgetPassword';
 import api from '../../api';
+import CookieService from '../../Service/CookieService';
 // import styles from './../../../css/templatemo-style.css';
 // import s2 from './../../../css/font-awesome.min.css';
 // import classNames from 'classnames/bind';
@@ -16,9 +17,24 @@ export default function Header(){
   const [name, setName] = useState('');
     const [check, setCheck] = useState('');
     const [image, setImage] = useState('');
+    const [greeting, setGreeting] = useState('');
 
   useEffect(() => {
     setCurrentPage(window.location.pathname); 
+    var d = new Date();
+    var t = d.getHours();
+
+    if(t<12)
+    {
+      setGreeting("Good Morning"); 
+    }
+    else if(t<18){
+      setGreeting("Good Afternoon"); 
+    }
+    else
+    {
+      setGreeting("Good Evening"); 
+    }
     details();
  },[]);
 
@@ -38,7 +54,7 @@ export default function Header(){
 function handleLogout() {
   api.logout().then((response) => {
       CookieService.remove('access_token')
-      history.push('/login');
+      history.push('/');
       window.location.reload();
   });
 }
@@ -75,17 +91,18 @@ function auth(){
 
       <div className="panel-group" id="accordion">
 			  <div className="panel panel-default  offset-0" style={{ padding: '5px'}} >
-{/* {salutation} */}
+
 <img src={`./images/userimage/${image}`} width="50px" height="50px"/> &nbsp;
+{greeting}
         <li className="nav-item dropdown">
                     <a id="navbarDropdown" className="nav-link dropdown-toggle" href="#"
                     role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {name}
                     </a>
                     <div className="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                         <a className="dropdown-item" >
+                         <a className="dropdown-item" href="/profile" >
                          <i className="fa fa-id-badge fa-fw"></i>Profile</a><br/>
-                        <a className="dropdown-item" onClick= {() => handleLogout()}>
+                        <a className="dropdown-item" href="#" onClick= {() => handleLogout()}>
                         <i className="fa fa-sign-out fa-fw"></i>Logout</a>
                     </div>
                 </li>
@@ -94,11 +111,27 @@ function auth(){
   </ul>
 
   <ul className="nav navbar-nav navbar-right" >
+  {/* <a href="cart.html" class="icons-btn d-inline-block bag">
+              <span class="icon-shopping-bag"></span>
+              
+            </a> */}
 
+            <li >
+
+<a   href="/chat"
+  className="icons-btn" style={{ position: 'relative', marginRight: '20px', marginTop: '10px' }}>
+                        <span className="fa fa-comments fa-fw"></span>
+                        <span className="number">2</span>
+                    </a>
+</li>
     <li className="nav-item dropdown">
+
+
                     <a id="navbarDropdown" className="nav-link dropdown-toggle" href="#"
-                    role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i className="fa fa-bell fa-fw"></i>
+                    role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                    className="icons-btn" style={{ position: 'relative', marginRight: '20px', marginTop: '10px' }}>
+                        <span className="fa fa-bell fa-fw"></span>
+                        <span className="number">2</span>
                     </a>
                     <div className="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                          <a className="dropdown-item" >

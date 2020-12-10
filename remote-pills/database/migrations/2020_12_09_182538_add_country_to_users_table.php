@@ -14,7 +14,7 @@ class AddCountryToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('country_id')->constrained('country')->onDelete('cascade');
+            $table->foreignId('street_id')->constrained('street')->onDelete('cascade');
         });
     }
 
@@ -26,8 +26,8 @@ class AddCountryToUsersTable extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropForeign('users_country_id_foreign');
-            $table->dropColumn('country_id');
+            $table->dropForeign('users_street_id_foreign');
+            $table->dropColumn('street_id');
         });
     }
 }

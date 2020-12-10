@@ -54,7 +54,7 @@ export  default function SignIn(){
                 const options = {Path: "/",Expires: response.data.expires, Secure: true};
                 CookieService.set('access_token', response.data.access, options);
 
-                history.push('/projects')
+                history.push('/stuff')
                 window.location.reload();
             })
             .catch(error => {

@@ -6,6 +6,8 @@ import Home from './Home';
 import IndexUser from './IndexUser';
 import ListMedicine from './ListMedicine';
 import ShowMedicine from './ShowMedicine';
+import Profile from './Profile';
+import Chat from './Chat';
 
 function App(){
 
@@ -17,6 +19,8 @@ function App(){
             <Route exact path='/home' component={Home} />
 
             <Route exact path='/stuff' component={IndexUser} />
+            <Route exact path='/profile' component={Profile} />
+            <Route exact path='/chat' component={Chat} />
 
 
             <Route exact path='/medicine' component={ListMedicine} />
