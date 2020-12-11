@@ -23,7 +23,7 @@ class User extends Authenticatable
         'password',
         'image',
         'birthday',
-        'country_id'
+        'street_id'
     ];
 
     /**
@@ -149,5 +149,9 @@ class User extends Authenticatable
 
     public function doctor(){
         return $this->hasMany(Doctor::class);
+    }
+
+    public function street(){
+        return $this->belongsTo(Street::class);
     }
 }

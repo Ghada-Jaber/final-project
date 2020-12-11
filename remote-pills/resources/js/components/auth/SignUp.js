@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {Link, useHistory} from 'react-router-dom';
 import api from './../../api';
-// import CookieService from '../Service/CookieService';
+import CookieService from '../../Service/CookieService';
 
 export  default function SignUp(){
 
@@ -17,7 +17,7 @@ export  default function SignUp(){
     const [password, setPassword] = useState('');
     const [confirm_password, setConfirmPassword] = useState('');
 	const [img,setImg] = useState();
-	
+	const [birthday,setBirthday] = useState('');
 	const [errors, setErrors] = useState([]);
 
     useEffect(() => {
@@ -34,21 +34,22 @@ export  default function SignUp(){
 					setCityId('0')
 				}else{
 					setCityId(res.data[0].id)
-				}
 				
-				setCity(res.data);
-				api.getStreet(res.data[0].id).then(re => {
-					if(re.data.length ==0){
-						setStreetId('0')
-					}else{
-						setStreetId(re.data[0].id)
-					}
-					
-					setStreet(re.data)
-				})
+				
+					setCity(res.data);
+					api.getStreet(res.data[0].id).then(re => {
+						if(re.data.length ==0){
+							setStreetId('0')
+						}else{
+							setStreetId(re.data[0].id)
+						}
+						setStreet(re.data)
+					})
+
+				}
 			})
         }) .catch(error => {
-
+			
         })
     }
 
@@ -59,6 +60,26 @@ export  default function SignUp(){
                 <option key={country.id} value={country.id}
                 style={{backgroundImage: `url(country/${country.name}.png)` }}>
                     {country.name}
+                </option>
+            )
+        })
+	}
+
+	function renderCity(){
+        return  city.map(city => {
+            return(
+                <option key={city.id} value={city.id}>
+                    {city.name}
+                </option>
+            )
+        })
+	}
+
+	function renderStreet(){
+        return  street.map(street => {
+            return(
+                <option key={street.id} value={street.id} >
+                    {street.name}
                 </option>
             )
         })
@@ -103,6 +124,52 @@ export  default function SignUp(){
 	
 	function handleCountryChange(event){
 		setCountryId(event.target.value);
+		let country_id = event.target.value;
+		api.getCity(country_id).then(response => {
+            setCityId(response.data[0].id)
+			setCity(response.data)
+			let city_id = response.data[0].id;
+		api.getStreet(city_id).then(res => {
+			
+            setStreetId(res.data[0].id)
+            setStreet(res.data)
+        }) .catch(error => {
+            setStreet([])
+        })
+        }) .catch(error => {
+            setCity([])
+        })
+	}
+
+	function handleCityChange(event){
+		setCityId(event.target.value);
+		let city_id = event.target.value;
+		api.getStreet(city_id).then(response => {
+			
+            setStreetId(response.data[0].id)
+            setStreet(response.data)
+        }) .catch(error => {
+            setStreet([])
+        })
+	}
+	function handleStreetChange(event){
+		setStreetId(event.target.value);
+	}
+
+
+	function handleBirthdayChange(event){
+		var date = new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate())
+
+        var birth = new Date(event.target.value);
+        birth.setHours(0);
+        birth.setMinutes(0);
+        birth.setSeconds(0);
+
+        if (birth < date)
+            setBirthday(event.target.value);
+        else
+			//alert("Cannot choose a date before the current date");
+			console.log("here error")
 	}
 	
 
@@ -113,17 +180,21 @@ export  default function SignUp(){
         fd.append('name', name);
         fd.append('email', email);
         fd.append('password', password);
-        fd.append('confirm_password', confirm_password);
+		fd.append('confirm_password', confirm_password);
+		fd.append('birthday', birthday);
+		fd.append('street_id', streetId);
+
+		alert(streetId);
+		
 
         api.register(fd, {headers:{'Accept': "application/json",  'Content-Type': "multipart/form-data"}})
             .then(response => {
                 const options = {Path: "/",Expires: response.data.expires, Secure: true};
                 CookieService.set('access_token', response.data.access, options);
-
-                console.log(response.data);
-                // history.push('/projects');
-                // window.location.reload();
+                history.push('/stuff');
+                window.location.reload();
             }) .catch(error => {
+				console.log('error')
                 setErrors(error.response.data.errors);
             })
     }
@@ -132,7 +203,7 @@ export  default function SignUp(){
         <div >
 		<div className="templatemo-content-widget templatemo-login-widget no-padding "  style={{ height: '240px', overflowY: 'scroll', overflowX: 'hidden' }}>
 
-	        <form className="templatemo-login-form" encType="multipart/form-data" onSubmit={() => handleCreateNewUser()}>
+	        {/* <form className="templatemo-login-form" encType="multipart/form-data" onSubmit={() => handleCreateNewUser()}> */}
 			<div className="form-group">
 	        		<div className="input-group">
 		        		<div className="input-group-addon"><i className="fa fa-user fa-fw"></i></div>	        		
@@ -181,6 +252,19 @@ export  default function SignUp(){
 		          	</div>	
 	        	</div>	
 
+				<div className="form-group">
+	        		<div className="input-group">
+		        		<div className="input-group-addon"><i className="fa fa-birthday-cake fa-fw"></i></div>	        		
+		              	<input type="date" className="form-control" placeholder="birthday" 
+						  name="cpass" required 
+						  onChange={handleBirthdayChange}
+                                        value={birthday}
+						  /> 
+
+						  {renderErrorFor('confirm_password')}          
+		          	</div>	
+	        	</div>	
+
               <div className="form-group">
 	        		<div className="input-group">
 		        		<div className="input-group-addon"><i className="fa fa-key fa-fw"></i></div>	        		
@@ -196,7 +280,7 @@ export  default function SignUp(){
 						  value={countryId} 
 						  required onChange={handleCountryChange}> 
 						  <optgroup label="select country" style={{ color:'gray' }}>
-                            {renderCountry()}
+							{ country.length >0 ? renderCountry() : '' }
 							</optgroup>
                         					
                          </select>						
@@ -207,10 +291,11 @@ export  default function SignUp(){
 	        		<div className="input-group">
 		        		<div className="input-group-addon"><i className="fa fa-building fa-fw"></i></div>	        		
 		              	<select className="form-control"   
-						//   value={countryId} 
-						  required onChange={handleCountryChange}> 
+						value={cityId} 
+						  required onChange={handleCityChange}> 
 						  <optgroup label="select city">
-                            <option>s</option>
+							{ city.length >0 ? renderCity() : '' }
+
 							</optgroup>
                         					
                          </select>						
@@ -221,10 +306,10 @@ export  default function SignUp(){
 	        		<div className="input-group">
 		        		<div className="input-group-addon"><i className="fa fa-street-view fa-fw"></i></div>	        		
 		              	<select className="form-control"  
-						//   value={countryId} 
-						  required onChange={handleCountryChange}> 
+						value={streetId} 
+						  required onChange={handleStreetChange}> 
 						  <optgroup label="select street">
-                            <option>s</option>
+							  { city.length >0 ? renderStreet() : '' }
 							</optgroup>
                         					
                          </select>						
@@ -243,10 +328,12 @@ export  default function SignUp(){
 				      
 				</div>
 				<div className="form-group">
-					<input type="submit" className="templatemo-blue-button width-100" value="Sign Up" name="signup" />
+					<button type="submit" className="templatemo-blue-button width-100"
+					onClick={(event) => handleCreateNewUser(event)} >
+					Sign Up </button>
 				</div>
 				
-	        </form>
+	        {/* </form> */}
 			
 		</div>
 </div>

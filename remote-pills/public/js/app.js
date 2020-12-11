@@ -70375,7 +70375,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _IndexUser__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./IndexUser */ "./resources/js/components/IndexUser.js");
 /* harmony import */ var _ListMedicine__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./ListMedicine */ "./resources/js/components/ListMedicine.js");
 /* harmony import */ var _ShowMedicine__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./ShowMedicine */ "./resources/js/components/ShowMedicine.js");
-/* harmony import */ var _Profile__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./Profile */ "./resources/js/components/Profile.js");
+/* harmony import */ var _Profile__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Profile */ "./resources/js/components/Profile.js");
 /* harmony import */ var _Chat__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./Chat */ "./resources/js/components/Chat.js");
 
 
@@ -70399,12 +70399,12 @@ function App() {
     component: _Home__WEBPACK_IMPORTED_MODULE_3__["default"]
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
     exact: true,
-    path: "/stuff",
+    path: "/cart",
     component: _IndexUser__WEBPACK_IMPORTED_MODULE_4__["default"]
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
     exact: true,
     path: "/profile",
-    component: _Profile__WEBPACK_IMPORTED_MODULE_9__["default"]
+    component: _Profile__WEBPACK_IMPORTED_MODULE_7__["default"]
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
     exact: true,
     path: "/chat",
@@ -71789,6 +71789,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
 /* harmony import */ var _api__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./../../api */ "./resources/js/api.js");
+/* harmony import */ var _Service_CookieService__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Service/CookieService */ "./resources/js/Service/CookieService.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -71803,7 +71804,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
- // import CookieService from '../Service/CookieService';
+
 
 function SignUp() {
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
@@ -71861,10 +71862,15 @@ function SignUp() {
       img = _useState22[0],
       setImg = _useState22[1];
 
-  var _useState23 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
+  var _useState23 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
       _useState24 = _slicedToArray(_useState23, 2),
-      errors = _useState24[0],
-      setErrors = _useState24[1];
+      birthday = _useState24[0],
+      setBirthday = _useState24[1];
+
+  var _useState25 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
+      _useState26 = _slicedToArray(_useState25, 2),
+      errors = _useState26[0],
+      setErrors = _useState26[1];
 
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
     fetchCountry();
@@ -71879,18 +71885,17 @@ function SignUp() {
           setCityId('0');
         } else {
           setCityId(res.data[0].id);
+          setCity(res.data);
+          _api__WEBPACK_IMPORTED_MODULE_2__["default"].getStreet(res.data[0].id).then(function (re) {
+            if (re.data.length == 0) {
+              setStreetId('0');
+            } else {
+              setStreetId(re.data[0].id);
+            }
+
+            setStreet(re.data);
+          });
         }
-
-        setCity(res.data);
-        _api__WEBPACK_IMPORTED_MODULE_2__["default"].getStreet(res.data[0].id).then(function (re) {
-          if (re.data.length == 0) {
-            setStreetId('0');
-          } else {
-            setStreetId(re.data[0].id);
-          }
-
-          setStreet(re.data);
-        });
       });
     })["catch"](function (error) {});
   }
@@ -71904,6 +71909,24 @@ function SignUp() {
           backgroundImage: "url(country/".concat(country.name, ".png)")
         }
       }, country.name);
+    });
+  }
+
+  function renderCity() {
+    return city.map(function (city) {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
+        key: city.id,
+        value: city.id
+      }, city.name);
+    });
+  }
+
+  function renderStreet() {
+    return street.map(function (street) {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
+        key: street.id,
+        value: street.id
+      }, street.name);
     });
   }
 
@@ -71944,6 +71967,45 @@ function SignUp() {
 
   function handleCountryChange(event) {
     setCountryId(event.target.value);
+    var country_id = event.target.value;
+    _api__WEBPACK_IMPORTED_MODULE_2__["default"].getCity(country_id).then(function (response) {
+      setCityId(response.data[0].id);
+      setCity(response.data);
+      var city_id = response.data[0].id;
+      _api__WEBPACK_IMPORTED_MODULE_2__["default"].getStreet(city_id).then(function (res) {
+        setStreetId(res.data[0].id);
+        setStreet(res.data);
+      })["catch"](function (error) {
+        setStreet([]);
+      });
+    })["catch"](function (error) {
+      setCity([]);
+    });
+  }
+
+  function handleCityChange(event) {
+    setCityId(event.target.value);
+    var city_id = event.target.value;
+    _api__WEBPACK_IMPORTED_MODULE_2__["default"].getStreet(city_id).then(function (response) {
+      setStreetId(response.data[0].id);
+      setStreet(response.data);
+    })["catch"](function (error) {
+      setStreet([]);
+    });
+  }
+
+  function handleStreetChange(event) {
+    setStreetId(event.target.value);
+  }
+
+  function handleBirthdayChange(event) {
+    var date = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+    var birth = new Date(event.target.value);
+    birth.setHours(0);
+    birth.setMinutes(0);
+    birth.setSeconds(0);
+    if (birth < date) setBirthday(event.target.value);else //alert("Cannot choose a date before the current date");
+      console.log("here error");
   }
 
   function handleCreateNewUser(event) {
@@ -71954,6 +72016,9 @@ function SignUp() {
     fd.append('email', email);
     fd.append('password', password);
     fd.append('confirm_password', confirm_password);
+    fd.append('birthday', birthday);
+    fd.append('street_id', streetId);
+    alert(streetId);
     _api__WEBPACK_IMPORTED_MODULE_2__["default"].register(fd, {
       headers: {
         'Accept': "application/json",
@@ -71965,10 +72030,11 @@ function SignUp() {
         Expires: response.data.expires,
         Secure: true
       };
-      CookieService.set('access_token', response.data.access, options);
-      console.log(response.data); // history.push('/projects');
-      // window.location.reload();
+      _Service_CookieService__WEBPACK_IMPORTED_MODULE_3__["default"].set('access_token', response.data.access, options);
+      history.push('/stuff');
+      window.location.reload();
     })["catch"](function (error) {
+      console.log('error');
       setErrors(error.response.data.errors);
     });
   }
@@ -71979,12 +72045,6 @@ function SignUp() {
       height: '240px',
       overflowY: 'scroll',
       overflowX: 'hidden'
-    }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
-    className: "templatemo-login-form",
-    encType: "multipart/form-data",
-    onSubmit: function onSubmit() {
-      return handleCreateNewUser();
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "form-group"
@@ -72057,6 +72117,22 @@ function SignUp() {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "input-group-addon"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+    className: "fa fa-birthday-cake fa-fw"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "date",
+    className: "form-control",
+    placeholder: "birthday",
+    name: "cpass",
+    required: true,
+    onChange: handleBirthdayChange,
+    value: birthday
+  }), renderErrorFor('confirm_password'))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "form-group"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "input-group"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "input-group-addon"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
     className: "fa fa-key fa-fw"
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
     type: "password",
@@ -72083,7 +72159,7 @@ function SignUp() {
     style: {
       color: 'gray'
     }
-  }, renderCountry())))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }, country.length > 0 ? renderCountry() : '')))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "form-group"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "input-group"
@@ -72092,13 +72168,13 @@ function SignUp() {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
     className: "fa fa-building fa-fw"
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", {
-    className: "form-control" //   value={countryId} 
-    ,
+    className: "form-control",
+    value: cityId,
     required: true,
-    onChange: handleCountryChange
+    onChange: handleCityChange
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("optgroup", {
     label: "select city"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", null, "s"))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }, city.length > 0 ? renderCity() : '')))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "form-group"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "input-group"
@@ -72107,13 +72183,13 @@ function SignUp() {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
     className: "fa fa-street-view fa-fw"
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", {
-    className: "form-control" //   value={countryId} 
-    ,
+    className: "form-control",
+    value: streetId,
     required: true,
-    onChange: handleCountryChange
+    onChange: handleStreetChange
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("optgroup", {
     label: "select street"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", null, "s"))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }, city.length > 0 ? renderStreet() : '')))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "form-group"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "input-group"
@@ -72131,12 +72207,13 @@ function SignUp() {
     className: "form-group"
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "form-group"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
     type: "submit",
     className: "templatemo-blue-button width-100",
-    value: "Sign Up",
-    name: "signup"
-  })))));
+    onClick: function onClick(event) {
+      return handleCreateNewUser(event);
+    }
+  }, "Sign Up "))));
 }
 
 /***/ }),
@@ -72293,6 +72370,20 @@ function Header() {
     var _React$createElement;
 
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
+      className: "nav navbar-nav "
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+      className: "".concat(page == '/medicine' ? 'active' : '')
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+      href: "medicine"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+      className: "fa fa-money fa-fw"
+    }), "Medicine")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+      className: "".concat(page == '/cart' ? 'active' : '')
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+      href: "cart"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+      className: "fa fa-money fa-fw"
+    }), "Cart"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ul", {
       className: "nav navbar-nav navbar-right"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
       className: "panel-group",

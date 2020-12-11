@@ -110,11 +110,11 @@ class AuthenticationController extends Controller
             'password' => bcrypt($request['password']),
             'image' => $fileNameToStore,
             'birthday' => $request['birthday'],
-            'country_id' => $request['country_id'],
+            'street_id' => $request['street_id'],
           ]);
 
         
-          $user->setRoles(['ROLE_CUSTOMER']);
+          $user->setRoles(['ROLE_NORMALUSER']);
           $user->save();
 
 

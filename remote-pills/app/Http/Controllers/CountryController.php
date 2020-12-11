@@ -19,7 +19,7 @@ class CountryController extends Controller
     public function getAllCity(Country $country){
         $city = $country->city;
 
-        return response()->json($country, 201);
+        return response()->json($city, 201);
     }
 
 

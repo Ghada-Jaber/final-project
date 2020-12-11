@@ -18,7 +18,7 @@ function App(){
             <Route exact path='/' component={Home} />
             <Route exact path='/home' component={Home} />
 
-            <Route exact path='/stuff' component={IndexUser} />
+            <Route exact path='/cart' component={IndexUser} />
             <Route exact path='/profile' component={Profile} />
             <Route exact path='/chat' component={Chat} />
 

@@ -86,6 +86,13 @@ function handleLogout() {
 function auth(){
   return (
     <i> 
+
+<ul className="nav navbar-nav " >
+                      <li className= {`${(page =='/medicine') ? 'active' : '' }`}>
+                      <a href="medicine"><i className="fa fa-money fa-fw"></i>Medicine</a></li>
+                      <li className= {`${(page =='/cart') ? 'active' : '' }`}>
+                      <a href="cart"><i className="fa fa-money fa-fw"></i>Cart</a></li>
+                      </ul>
      
   <ul className="nav navbar-nav navbar-right">
 
