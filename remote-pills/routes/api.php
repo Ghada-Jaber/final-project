@@ -26,17 +26,46 @@ Route::get('/country', [CountryController::class, 'getAllCountry']);
 Route::get('/city/{country}', [CountryController::class, 'getAllCity']);
 Route::get('/street/{city}', [CountryController::class, 'getAllStreet']);
 
+Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_ADMIN])->group(function() {
+
+    Route::get('/users', [AdminController::class, 'getUsers']); 
+    
+
+});
 
 
-Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_NORMALUSER])->group(function() {
+Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_PHARMACY])->group(function() {
 
-    Route::get('/medicine', [PharmacyController::class, 'getMedicine']);
+    Route::get('/pharmacy/medicine/allMedicine', [PharmacyController::class, 'getAllMedicine']); 
+
+
+    Route::get('/pharmacy/medicine', [PharmacyController::class, 'getMedicine']); 
+
+    Route::post('/pharmacy/medicine/getByName', [PharmacyController::class, 'getMedicineByName']); 
+
+    Route::get('/pharmacy/medicine/orderNameAsc', [PharmacyController::class, 'getOrderMedicineByNameAsc']); 
+    
+    Route::get('/pharmacy/medicine/orderNameDesc', [PharmacyController::class, 'getOrderMedicineByNameDesc']);
+
+    Route::get('/pharmacy/medicine/orderPriceAsc', [PharmacyController::class, 'getOrderMedicineByPriceAsc']);
+
+    Route::get('/pharmacy/medicine/orderPriceDesc', [PharmacyController::class, 'getOrderMedicineByPriceDesc']);
+
+    Route::post('/pharmacy/medicine', [PharmacyController::class, 'addMedicine']); 
+
+    Route::get('/pharmacy/medicine/{medicine}', [PharmacyController::class, 'showMedicine']); 
+
+
+    Route::put('/pharmacy/medicine/{medicine}', [PharmacyController::class, 'updateMedicine']); 
+
     
 
 });
 
 
 Route::group(['middleware' => 'auth:api'], function () {
+   
+    Route::put('/user/profile', [AuthenticationController::class, 'setProfile']);
 
     Route::get('/details', [AuthenticationController::class, 'details']);
 

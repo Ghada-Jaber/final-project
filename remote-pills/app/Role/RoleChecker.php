@@ -30,14 +30,7 @@ class RoleChecker
             if (in_array($role, $pharmacyRoles)) {
                 return true;
             }
-        } else if($user->hasRole(UserRole::ROLE_NORMALUSER)) {
-            
-            $normalRoles = UserRole::getAllowedRoles(UserRole::ROLE_NORMALUSER);
-
-            if (in_array($role, $normalRoles)) {
-                return true;
-            }
-        }
+        } 
 
         
 

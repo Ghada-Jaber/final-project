@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState, useEffect} from 'react';
 import {Link, useHistory} from 'react-router-dom';
 import api from '../api';
 import CookieService from '../Service/CookieService';
@@ -6,8 +6,22 @@ import Header from './layouts/Header';
 import Footer from './layouts/Footer';
 
 export  default function IndexUser(){
+  const [currentPage, setCurrentPage] = useState();
 
-   
+  useEffect(() => {
+    setCurrentPage(1)
+
+    
+ },[]);
+
+
+ useEffect(() => {
+
+  setCurrentPage(2)
+
+console.log(currentPage)
+  
+},[currentPage]);
 
     return(
         <div className="templatemo-flex-row">

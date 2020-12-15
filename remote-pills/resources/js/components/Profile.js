@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState, useEffect} from 'react';
 import {Link, useHistory} from 'react-router-dom';
 import api from '../api';
 import Header from './layouts/Header';
@@ -6,6 +6,32 @@ import Footer from './layouts/Footer';
 
 export  default function Profile(){
     const [pharmacy, setPharmacy] = useState([]);
+  const history = useHistory();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const[password, setPassword] = useState('');
+    const [image, setImage] = useState('');
+
+    const [newImg, setNImg] = useState('');
+    const [birthday, setBirthday] = useState('');
+
+    const [id, setId] = useState('');
+
+
+  useEffect(() => {
+    details();
+ },[]);
+
+
+ function details(){
+  api.details().then(response => {
+    setId(response.data.id)
+      setName(response.data.name)
+      setEmail(response.data.email)
+      setName(response.data.name)
+      setImage(response.data.image)
+  })
+}
 
     function functionalert(id){
         if (document.getElementById(id).style.display ==""){
@@ -25,6 +51,26 @@ export  default function Profile(){
    }
    
    }
+
+   function handleImageChange(event){
+    setNImg(event.target.files[0]);
+}
+
+function handleProfileChange (event) {
+  event.preventDefault();
+  const fd = new FormData();
+  fd.append('name', name);
+  fd.append('image', newImg);
+
+
+
+  api.changeProfile(fd, {headers:{'Accept': "application/json",  'Content-Type': "multipart/form-data"}})
+  .then(response => {
+        console.log(response.data)
+      }) .catch(error => {
+  console.log(error)
+      })
+}
    
 
     return(
@@ -45,93 +91,87 @@ export  default function Profile(){
         </div>
       </div>
     </div>
-	<div id="left">
-    <ul >
-    <div className="panel panel-default templatemo-content-widget  no-padding templatemo-overflow-hidden" >
-    <div style={{ float:'right' }}>
-<a > 
-{/* onclick="functionalert($l[0])" */}
-<span className="badge" style={{ backgroundColor:'red' }}>
-name person message you</span></a>
-
-		   </div> 
-
-           <div id="id pharmacy id" style= {{ float:'right' }}>   {/* display:none; */}
-           <div class=" templatemo-content-widget  no-padding templatemo-overflow-hidden "
-           style={{ width:'300px'}} >
-                <div class="panel-heading">
-                name person message you
+    <div className="templatemo-flex-row flex-content-row">
+    <div className="templatemo-content-widget  no-padding templatemo-overflow-hidden"
+    style={{ width:'50%'}}>
+   
+    <div className="templatemo-content-widget  col-2">
+              <i className="fa fa-edit"></i>
+              <div className="media margin-bottom-30">
+                <div className="media-left">
+                  <a href="#">
+                  <img src={`./images/userimage/${image}`} width="100px" height="100px"
+                   className="media-object img-circle templatemo-img-bordered"/>
+                  </a>
                 </div>
-                <div className="msg_container_base" style= {{ backgroundImage:'url(/images/chat.jpg)' }}>
-                <div className="row msg_container " >
-						<img  src="./images/userimage/NoImage.png" width="40" height="40" alt="" />
-                        <div style={{ marginRight: '10px'}}></div>
-                         <div className="messages msg_receive ">
-                                <p>message recieved</p>
-                                <time >time</time>
-                            </div>
-                    </div>
+                <div className="media-body">
+                  <h2 className="media-heading text-uppercase blue-text">{name}</h2>
+                </div>        
+              </div>
+              <div className="table-responsive">
+                <table className="table">
+                  <tbody>
+                    <tr>
+                      <td>email</td>
+                      <td>{email}</td>                    
+                    </tr> 
+                    <tr>
+                      <td>password</td>
+                      <td>22</td>                    
+                    </tr>  
+                    <tr>
+                      <td>birthday</td>
+                      <td>13</td>                    
+                    </tr>  
+                    <tr>
+                      <td>Address</td>
+                      <td>18</td>                    
+                    </tr>                                      
+                  </tbody>
+                </table>
+              </div>             
+            
+            </div>       
+              </div>
 
-                    <div className="row msg_container " >
-					<div className="messages msg_sent ml-auto">
-                                <p>messgae send</p>
-                                <time >time</time>
-                            </div>
-                            <div style={{ marginRight: '10px'}}></div>
-						<img  src="./images/userimage/NoImage.png" width="40" height="40" alt="" />
-                        
-                    </div>
-
-                    <div class="row msg_container">
-                        <div class="col-md-3 col-xs-3">
-						<img  src="./images/userimage/NoImage.png" width="40" height="40" alt="" />
-                        
-                        </div>
-                         <div class="messages msg_receive">
-                                <p>message recieved</p>
-                                <time >time</time>
-                            </div>
-                    </div>
-                </div>
-
-                <div class="panel-footer">
-                    <div class="input-group">
-					<form action='insertclientchat.php' method='post' id='myformidparmacy' >
-                    <div style={{ display:'flex' }}>
-                     <input id="chat" style={{ float:'left' }} type="text" name="message" 
-                     class="form-control input-sm chat_input" 
-                     placeholder="Write your message here..." /> &nbsp;
-						
-                        <button class="btn btn-primary btn-sm" id='insertidpharmacy'>
-                        <i className="fa fa-paper-plane fa-fw"></i></button>
-                        </div>
-					</form>	
-						<p id='resultidpharmacy'></p>
-                    </div>
-                </div>
-                </div>
-           </div>
-
-          <a >
-          {/* onclick="functionalert($l[0])" */}
-				 <div class="media">
-                  <div class="media-left">
-<img class="media-object " src="./images/userimage/NoImage.png" width="90" height="90" alt="" />
-
-                  </div>
-                  <div class="media-body">
-                    <h2 class="media-heading text-uppercase"><font color="cc0000">
-                    name person</font></h2>
-					
-                    <p>location</p>  
-                  </div>        
-                </div>  
-             </a>
-
-     </div>
-
-    </ul>
-    </div>
+              <div className="templatemo-content-widget  no-padding templatemo-overflow-hidden"
+    style={{ width:'50%'}}>
+    <div className="templatemo-content-widget  col-2">
+              <div className="media margin-bottom-30">
+                <div className="media-left">
+                  <input type="file" className="form-control"
+                    onChange={handleImageChange}
+                  />
+                </div>       
+              </div>
+              <div className="table-responsive">
+                <table className="table">
+                  <tbody>
+                  <tr>
+                      <td>name</td>
+                      <td>{name}</td>                    
+                    </tr> 
+                    <tr>
+                      <td>password</td>
+                      <td>22</td>                    
+                    </tr>  
+                    <tr>
+                      <td>birthday</td>
+                      <td>13</td>                    
+                    </tr>  
+                    <tr>
+                      <td>Address</td>
+                      <td>18</td>                    
+                    </tr>                                      
+                  </tbody>
+                </table>
+              </div>   
+              <button type="submit" className="templatemo-blue-button"
+              onClick={(event) => handleProfileChange(event)} >
+              Change</button>          
+            </div>        
+              </div>
+              </div> 
        </div>                       
             </div>      
              <Footer />

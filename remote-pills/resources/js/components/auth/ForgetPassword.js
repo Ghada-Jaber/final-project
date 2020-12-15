@@ -6,10 +6,11 @@ import {Link, useHistory} from 'react-router-dom';
 export  default function ForgetPassword(){
 
     return(
-       
-		<div className="templatemo-content-widget templatemo-login-widget  no-padding ">
+        <div className="logincontainer">
+        <br/>
+		<div className="templatemo-content-widget templatemo-login-widget  white-bg">
 			
-        <form action="<?php echo $_SERVER['PHP_SELF'];?>" className="templatemo-login-form" method="post">
+        <form action="<?php echo $_SERVER['PHP_SELF'];?>" className="templatemo-login-form" >
             <div className="form-group">
                 <div className="input-group">
                     <div className="input-group-addon"><i className="fa fa-user fa-fw"></i></div>	        		
@@ -38,6 +39,8 @@ export  default function ForgetPassword(){
         </form>
         
         
+    </div>
+
     </div>
     
 

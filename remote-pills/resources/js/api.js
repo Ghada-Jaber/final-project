@@ -25,6 +25,9 @@ export default{
     details: () =>
     axios.get(`${BASE_URL}/details`, token),
 
+    changeProfile: (profile) =>
+    axios.put(`${BASE_URL}/user/profile`, profile, token),
+
     logout: () =>
     axios.get(`${BASE_URL}/logout`, token),
 
@@ -37,4 +40,36 @@ export default{
     getStreet: (city_id) =>
     axios.get(`${BASE_URL}/street/${city_id}`),
 
+    getAllMedicine: ()=>
+    axios.get(`${BASE_URL}/pharmacy/medicine/allMedicine`, token),
+
+    getMedicine: () =>
+    axios.get(`${BASE_URL}/pharmacy/medicine`, token),
+
+    getMedicineByName: (name) =>
+    axios.post(`${BASE_URL}/pharmacy/medicine/getByName`, name, token),
+
+    getOrderMedicineByNameAsc: () =>
+    axios.get(`${BASE_URL}/pharmacy/medicine/orderNameAsc`, token),
+
+    getOrderMedicineByNameDesc: () =>
+    axios.get(`${BASE_URL}/pharmacy/medicine/orderNameDesc`, token),
+
+    getOrderMedicineByPriceAsc: () =>
+    axios.get(`${BASE_URL}/pharmacy/medicine/orderPriceAsc`, token),
+
+    getOrderMedicineByPriceDesc: () =>
+    axios.get(`${BASE_URL}/pharmacy/medicine/orderPriceDesc`, token),
+
+    showMedicine: (id) =>
+    axios.get(`${BASE_URL}/pharmacy/medicine/${id}`, token),
+
+    addMedicine: (medicine) =>
+    axios.post(`${BASE_URL}/pharmacy/medicine`, medicine, token),
+
+    editMedicine: (id) =>
+    axios.get(`${BASE_URL}/pharmacy/medicine/${id}`, token),
+
+    updateMedicine: (medicine, id) =>
+    axios.put(`${BASE_URL}/pharmacy/medicine/${id}`, medicine, token),
 }

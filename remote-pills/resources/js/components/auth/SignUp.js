@@ -3,6 +3,7 @@ import {Link, useHistory} from 'react-router-dom';
 import api from './../../api';
 import CookieService from '../../Service/CookieService';
 
+
 export  default function SignUp(){
 
 	const [country, setCountry] = useState([]);
@@ -19,6 +20,8 @@ export  default function SignUp(){
 	const [img,setImg] = useState();
 	const [birthday,setBirthday] = useState('');
 	const [errors, setErrors] = useState([]);
+
+	const history = useHistory();
 
     useEffect(() => {
         fetchCountry();
@@ -87,7 +90,6 @@ export  default function SignUp(){
 
 
 	function handleNameChange (event) {
-		console.log(event.target.value)
         setName(event.target.value)
     }
 
@@ -115,7 +117,7 @@ export  default function SignUp(){
     function renderErrorFor (field) {
         if (hasErrorFor(field)) {
             return (
-                <span style={{ color: 'red' }}> {/*make it in boostrap*/}
+				<span style={{ color: '#D7425C' }}>
                     <strong>{errors[field][0]}</strong>
                 </span>
             )
@@ -183,51 +185,59 @@ export  default function SignUp(){
 		fd.append('confirm_password', confirm_password);
 		fd.append('birthday', birthday);
 		fd.append('street_id', streetId);
-
-		alert(streetId);
 		
+		//console.log(name+" "+email+" "+password+" "+confirm_password+" "+birthday+" "+streetId+" "+img);
 
         api.register(fd, {headers:{'Accept': "application/json",  'Content-Type': "multipart/form-data"}})
             .then(response => {
+				console.log(response.data)
                 const options = {Path: "/",Expires: response.data.expires, Secure: true};
                 CookieService.set('access_token', response.data.access, options);
-                history.push('/stuff');
-                window.location.reload();
+                // history.push('/home');
+				// window.location.reload();
+				console.log('ehre')
             }) .catch(error => {
-				console.log('error')
+				console.log(error)
                 setErrors(error.response.data.errors);
             })
     }
 
     return(
-        <div >
-		<div className="templatemo-content-widget templatemo-login-widget no-padding "  style={{ height: '240px', overflowY: 'scroll', overflowX: 'hidden' }}>
+		<div className="logincontainer">
+        <br/>
+		<div className="templatemo-content-widget templatemo-login-widget  white-bg"
+		 >
+
+		 <div style={{ height: '360px', overflowY: 'scroll', overflowX: 'hidden', padding:'10px' }}>
+
+		
 
 	        {/* <form className="templatemo-login-form" encType="multipart/form-data" onSubmit={() => handleCreateNewUser()}> */}
-			<div className="form-group">
+			<div className={`form-group ${hasErrorFor('name') ? 'has-error' : ''}`} >
 	        		<div className="input-group">
 		        		<div className="input-group-addon"><i className="fa fa-user fa-fw"></i></div>	        		
 		              	<input type="text" className="form-control" placeholder="Full Name" 
-						  name="fname" required 
+						  name="fname" 
 						  onChange={handleNameChange} value={name}
 						  /> 
-						  {renderErrorFor('name')}          
+						          
 		          	</div>	
-					
+					  {renderErrorFor('name')}  
 	        	</div>
-	        	<div className="form-group">
+	        	<div className={`form-group ${hasErrorFor('email') ? 'has-error' : ''}`} >
 	        		<div className="input-group">
 		        		<div className="input-group-addon"><i className="fa fa-user fa-fw"></i></div>	        		
 		              	<input type="email" className="form-control" placeholder="Username" 
 						  name="usern" required 
 						  onChange={handleEmailChange} value={email}
 						  /> 
-						  {renderErrorFor('email')}
+						  
 				{/* <!--	<input type="text" class="form-control" placeholder="Username" name="usern" required pattern="[A-Za-z]{3}" title="Three letter country code"	 > --> */}
 					
 		          	</div>	
+					  {renderErrorFor('email')}
 	        	</div>
-	        	<div className="form-group">
+	        	<div className={`form-group ${hasErrorFor('password') ? 'has-error' : ''}`} >
 	        		<div className="input-group">
 		        		<div className="input-group-addon"><i className="fa fa-key fa-fw"></i></div>	        		
 		              	<input type="password" className="form-control" placeholder="Password"
@@ -235,11 +245,12 @@ export  default function SignUp(){
 						   onChange={handlePasswordChange}
                                         value={password}
 						   />  
-						   {renderErrorFor('password')}         
+						          
 		          	</div>	
+					  {renderErrorFor('password')}  
 	        	</div>	
 
-          <div className="form-group">
+          <div className={`form-group ${hasErrorFor('confirm_password') ? 'has-error' : ''}`} >
 	        		<div className="input-group">
 		        		<div className="input-group-addon"><i className="fa fa-key fa-fw"></i></div>	        		
 		              	<input type="password" className="form-control" placeholder="Re-Password" 
@@ -248,11 +259,12 @@ export  default function SignUp(){
                                         value={confirm_password}
 						  /> 
 
-						  {renderErrorFor('confirm_password')}          
+						           
 		          	</div>	
+					  {renderErrorFor('confirm_password')} 
 	        	</div>	
 
-				<div className="form-group">
+				<div className={`form-group ${hasErrorFor('birthday') ? 'has-error' : ''}`} >
 	        		<div className="input-group">
 		        		<div className="input-group-addon"><i className="fa fa-birthday-cake fa-fw"></i></div>	        		
 		              	<input type="date" className="form-control" placeholder="birthday" 
@@ -261,25 +273,18 @@ export  default function SignUp(){
                                         value={birthday}
 						  /> 
 
-						  {renderErrorFor('confirm_password')}          
+						        
 		          	</div>	
+					  {renderErrorFor('birthday')}   
 	        	</div>	
-
-              <div className="form-group">
-	        		<div className="input-group">
-		        		<div className="input-group-addon"><i className="fa fa-key fa-fw"></i></div>	        		
-		              	<input type="password" className="form-control" placeholder="Secret Sentence" name="secret" required />           
-		          	</div>	
-	        	</div>				
-				
 				
 				<div className="form-group">
 	        		<div className="input-group">
 		        		<div className="input-group-addon"><i className="fa fa-flag fa-fw"></i></div>	        		
-		              	<select className="form-control select" size="4" 
+		              	<select className="form-control select" size="3" 
 						  value={countryId} 
 						  required onChange={handleCountryChange}> 
-						  <optgroup label="select country" style={{ color:'gray' }}>
+						  <optgroup label="select country" >
 							{ country.length >0 ? renderCountry() : '' }
 							</optgroup>
                         					
@@ -324,18 +329,15 @@ export  default function SignUp(){
 						  />           
 		          	</div>	
 	        	</div>				
-	          	<div className="form-group">
-				      
 				</div>
+				<div className="form-group"></div>
 				<div className="form-group">
 					<button type="submit" className="templatemo-blue-button width-100"
 					onClick={(event) => handleCreateNewUser(event)} >
 					Sign Up </button>
 				</div>
-				
-	        {/* </form> */}
-			
 		</div>
+		
 </div>
 
  

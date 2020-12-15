@@ -154,4 +154,9 @@ class User extends Authenticatable
     public function street(){
         return $this->belongsTo(Street::class);
     }
+
+
+    public function medicine(){
+        return $this->belongsToMany(Medicine::class, 'detail', 'pharmacy_id', 'medicine_id');
+    }
 }

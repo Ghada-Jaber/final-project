@@ -2,13 +2,15 @@ import React, { useState } from 'react';
 import {Link, useHistory} from 'react-router-dom';
 import api from '../../api';
 import CookieService from '../../Service/CookieService';
+import logo from '../../../images/logo.png';
 
 export  default function SignIn(){
 	const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [remember, setRemember] = useState(0);
 	const [errors, setErrors] = useState([]);
-	const history = useHistory();
+    const history = useHistory();
+    
 	function hasErrorFor (field) {
         return !!errors[field]
     }
@@ -16,7 +18,7 @@ export  default function SignIn(){
     function renderErrorFor (field) {
         if (hasErrorFor(field)) {
             return (
-                <span style={{ color: 'red' }}>
+                <span style={{ color: '#D7425C' }}>
                     <strong>{errors[field][0]}</strong>
                 </span>
             )
@@ -54,7 +56,7 @@ export  default function SignIn(){
                 const options = {Path: "/",Expires: response.data.expires, Secure: true};
                 CookieService.set('access_token', response.data.access, options);
 
-                history.push('/stuff')
+                history.push('/medicine')
                 window.location.reload();
             })
             .catch(error => {
@@ -67,28 +69,31 @@ export  default function SignIn(){
             })
     }
 
-    return(
-        <div>
-        <div className="templatemo-content-widget templatemo-login-widget no-padding">
+    return( 
+        <div className="logincontainer">
+        
+        <br/>
+        <div className="templatemo-content-widget templatemo-login-widget white-bg">
 	
 	        <form  className="templatemo-login-form" onSubmit={handleLogin}>
-	        	<div className="form-group">
+	        	<div  className={`form-group ${hasErrorFor('email') ? 'has-error' : ''}`} >
 	        		<div className="input-group">
 		        		<div className="input-group-addon"><i className="fa fa-user fa-fw"></i></div>	        		
-		              	<input type="text" className="form-control"  name="username"
+		              	<input type="email" className="form-control" 
 						   placeholder="Username" 
 						   value={email} onChange={handleEmailChange} />
-                                {renderErrorFor('email')}         
+                                   
 		          	</div>	
+                      {renderErrorFor('email')}     
 	        	</div>
-	        	<div className="form-group">
+	        	<div className={`form-group ${hasErrorFor('password') ? 'has-error' : ''}`} >
 	        		<div className="input-group">
 		        		<div className="input-group-addon"><i className="fa fa-key fa-fw"></i></div>	        		
 		              	<input type="password" className="form-control" name="password"
 						   placeholder="Passwrod" value={password}
-                                onChange={handlePasswordChange} />
-                                {renderErrorFor('password')}        
+                                onChange={handlePasswordChange} />   
 		          	</div>	
+                      {renderErrorFor('password')}      
 	        	</div>	          	
 				<div className="form-group">
 				    <div className="checkbox squaredTwo">
@@ -107,8 +112,9 @@ export  default function SignIn(){
 	        </form>
 		</div>
 		<div className="templatemo-content-widget templatemo-login-widget templatemo-register-widget white-bg">
-			<p>Not a registered user yet? <strong><a data-toggle="collapse" data-parent="#accordion" href="#signup" >Sign up now!</a></strong><br />
-			<a data-toggle="collapse" data-parent="#accordion" href="#forpass">Forget Password!</a></p>
+			<p>Not a registered user yet? <strong>
+            <a  href="signup" >Sign up now!</a></strong><br />
+			<a  href="forpass">Forget Password!</a></p>
 		</div>
 
         </div>

@@ -5,6 +5,8 @@ import SignUp from '../auth/SignUp';
 import ForgetPassword from '../auth/ForgetPassword';
 import api from '../../api';
 import CookieService from '../../Service/CookieService';
+import logo from '../../../images/logo.png';
+import no from '../../../../storage/app/uploads/userimage/NoImage.png';
 // import styles from './../../../css/templatemo-style.css';
 // import s2 from './../../../css/font-awesome.min.css';
 // import classNames from 'classnames/bind';
@@ -12,12 +14,17 @@ import CookieService from '../../Service/CookieService';
 //<div className={ cx('widget-item-container') }>
 export default function Header(){
 
+
+
   const [page, setCurrentPage] = useState('');
   const history = useHistory();
   const [name, setName] = useState('');
     const [check, setCheck] = useState('');
     const [image, setImage] = useState('');
     const [greeting, setGreeting] = useState('');
+
+
+    const test = require(`../../../../storage/app/uploads/userimage/NoImage.png`);
 
   useEffect(() => {
     setCurrentPage(window.location.pathname); 
@@ -64,22 +71,40 @@ function handleLogout() {
 
 
   function displayFormSignIn(){
-    
-
-    document.getElementById("signup").classList.remove('show');
-
-    document.getElementById("forpass").classList.remove('show');
+    if (document.getElementById("signin").style.display ==""){
+      document.getElementById("signin").style.display="none";} 
+      else{
+      document.getElementById("signin").style.display = "";
+      if (document.getElementById("signup").style.display==""||document.getElementById("forgetpass").style.display==""){
+        document.getElementById("signup").style.display="none";
+        document.getElementById("forgetpass").style.display="none";
+      }
+      }
   }
 
   function displayFormSignUp(){
-    document.getElementById("signin").classList.remove('show');
-    document.getElementById("forpass").classList.remove('show');
+    if (document.getElementById("signup").style.display ==""){
+      document.getElementById("signup").style.display="none";} 
+      else{
+      document.getElementById("signup").style.display = "";
+      if (document.getElementById("signin").style.display==""||document.getElementById("forgetpass").style.display==""){
+        document.getElementById("signin").style.display="none";
+        document.getElementById("forgetpass").style.display="none";
+      }
+      }
 }
 
 
   function displayFormForgetPass(){
-    document.getElementById("signin").classList.remove('show');
-    document.getElementById("signup").classList.remove('show');
+    if (document.getElementById("forgetpass").style.display ==""){
+      document.getElementById("forgetpass").style.display="none";} 
+      else{
+      document.getElementById("forgetpass").style.display = "";
+      if (document.getElementById("signin").style.display==""||document.getElementById("signup").style.display==""){
+        document.getElementById("signin").style.display="none";
+        document.getElementById("signup").style.display="none";
+      }
+      }
 }
 
 
@@ -87,11 +112,27 @@ function auth(){
   return (
     <i> 
 
-<ul className="nav navbar-nav " >
+<ul className="nav navbar-nav" >
+
+<li className="dropdown">
+                    <a className="dropdown-toggle" data-toggle="dropdown" href="#"><i className="fa fa-bar-chart fa-fw"></i>
+                    Manage Users<span className="caret"></span></a>
+                    <ul className="dropdown-menu">
+                    <li><a href="details.php">Doctor</a></li>
+                    <li><a href="transport.php">Pharmacy</a></li>
+                    <li><a href="transport.php">User</a></li>
+                       
+                     
+                    </ul>
+                  </li>
+
                       <li className= {`${(page =='/medicine') ? 'active' : '' }`}>
                       <a href="medicine"><i className="fa fa-money fa-fw"></i>Medicine</a></li>
                       <li className= {`${(page =='/cart') ? 'active' : '' }`}>
                       <a href="cart"><i className="fa fa-money fa-fw"></i>Cart</a></li>
+
+                      <li className= {`${(page =='/map') ? 'active' : '' }`}>
+                      <a href="map"><i className="fa fa-map-marker fa-fw"></i>Map</a></li>
                       </ul>
      
   <ul className="nav navbar-nav navbar-right">
@@ -99,7 +140,9 @@ function auth(){
       <div className="panel-group" id="accordion">
 			  <div className="panel panel-default  offset-0" style={{ padding: '5px'}} >
 
-<img src={`./images/userimage/${image}`} width="50px" height="50px"/> &nbsp;
+          
+<img src={test} width="50px" height="50px" className="img"/> &nbsp;
+{/* class="media-object img-circle templatemo-img-bordered" */}
 {greeting}
         <li className="nav-item dropdown">
                     <a id="navbarDropdown" className="nav-link dropdown-toggle" href="#"
@@ -153,7 +196,7 @@ function auth(){
 function guest(){
 return(
   <i>
-     <ul className="nav navbar-nav " >
+     <ul className="nav navbar-nav" >
                       <li className= {`${(page =='/home' || page =='/') ? 'active' : '' }`}>
                       <a href="/home" ><i className="fa fa-home fa-fw"></i>Home</a></li>
                        <li className="dropdown">
@@ -168,8 +211,6 @@ return(
                      
                     </ul>
                   </li>
-                      <li className= {`${(page =='/medicine') ? 'active' : '' }`}>
-                      <a href="medicine"><i className="fa fa-money fa-fw"></i>Price List</a></li>
                    
                       <li><a href="service"><i className="fa fa-server fa-fw"></i>Service</a></li>
                        <li className="dropdown">
@@ -184,38 +225,23 @@ return(
                  
                       
                 </ul>
-                <ul className="nav navbar-nav navbar-right">	  
-                    <li><a data-toggle="collapse" data-parent="#accordion" onClick={() => displayFormSignIn()} href="#signin"><i className="fa fa-sign-in fa-fw"></i>Sign in</a></li>
-                     <li><a data-toggle="collapse" data-parent="#accordion" onClick={() => displayFormSignUp()} href="#signup"><i className="fa fa-eject fa-fw"></i>Sign Up</a></li>
-                      <li><a data-toggle="collapse" data-parent="#accordion" onClick={() => displayFormForgetPass()} href="#forpass"><i className="fa fa-key fa-fw"></i>Forget Password</a></li> 
-                
-                <div className="panel-group" id="accordion">
-                        <div className="panel panel-default  templatemo-content-widget  no-padding templatemo-overflow-hidden offset-0" style={{ float: 'right' }}>
-                     <div id="signin" className="panel-collapse collapse">
-              <div className="panel-body">
-              <SignIn />
-              </div>
-          </div>
-                     <div id="signup" className="panel-collapse collapse">
-              <div className="panel-body">
-              <SignUp />
-              </div>
-          </div>
-                     <div id="forpass" className="panel-collapse collapse">
-              <div className="panel-body">
-                <ForgetPassword />
-              </div>
-              </div>
-              </div>
-              </div>
+                <ul className="nav navbar-nav navbar-right">	
+                <li>
+                <a onClick={() => displayFormSignIn()}>
+                <i className="fa fa-sign-in fa-fw"></i>Sign in</a></li>
+                <li>
+                <a  onClick={() => displayFormSignUp()} >
+                <i className="fa fa-eject fa-fw"></i>Sign Up</a></li>
               </ul>
+
+              
   </i>
 )
 }
 
         return (
-            
-            <nav className="navbar navbar-inverse navbar-fixed-top">
+            <i >
+            <nav className="navbar navbar-inverse navbar-fixed-top" >
             <div className="container-fluid">
               <div className="navbar-header  " style={{ marginRight:'5px' }}>
                 <button type="button" className="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
@@ -224,7 +250,7 @@ return(
                   <span className="icon-bar"></span>                        
                 </button>
                     <h1>
-                      <img src="images/logo.png" width="50" height="50" alt="" style={{ marginRight:'5px' }}/>
+                      <img src={logo} width="50" height="50" alt="" style={{ marginRight:'5px' }}/>
                       <b>
                         <font color="#2375b8">remote pills</font>
                       </b>
@@ -232,7 +258,6 @@ return(
                     <font color="white" style={{ position:'absolute' }} >with us you are always comfortable</font>
                     <br/>
               </div>
-              {/* className in this div ili ta7et ma ilu da3i */}
               <div className="collapse navbar-collapse" id="myNavbar">
                
 
@@ -243,8 +268,27 @@ return(
               
             </div>
           </nav>
+
+          <div id="signin" style={{ display: 'none'}}>
+          <a href="#" onClick={() => displayFormSignIn()} className="closecss">
+        &times;</a>
+                <SignIn/>
+              </div>
+
+              <div id="signup" style={{ display: 'none'}}>
+              <a href="#" onClick={() => displayFormSignUp()} className="closecss">
+        &times;</a>
+                <SignUp/>
+              </div>
+
+              <div id="forgetpass" style={{ display: 'none'}}>
+              <a href="#" onClick={() => displayFormForgetPass()} className="closecss">
+        &times;</a>
+                <ForgetPassword/>
+              </div>
           
-          
+          <div style={{ marginTop:'120px' }}> </div>
+          </i>
 
         )
 

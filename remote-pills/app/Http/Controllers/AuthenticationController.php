@@ -74,29 +74,36 @@ class AuthenticationController extends Controller
             'email' => 'required|string|email', //|exists:users
             'password' => 'required',
             'confirm_password' => 'required|same:password',
-            'image' => 'required'
+            'birthday' => 'required',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg'
         ]);
+
+       
 
         try {
 
         if($request->hasFile('image')){
-            $img = $request->file('image');
-            $fileNameWithExt = $img->getClientOriginalName(); // all file name with extension
+            // $img = $request->file('image');
+            // $fileNameWithExt = $img->getClientOriginalName(); // all file name with extension
      
-            $fileName = pathinfo($fileNameWithExt,PATHINFO_FILENAME); //only file name without extension
-            $fileExt = $img->getClientOriginalExtension(); // file extension
-            $fileNameToStore = $fileName.'_'. time() .'.'.$fileExt; // a timing to diffrent between image 
+            // $fileName = pathinfo($fileNameWithExt,PATHINFO_FILENAME); //only file name without extension
+            // $fileExt = $img->getClientOriginalExtension(); // file extension
+            // $fileNameToStore = $fileName.'_'. time() .'.'.$fileExt; // a timing to diffrent between image 
 
-             if(!File::exists(public_path()."/images/userimage")) {
+            //  if(!File::exists(public_path()."/images/userimage")) {
 
-                File::makeDirectory(public_path()."/images/userimage");
+            //     File::makeDirectory(public_path()."/images/userimage");
                 
-             }
+            //  }
              
-             $img->move(public_path().'/images/userimage/', $fileNameToStore);
+            //  $img->move(public_path().'/images/userimage/', $fileNameToStore);
+             //$img->move('uploads/', $fileNameToStore);
+
+             $image = $request['image']->store('uploads/userimage');
+             
 
         }else{
-            $fileNameToStore = "NoImage.jpg";
+            $image = "uploads/userimage/NoImage.png";
         }
 
         
@@ -108,7 +115,7 @@ class AuthenticationController extends Controller
             'name' => $request['name'],
             'email' => $request['email'],
             'password' => bcrypt($request['password']),
-            'image' => $fileNameToStore,
+            'image' => $image,
             'birthday' => $request['birthday'],
             'street_id' => $request['street_id'],
           ]);
@@ -149,5 +156,43 @@ class AuthenticationController extends Controller
     public function details(){
         $user = auth()->user();
         return response()->json($user, 200);
+    }
+
+    public function setProfile(Request $request){
+
+        //return response()->json(['test' => $request->hasFile('image')],200);
+       
+        if($request->hasFile('image')){
+            
+            $img = $request->file('image');
+            $fileNameWithExt = $img->getClientOriginalName(); // all file name with extension
+     
+            $fileName = pathinfo($fileNameWithExt,PATHINFO_FILENAME); //only file name without extension
+            $fileExt = $img->getClientOriginalExtension(); // file extension
+            $fileNameToStore = $fileName.'_'. time() .'.'.$fileExt; // a timing to diffrent between image 
+
+             if(!File::exists(public_path()."/images/userimage")) {
+
+                File::makeDirectory(public_path()."/images/userimage");
+                
+             }
+
+             return response()->json(['test' => $fileNameToStore],200);
+             
+             $img->move(public_path().'/images/userimage/', $fileNameToStore);
+
+        }else{
+            
+            $fileNameToStore = "NoImage.png";
+        }
+
+        $u = Auth::user();
+        $user = User::find($u->id);
+        $user->image = $fileNameToStore;
+        $user->save();
+
+
+        return response()->json([
+            'access' => 'change'],200);
     }
 }

@@ -46,7 +46,7 @@ class UserRole
             static::ROLE_ADMIN =>'Admin',
             static::ROLE_PHARMACY => 'Pharmacy',
             static::ROLE_DOCTOR => 'Doctor',
-            static::ROLE_NORMALUSER => 'Patient/Customer',
+            static::ROLE_NORMALUSER => 'NormalUser',
         ];
     }
 }

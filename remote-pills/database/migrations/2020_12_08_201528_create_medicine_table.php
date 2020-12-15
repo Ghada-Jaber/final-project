@@ -16,6 +16,7 @@ class CreateMedicineTable extends Migration
         Schema::create('medicine', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->text('image');
             $table->boolean('prescription');
             $table->timestamps();
         });

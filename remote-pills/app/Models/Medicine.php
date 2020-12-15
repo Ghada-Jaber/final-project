@@ -31,12 +31,12 @@ class Medicine extends Model
 
 
     public function detail(){
-        return $this->hasMany(Reservation::class);
+        return $this->hasMany(Detail::class);
     }
 
 
     public function prescription(){
-        return $this->hasMany(Reservation::class);//yimken hasOne
+        return $this->hasMany(Prescription::class);//yimken hasOne
     }
 
     public function medicineSymtom(){
@@ -45,6 +45,11 @@ class Medicine extends Model
 
     public function reservation(){
         return $this->hasMany(Reservation::class);
+    }
+
+
+    public function pharmacy(){
+        return $this->belongsToMany(User::class);
     }
    
 }
