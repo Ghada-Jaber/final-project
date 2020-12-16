@@ -144,11 +144,11 @@ class User extends Authenticatable
     }
 
     public function patient(){
-        return $this->hasMany(Pateint::class);
+        return $this->hasMany(Patient::class);
     }
 
     public function doctor(){
-        return $this->hasMany(Doctor::class);
+        return $this->hasMany(Patient::class);
     }
 
     public function street(){

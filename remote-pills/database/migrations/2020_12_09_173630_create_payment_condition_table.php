@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateReservationTable extends Migration
+class CreatePaymentConditionTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateReservationTable extends Migration
      */
     public function up()
     {
-        Schema::create('reservation', function (Blueprint $table) {
+        Schema::create('payment_condition', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_id')->constrained('customer')->onDelete('cascade');
-            $table->foreignId('medicine_id')->constrained('medicine')->onDelete('cascade');
+            $table->foreignId('buy_id')->constrained('buy')->onDelete('cascade');
+            $table->foreignId('payment_type_id')->constrained('payment_type')->onDelete('cascade');
             $table->timestamps();
+            $table->unique(['buy_id', 'payment_type_id']);
         });
     }
 
@@ -28,6 +29,6 @@ class CreateReservationTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('reservation');
+        Schema::dropIfExists('payment_condition');
     }
 }

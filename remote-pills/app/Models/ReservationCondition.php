@@ -26,21 +26,16 @@ class ReservationCondition extends Model
      * @var array
      */
     protected $fillable = [
-                  'reservation_id',
-                  'reservation_type_id',
-                  'payment_id'
+                  'buy_id',
+                  'reservation_type_id'
               ];
 
-    public function reservation(){
-     return $this->belongsTo(Reservation::class);
+    public function buy(){
+     return $this->belongsTo(Buy::class);
     }
 
     public function reservationType(){
         return $this->belongsTo(ReservationType::class);
-    }
-
-    public function payment(){
-        return $this->belongsTo(Payment::class);
     }
 
    

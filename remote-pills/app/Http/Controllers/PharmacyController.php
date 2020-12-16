@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 class PharmacyController extends Controller
 {
     public function getAllMedicine(){
-        $medicine = Medicine::latest()->get();
+        $medicine = Medicine::get();
         return response()->json($medicine,200);
     }
 

@@ -21,6 +21,9 @@ class CreateMedicineTable extends Migration
             $table->text('description');
             $table->text('ingredient');
             $table->boolean('prescription');
+            $table->integer('tablet');
+            $table->integer('dosage');
+            $table->string('dosage_unit');
             $table->timestamps();
         });
     }

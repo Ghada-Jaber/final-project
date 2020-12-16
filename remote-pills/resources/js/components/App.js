@@ -5,6 +5,8 @@ import {BrowserRouter, Route, Switch, HashRouter} from 'react-router-dom';
 import Home from './Home';
 
 import Pharmacy from './Admin/Pharmacy';
+import ManageMedicine from './Admin/ManageMedicine';
+
 
 import Buy from './user/Buy';
 import IndexUser from './user/IndexUser';
@@ -42,12 +44,12 @@ function App(){
             <Route exact path='/profile' component={Profile} />
             <Route exact path='/chat' component={Chat} />
 
+            <Route exact path='/manageMedicine' component={ManageMedicine} />
+
             <Route exact path='/managePharmacy' component={Pharmacy} />
 
 
             <Route exact path='/medicine' component={ListMedicine} />
-            <Route exact path='/medicine/add' component={AddMedicine} />
-            <Route exact path='/medicine/show/:id' component={ShowMedicine} />
             {/* <Route exact path='/map' component={Map} /> */}
 
             

@@ -26,7 +26,14 @@ class Medicine extends Model
      */
     protected $fillable = [
                   'name',
-                  'prescription'
+                  'image',
+                  'format',
+                  'description',
+                  'ingredient',
+                  'prescription',
+                  'tablet',
+                  'dosage',
+                  'dosage_unit'
               ];
 
 
@@ -45,11 +52,6 @@ class Medicine extends Model
 
     public function reservation(){
         return $this->hasMany(Reservation::class);
-    }
-
-
-    public function tablet(){
-        return $this->belongsToMany(Tablet::class);
     }
 
 

@@ -15,10 +15,10 @@ class CreateReservationConditionTable extends Migration
     {
         Schema::create('reservation_condition', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('reservation_id')->constrained('reservation')->onDelete('cascade');
+            $table->foreignId('buy_id')->constrained('buy')->onDelete('cascade');
             $table->foreignId('reservation_type_id')->constrained('reservation_type')->onDelete('cascade');
-            $table->foreignId('payment_id')->constrained('payment')->onDelete('cascade');
             $table->timestamps();
+            $table->unique(['buy_id', 'reservation_type_id']);
         });
     }
 

@@ -36,9 +36,6 @@ class Customer extends Model
         return $this->hasMany(Buy::class);
     }
 
-    public function reservation(){
-        return $this->hasMany(Reservation::class);
-    }
 
     public function pharmacy(){
     return $this->belongsTo(User::class);

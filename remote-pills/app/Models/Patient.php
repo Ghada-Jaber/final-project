@@ -40,6 +40,6 @@ class Patient extends Model
 
 
     public function prescription(){
-        return $this->hasMany(Prescription::class);
+        return $this->hasMany(Prescription::class); //hasone yimken
     }
 }

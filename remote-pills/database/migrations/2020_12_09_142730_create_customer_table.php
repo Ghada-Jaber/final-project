@@ -17,9 +17,9 @@ class CreateCustomerTable extends Migration
             $table->id();
             $table->foreignId('pharmacy_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('customer_id')->constrained('users')->onDelete('cascade');
-            
-          
             $table->timestamps();
+
+            $table->unique(['pharmacy_id', 'customer_id']);
         });
     }
 

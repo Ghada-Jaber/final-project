@@ -14,8 +14,7 @@ import no from '../../../../storage/app/uploads/userimage/NoImage.png';
 //<div className={ cx('widget-item-container') }>
 export default function Header(){
 
-
-  const [check, setCheck] = useState('');
+  const cookie = CookieService.get('access_token');
   const [page, setCurrentPage] = useState('');
   const history = useHistory();
   const [name, setName] = useState('');
@@ -48,13 +47,11 @@ export default function Header(){
 
  function details(){
   api.details().then(response => {
-    setCheck(true)
       setName(response.data.name)
       setImage(response.data.image)
       setRole(response.data.roles[0])
       
   }).catch(error => {
-      setCheck(false)
      history.push('/');
   })
 }
@@ -123,6 +120,8 @@ return(
                      
                     </ul>
                   </li>
+                  <li className= {`${(page =='/admin') ? 'active' : '' }`}>
+  <a href="manageMedicine"><i className="fa fa-money fa-fw"></i>manage medicine</a></li>
                   </ul>
 )
 }
@@ -168,7 +167,7 @@ function auth(){
 			  <div className="panel panel-default  offset-0" style={{ padding: '5px'}} >
 
           
-<img src={test} width="50px" height="50px" className="img"/> &nbsp;
+<img src={'../../../../storage/app/uploads/userimage/NoImage.png'} width="50px" height="50px" className="img"/> &nbsp;
 {/* class="media-object img-circle templatemo-img-bordered" */}
 {greeting}
         <li className="nav-item dropdown">
@@ -254,10 +253,10 @@ return(
                 </ul>
                 <ul className="nav navbar-nav navbar-right">	
                 <li>
-                <a onClick={() => displayFormSignIn()}>
+                <a href="#" onClick={() => displayFormSignIn()}>
                 <i className="fa fa-sign-in fa-fw"></i>Sign in</a></li>
                 <li>
-                <a  onClick={() => displayFormSignUp()} >
+                <a href="#" onClick={() => displayFormSignUp()} >
                 <i className="fa fa-eject fa-fw"></i>Sign Up</a></li>
               </ul>
 
@@ -288,7 +287,7 @@ return(
               <div className="collapse navbar-collapse" id="myNavbar">
                
 
-              { check==true ? auth() : guest() }
+              { cookie ? auth() : guest() }
                 
                </div>
                

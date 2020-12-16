@@ -25,12 +25,12 @@ class PaymentCondition extends Model
      * @var array
      */
     protected $fillable = [
-                  'payment_id',
+                  'buy_id',
                   'payment_type_id'
               ];
 
-    public function payment(){
-     return $this->belongsTo(Payment::class);
+    public function buy(){
+     return $this->belongsTo(Buy::class);
     }
 
     public function paymentType(){

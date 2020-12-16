@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\PharmacyController;
 use App\Http\Controllers\CountryController;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,7 +30,11 @@ Route::get('/street/{city}', [CountryController::class, 'getAllStreet']);
 Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_ADMIN])->group(function() {
 
     Route::get('/users', [AdminController::class, 'getUsers']); 
-    
+
+    Route::post('/admin/medicine/addInfo', [AdminController::class, 'addMedicine']); 
+
+    Route::get('/admin/medicine/getInfo/{medicine}', [AdminController::class, 'getInfoMedicine']); 
+  
 
 });
 
