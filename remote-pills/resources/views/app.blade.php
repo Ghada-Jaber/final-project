@@ -15,10 +15,10 @@
     <link rel="stylesheet" 
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">   
 
-         <!-- <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBIwzALxUPNbatRBj3Xi1Uhp0fFzwWNBkE&callback=initMap&libraries=&v=weekly"
+         <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCU9C3VFYXgtk5IjAHlcK8Ayg7g0Ny4ezc&callback=initMap&libraries=places&v=weekly"
       defer
-    ></script> -->
+    ></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>

@@ -6,13 +6,16 @@ import Home from './Home';
 
 import Pharmacy from './Admin/Pharmacy';
 
-import IndexUser from './IndexUser';
+import Buy from './user/Buy';
+import IndexUser from './user/IndexUser';
+import Map from './user/Map';
+
 import ListMedicine from './pharmacy/ListMedicine';
 import AddMedicine from './pharmacy/AddMedicine';
 import ShowMedicine from './pharmacy/ShowMedicine';
 import Profile from './Profile';
 import Chat from './Chat';
-import Map from './Map';
+
 
 import SignIn from './auth/SignIn';
 import SignUp from './auth/SignUp';
@@ -33,6 +36,9 @@ function App(){
             
 
             <Route exact path='/cart' component={IndexUser} />
+            <Route exact path='/buy' component={Buy} />
+            <Route exact path='/map' component={Map} />
+
             <Route exact path='/profile' component={Profile} />
             <Route exact path='/chat' component={Chat} />
 

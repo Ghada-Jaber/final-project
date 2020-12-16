@@ -49,10 +49,15 @@ export  default function ShowMedicine(props){
           </div>
           <div className="col-md-6">
             <h2 className="text-black">{name} Tablets, 200mg</h2>
-            <p>description.</p>
-            
 
-            <p><del>$95.00</del>  <strong className="text-primary h4">{detail.price}</strong></p>
+            <h3>Description</h3>
+            <p>description.</p>
+
+            <h3>Dosage</h3>
+            <p>dosage.</p>
+
+            <h3>Ingredient</h3>
+            <p>ingredient.</p>
 
             <div className="mt-5">
             
@@ -76,6 +81,12 @@ export  default function ShowMedicine(props){
                         <th scope="row">Quantity</th>
                         <td>{detail.quantity}</td>
                       </tr>
+
+                      <tr>
+                        <th scope="row">Price</th>
+                        <td>{detail.price}</td>
+                      </tr>
+
                       <tr>
                         <th scope="row">MFD</th>
                         <td>{detail.MFD}</td>

@@ -128,6 +128,10 @@ function handleAddMedicine(event) {
   api.addMedicine(medicine)
       .then(response => {
         alert("add success");
+        setQuantity('');
+        setPrice('');
+        setExp('');
+        setMfd('');
       })
       .catch(error => {
         setErrors(error.response.data.errors)

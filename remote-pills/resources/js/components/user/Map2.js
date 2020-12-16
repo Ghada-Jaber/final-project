@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from 'react';
 import {Link, useHistory} from 'react-router-dom';
-import api from '../api';
-import Header from './layouts/Header';
-import Footer from './layouts/Footer';
+import api from '../../api';
+import Header from './../layouts/Header';
+import Footer from './../layouts/Footer';
 
 export  default function Map(){
 
@@ -13,7 +13,7 @@ export  default function Map(){
 
     function initMap() {
         // The location of Uluru
-        const uluru = { lat: -25.344, lng: 131.036 };
+        const uluru = { lat: 33.888630, lng: 35.495480 };
         // The map, centered at Uluru
         const map = new google.maps.Map(document.getElementById("map"), {
           zoom: 4,
@@ -34,7 +34,9 @@ export  default function Map(){
          <Header />
           <div className="templatemo-flex-row flex-content-row " style={{ marginTop:'100px' }}>
               <div className="col-1">	
-              <div id="map"></div>
+              <div className="container">
+              <div id="map" ></div>
+              </div>
        </div>                       
             </div>      
              <Footer />

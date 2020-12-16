@@ -141,7 +141,7 @@ function renderMedicine(){
         <img src={`./images/medicine/${medicine.image}`} width="350px" height="200px" alt="Image"/>
         </a>
         <h3 className="text-dark"><a href="shop-single.html">{medicine.name}</a></h3>
-        <p className="price"><del>95.00</del> &mdash; 
+        <p className="price">
         {medicine.price}
         
         </p>

@@ -155,6 +155,10 @@ class AuthenticationController extends Controller
 
     public function details(){
         $user = auth()->user();
+        $street = $user->street->name;
+        $city = $user->street->city->name;
+        $country = $user->street->city->country->name;
+        $user->address = $street." , ".$city." , ".$country;
         return response()->json($user, 200);
     }
 

@@ -11,6 +11,7 @@ export  default function Profile(){
   const [email, setEmail] = useState('');
   const[password, setPassword] = useState('');
     const [image, setImage] = useState('');
+    const [address, setAddress] = useState('');
 
     const [newImg, setNImg] = useState('');
     const [birthday, setBirthday] = useState('');
@@ -28,8 +29,9 @@ export  default function Profile(){
     setId(response.data.id)
       setName(response.data.name)
       setEmail(response.data.email)
-      setName(response.data.name)
+      setBirthday(response.data.birthday)
       setImage(response.data.image)
+      setAddress(response.data.address)
   })
 }
 
@@ -117,15 +119,15 @@ function handleProfileChange (event) {
                     </tr> 
                     <tr>
                       <td>password</td>
-                      <td>22</td>                    
+                      <td>******</td>                    
                     </tr>  
                     <tr>
                       <td>birthday</td>
-                      <td>13</td>                    
+                      <td>{birthday}</td>                    
                     </tr>  
                     <tr>
                       <td>Address</td>
-                      <td>18</td>                    
+                      <td>{address}</td>                    
                     </tr>                                      
                   </tbody>
                 </table>

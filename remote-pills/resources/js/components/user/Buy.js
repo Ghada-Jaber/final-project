@@ -1,11 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import {Link, useHistory} from 'react-router-dom';
-import api from '../api';
-import CookieService from '../Service/CookieService';
-import Header from './layouts/Header';
-import Footer from './layouts/Footer';
+import api from '../../api';
+import Header from '../layouts/Header';
+import Footer from '../layouts/Footer';
 
-export  default function IndexUser(){
+export  default function Buy(){
   const [currentPage, setCurrentPage] = useState();
 
   useEffect(() => {

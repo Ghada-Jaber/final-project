@@ -48,6 +48,11 @@ class Medicine extends Model
     }
 
 
+    public function tablet(){
+        return $this->belongsToMany(Tablet::class);
+    }
+
+
     public function pharmacy(){
         return $this->belongsToMany(User::class);
     }

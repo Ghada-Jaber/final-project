@@ -206,6 +206,10 @@ footer { padding: 15px; }
 	padding-left: 30px;
 }
 
+h3{
+	color:#2375b8 !important;
+}
+
 .search{
 	color:white !important;
 		background-color: #18191b !important;

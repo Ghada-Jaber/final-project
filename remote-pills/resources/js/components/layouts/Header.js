@@ -15,11 +15,11 @@ import no from '../../../../storage/app/uploads/userimage/NoImage.png';
 export default function Header(){
 
 
-
+  const [check, setCheck] = useState('');
   const [page, setCurrentPage] = useState('');
   const history = useHistory();
   const [name, setName] = useState('');
-    const [check, setCheck] = useState('');
+  const [role, setRole] = useState('');
     const [image, setImage] = useState('');
     const [greeting, setGreeting] = useState('');
 
@@ -48,9 +48,11 @@ export default function Header(){
 
  function details(){
   api.details().then(response => {
+    setCheck(true)
       setName(response.data.name)
       setImage(response.data.image)
-      setCheck(true)
+      setRole(response.data.roles[0])
+      
   }).catch(error => {
       setCheck(false)
      history.push('/');
@@ -107,14 +109,10 @@ function handleLogout() {
       }
 }
 
-
-function auth(){
-  return (
-    <i> 
-
-<ul className="nav navbar-nav" >
-
-<li className="dropdown">
+function admin(){
+return(
+  <ul className="nav navbar-nav" >
+  <li className="dropdown">
                     <a className="dropdown-toggle" data-toggle="dropdown" href="#"><i className="fa fa-bar-chart fa-fw"></i>
                     Manage Users<span className="caret"></span></a>
                     <ul className="dropdown-menu">
@@ -125,15 +123,44 @@ function auth(){
                      
                     </ul>
                   </li>
+                  </ul>
+)
+}
 
-                      <li className= {`${(page =='/medicine') ? 'active' : '' }`}>
-                      <a href="medicine"><i className="fa fa-money fa-fw"></i>Medicine</a></li>
-                      <li className= {`${(page =='/cart') ? 'active' : '' }`}>
+function pharmacy(){
+return(
+  <ul className="nav navbar-nav" >
+  <li className= {`${(page =='/medicine') ? 'active' : '' }`}>
+  <a href="medicine"><i className="fa fa-money fa-fw"></i>Medicine</a></li>
+  </ul>
+)
+}
+
+function user(){
+return(
+  <ul className="nav navbar-nav" >
+  <li className= {`${(page =='/buy') ? 'active' : '' }`}>
+                      <a href="buy"><i className="fa fa-money fa-fw"></i>Buy</a></li>
+  <li className= {`${(page =='/cart') ? 'active' : '' }`}>
                       <a href="cart"><i className="fa fa-money fa-fw"></i>Cart</a></li>
 
                       <li className= {`${(page =='/map') ? 'active' : '' }`}>
                       <a href="map"><i className="fa fa-map-marker fa-fw"></i>Map</a></li>
                       </ul>
+)
+}
+
+function auth(){
+  return (
+    <i> 
+
+{role == 'ROLE_ADMIN' ? admin() : ''}
+{role == 'ROLE_PHARMACY' ? pharmacy() : ''}
+
+{role == 'ROLE_NORMALUSER' ? user() : ''}
+                    
+                      
+                     
      
   <ul className="nav navbar-nav navbar-right">
 
