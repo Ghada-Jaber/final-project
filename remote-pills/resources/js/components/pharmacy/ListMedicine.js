@@ -97,6 +97,7 @@ function getQueryStringValue(key) {
 
 function handleReferenceChange(event){
   var reference = event.target.value;
+  alert(reference)
   if(reference == 'getNameOrderAsc'){
     api.getOrderMedicineByNameAsc().then(response => {
       setMedicine(response.data);
@@ -135,17 +136,18 @@ function handleReferenceChange(event){
 function renderMedicine(){
   return medicine.map(medicine => {
       return(
-        <div className="col-sm-6 col-lg-4 text-center item mb-4" key={medicine.id}>
-        
-        <a href={"/medicine/show/"+medicine.id} > 
+        <a href={"/medicine/show/"+medicine.id} key={medicine.id}> 
+        <div className="colorhover templatemo-content-widget no-padding white-bg col-sm-6 col-lg-4 text-center item mb-4" >
+        <br/>
         <img src={`./images/medicine/${medicine.image}`} width="350px" height="200px" alt="Image"/>
-        </a>
-        <h3 className="text-dark"><a href="shop-single.html">{medicine.name}</a></h3>
+       
+        <h3 className="text-dark">{medicine.name}</h3>
         <p className="price">
-        {medicine.price}
+        <i className="fa fa-money fa-fw"></i> {medicine.price}
         
         </p>
       </div>
+      </a>
         )
       })
   }
@@ -195,21 +197,22 @@ function renderMedicine(){
 
         <div style={{ marginRight:'10px' }}>
           <a className='btn btn-primary' title='Add Medicine' href='/medicine/add'>
-                    Add
+          <i class="fa fa-plus"></i>
                 </a> 
                 </div>  
 
-        <div className="input-group" style={{ marginRight:'10px' }}>
-		        		<div className="input-group-addon"><i className="fa fa-search fa-fw"></i></div>	        		
-		              	<input type="text" className="search form-control"
+       
+        <div className="search" style={{ marginRight:'10px' }}>   		
+		              	<input type="text" className="form-control"
 						   placeholder="Serach"  
                onChange={filterFunction}
                />   
-		          	</div>
+               </div>
+                
             <select className="form-control" style={{ width: '200px'}}
             onChange={handleReferenceChange}>
             <optgroup label="Filter by Reference" >
-              <option value="getAll">All Medicine</option>
+              <option value="getAll">Choose</option>
               <option value="getNameOrderAsc">Name, A to Z</option>
               <option value="getNameOrderDesc">Name, Z to A</option>
               {/* <div className="dropdown-divider"></div> */}

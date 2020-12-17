@@ -33,4 +33,9 @@ class Symtom extends Model
         return $this->hasMany(MedicineSymtom::class);
     }
 
+
+    public function symtom(){
+        return $this->belongsToMany(Medicine::class);
+    }
+
 }

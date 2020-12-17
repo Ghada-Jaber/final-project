@@ -15,5 +15,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::view('{path?}', 'app');
 
+Route::view('manageMedicine/show/{id}', 'app');
+Route::view('manageMedicine/edit/{id}', 'app');
+
 Route::view('medicine/add', 'app');
 Route::view('medicine/show/{id}', 'app');
+
+

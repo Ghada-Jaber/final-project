@@ -97,11 +97,13 @@ export  default function SignIn(){
 	        	</div>	          	
 				<div className="form-group">
 				    <div className="checkbox squaredTwo">
-				        <input type="checkbox" id="c1" name="cc"  defaultChecked={false}
+				        <input type="checkbox" className="logincheckbox" id="c1" name="cc"  defaultChecked={false}
                                 onChange={handleRememberChange}/>
 						<label htmlFor="c1"><span></span>Remember me</label>
 				    </div>				    
 				</div>
+
+                
 				<div className="form-group">
 					<input type="submit" className="templatemo-blue-button width-100" value="Sign In" name="submit" />
 				</div>

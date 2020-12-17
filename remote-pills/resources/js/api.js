@@ -43,6 +43,15 @@ export default{
     getInfoMedicine: (id) =>
     axios.get(`${BASE_URL}/admin/medicine/getInfo/${id}`, token),
 
+    updateMedicineInfo: (medicine, id) =>
+    axios.put(`${BASE_URL}/admin/medicine/info/${id}`, medicine, token),
+
+    deleteMedicine: (id) =>
+    axios.delete(`${BASE_URL}/admin/medicine/${id}`, token),
+
+    getMedicinePharmacy: (id) =>
+    axios.get(`${BASE_URL}/admin/medicine/${id}/pharmacy`, token),
+    
     getAllMedicine: ()=>
     axios.get(`${BASE_URL}/pharmacy/medicine/allMedicine`, token),
 
@@ -79,4 +88,8 @@ export default{
 
     updateMedicine: (medicine, id) =>
     axios.put(`${BASE_URL}/pharmacy/medicine/${id}`, medicine, token),
+
+
+    getAllMedicineAvailable: () =>
+    axios.get(`${BASE_URL}/user/pharmacyMedicine`, token),
 }

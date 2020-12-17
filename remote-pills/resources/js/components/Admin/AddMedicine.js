@@ -140,7 +140,7 @@ function handleAddMedicine(event) {
       })
       .catch(error => {
         console.log(error)
-        // setErrors(error.response.data.errors)
+        setErrors(error.response.data.errors)
       })
 }
 
@@ -151,7 +151,7 @@ function handleAddMedicine(event) {
         </div>
 
     <div className="templatemo-content-widget templatemo-login-widget  white-bg">
-
+    <div className="scrollform">
     <div className="form-group">
           <div className="input-group" >
             <div className="input-group-addon">image</div>	        		
@@ -238,12 +238,18 @@ function handleAddMedicine(event) {
                 {renderErrorFor('dosage_unit')} 
                 </div>
 
-                <div className="checkbox squaredTwo">
-				        <input type="checkbox" id="c1" name="cc"  defaultChecked={false}
-                                />
-						<label htmlFor="c1"><span></span>need prescription</label>
-				    </div>	
-            
+        
+
+<div className="form-group">
+				    <div >
+				        <input type="checkbox" className="check" id="c2" name="cc2" 
+                 defaultChecked={false}
+                 onChange={handlePrescriptionChange}
+                 />
+						<label htmlFor="c2"><span></span>need prescription</label>
+				    </div>				    
+				</div>
+            </div>
         
             <div className="form-group">
 					<button type="submit" className="templatemo-blue-button width-100"

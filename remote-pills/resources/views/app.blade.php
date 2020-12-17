@@ -16,7 +16,7 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">   
 
          <script
-      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCU9C3VFYXgtk5IjAHlcK8Ayg7g0Ny4ezc&callback=initMap&libraries=places&v=weekly"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBp6txXqL4CpgictG68veqo6MmEb89yFE4&callback=initMap&libraries=places&v=weekly"
       defer
     ></script>
 

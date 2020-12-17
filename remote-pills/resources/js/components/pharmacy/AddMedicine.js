@@ -177,15 +177,14 @@ function filterFunction(event){
           <div className="col-md-6">
 
           <div className="form-group">
-          <div className="input-group" >
-		        		<div className="input-group-addon"><i className="fa fa-search fa-fw"></i></div>	        		
+          <div className="search" style={{ marginRight:'10px' }}>  	      		
 		              	<input type="text" className="search form-control"
 						   placeholder="Serach"  
                id="myInput" onChange={filterFunction}
 
-               />   
-		          	</div>
-                </div>
+               /> 
+               </div>
+               </div> 
             
           <div className="form-group">
 

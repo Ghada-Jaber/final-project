@@ -17,12 +17,12 @@ export  default function ShowMedicine(props){
     const [dosage, setDosage] = useState('');
     const [unit, setUnit] = useState('');
 
+    const [pharmacy, setPharmacy] = useState([]);
+
   const history = useHistory();
 
   useEffect(() => {
-    console.log(props)
-    api.getInfoMedicine(props).then(response => {
-      console.log(response.data)
+    api.getInfoMedicine(props.match.params.id).then(response => {
       setImage(response.data.image);
         setName(response.data.name);
         setFormat(response.data.format);
@@ -31,23 +31,47 @@ export  default function ShowMedicine(props){
         setPrescription(response.data.prescription);
         setTablet(response.data.tablet);
         setDosage(response.data.dosage);
-        setUnit(response.data.unit);
+        setUnit(response.data.dosage_unit);
+      })
+
+      api.getMedicinePharmacy(props.match.params.id).then(response => {
+        setPharmacy(response.data)
       })
 
   },[]);
 
 
+  function renderPharmacy(){
+    return pharmacy.map(pharmacy => {
+      return(
+      <li  key={pharmacy.id}>
+      {pharmacy.name}
+      </li> 
+
+        )
+      })
+  }
+
+
     return(
-            <div className="col-1" style={{ backgroundColor:'gray' }}>		
+      <div className="templatemo-flex-row">
+	  
+      <div className="templatemo-content col-1 light-gray-bg">
+      
+       <Header />
+        <div className="templatemo-flex-row flex-content-row " style={{ marginTop:'100px' }}>
+            <div className="col-1">	
+
+            <Back  />
 
   <div className="container">
       <div className="row">
-        <div className="col-md-5 mr-auto">
+        <div className="col-md-4 mr-auto">
           <div className="border text-center">
             <img src={`./images/medicine/${image}`} alt="Image" className="img-fluid p-5" />
           </div>
         </div>
-        <div className="col-md-6">
+        <div className="col-md-4">
           <h2 className="text-black">{name} {format}, {dosage} {unit}</h2>
 
           <h3>Description</h3>
@@ -65,9 +89,35 @@ export  default function ShowMedicine(props){
 
   
         </div>
+        <div className="col-md-4">
+        <h3>Pharmacy have medicine {name} / Number: {pharmacy.length}</h3>
+    <div className="scrollform">
+
+    <div className ="templatemo-content-widget blue-bg" >   
+   
+   <ol>
+    {pharmacy.length > 0 ? renderPharmacy() : 'Not Exist in any pharmacy'}
+
+    </ol>
+    
+    </div>
+
+            </div>
+        
+          </div>
       </div>
+   
     </div>
      </div> 
+     </div> 
+
+            
+                     
+<Footer />
+</div>
+
+
+</div>
 
     )
 

@@ -56,7 +56,12 @@ class Medicine extends Model
 
 
     public function pharmacy(){
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class, 'detail', 'medicine_id', 'pharmacy_id');
+    }
+
+
+    public function symtom(){
+        return $this->belongsToMany(Symtom::class);
     }
    
 }

@@ -75,7 +75,7 @@ class AuthenticationController extends Controller
             'password' => 'required',
             'confirm_password' => 'required|same:password',
             'birthday' => 'required',
-            'image' => 'image|mimes:jpeg,png,jpg,gif,svg'
+            // 'image' => 'image|mimes:jpeg,png,jpg,gif,svg'
         ]);
 
        

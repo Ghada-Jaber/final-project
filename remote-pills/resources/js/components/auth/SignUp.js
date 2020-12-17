@@ -208,7 +208,7 @@ export  default function SignUp(){
 		<div className="templatemo-content-widget templatemo-login-widget  white-bg"
 		 >
 
-		 <div style={{ height: '360px', overflowY: 'scroll', overflowX: 'hidden', padding:'10px' }}>
+		 <div className="scrollform">
 
 		
 

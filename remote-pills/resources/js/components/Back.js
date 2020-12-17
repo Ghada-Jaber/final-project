@@ -10,7 +10,7 @@ export default function Back(){
         <div className="container">
         <div className="row">
           <a className='btn btn-primary' onClick={goBack}>
-                    back
+                    <i class="fa fa-arrow-left"></i>
                 </a>  
         </div>
 

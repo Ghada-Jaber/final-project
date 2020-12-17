@@ -8,8 +8,17 @@ import Back from '../Back';
 export  default function ShowMedicine(props){
   const [image, setImage] = useState('');
   const [name, setName] = useState('');
+  const [format, setFormat] = useState('');
+  const [description, setDescription] = useState('');
+  const [ingredient, setIngredient] = useState('');
+  const [prescription, setPrescription] = useState(0);
+  const [tablet, setTablet] = useState('');
+  const [dosage, setDosage] = useState('');
+  const [unit, setUnit] = useState('');
   //description
   const [detail, setDetail] = useState([]);
+
+  const [symtom, setSymtom] = useState([]);
 
   const history = useHistory();
 
@@ -20,12 +29,34 @@ export  default function ShowMedicine(props){
         console.log(response.data)
         setImage(response.data.image);
           setName(response.data.name);
+          setFormat(response.data.format);
+          setDescription(response.data.description);
+          setIngredient(response.data.ingredient);
+          setPrescription(response.data.prescription);
+          setTablet(response.data.tablet);
+          setDosage(response.data.dosage);
+          setUnit(response.data.dosage_unit);
+
 
           setDetail(response.data.detail[0]);
+          setSymtom(response.data.symtom);
       }) .catch(error => {
       })
 
   },[]);
+
+  function renderSymtom(){
+    return symtom.map(symtom => {
+      return(
+        <i>
+       <i style={{ border:'1px solid #2375b8', padding:'10px', borderRadius:'5px'}} key={symtom.id}>
+          {symtom.name}
+       </i>
+       &nbsp;&nbsp;
+       </i>
+        )
+      })
+  }
    
 
     return(
@@ -42,24 +73,33 @@ export  default function ShowMedicine(props){
 
     <div className="container">
         <div className="row">
-          <div className="col-md-5 mr-auto">
+          <div className="col-md-4 mr-auto">
             <div className="border text-center">
               <img src={`./images/medicine/${image}`} alt="Image" className="img-fluid p-5" />
             </div>
           </div>
-          <div className="col-md-6">
-            <h2 className="text-black">{name} Tablets, 200mg</h2>
+          <div className="col-md-4">
+            <h2 className="text-black">{name} {format}, {dosage} {unit}</h2>
 
             <h3>Description</h3>
-            <p>description.</p>
+            <p>{description}</p>
 
             <h3>Dosage</h3>
             <p>dosage.</p>
 
             <h3>Ingredient</h3>
-            <p>ingredient.</p>
+            <p>{ingredient}</p>
+            
+</div>
+            <div className="col-md-4">
+            <h4 style={{ color:'#2375b8' }}>Symtom</h4>
+            
+            <div style={{ overflow:'auto', width:'260px', height:'70px', padding:'10px' }}>
+            {renderSymtom()}
 
-            <div className="mt-5">
+            </div>
+<hr/>
+            <br/>
             
             <b style={{ color:'#2375b8' }}><u>Specifications</u></b>
               &nbsp;
@@ -105,8 +145,6 @@ export  default function ShowMedicine(props){
               </div>
             </div>
 
-    
-          </div>
         </div>
       </div>
        </div>                       

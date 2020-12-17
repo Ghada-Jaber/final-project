@@ -6,7 +6,7 @@ import ForgetPassword from '../auth/ForgetPassword';
 import api from '../../api';
 import CookieService from '../../Service/CookieService';
 import logo from '../../../images/logo.png';
-import no from '../../../../storage/app/uploads/userimage/NoImage.png';
+//import no from '../../../../storage/app/uploads/userimage/NoImage.png';
 // import styles from './../../../css/templatemo-style.css';
 // import s2 from './../../../css/font-awesome.min.css';
 // import classNames from 'classnames/bind';
@@ -23,7 +23,7 @@ export default function Header(){
     const [greeting, setGreeting] = useState('');
 
 
-    const test = require(`../../../../storage/app/uploads/userimage/NoImage.png`);
+    //const test = require(`../../../../storage/app/uploads/userimage/NoImage.png`);
 
   useEffect(() => {
     setCurrentPage(window.location.pathname); 
@@ -120,17 +120,26 @@ return(
                      
                     </ul>
                   </li>
-                  <li className= {`${(page =='/admin') ? 'active' : '' }`}>
-  <a href="manageMedicine"><i className="fa fa-money fa-fw"></i>manage medicine</a></li>
+                  <li className= {`${(page =='/manageMedicine') ? 'active' : '' }`}>
+  <a href="manageMedicine"><i className="fa fa-medkit fa-fw"></i>manage medicine</a></li>
                   </ul>
 )
 }
+
+function doctor(){
+  return(
+    <ul className="nav navbar-nav" >
+    <li className= {`${(page =='/medicine') ? 'active' : '' }`}>
+    <a href="patient"><i className="fa fa-medkit fa-fw"></i>Patient</a></li>
+    </ul>
+  )
+  }
 
 function pharmacy(){
 return(
   <ul className="nav navbar-nav" >
   <li className= {`${(page =='/medicine') ? 'active' : '' }`}>
-  <a href="medicine"><i className="fa fa-money fa-fw"></i>Medicine</a></li>
+  <a href="medicine"><i className="fa fa-medkit fa-fw"></i>Medicine</a></li>
   </ul>
 )
 }
@@ -139,9 +148,14 @@ function user(){
 return(
   <ul className="nav navbar-nav" >
   <li className= {`${(page =='/buy') ? 'active' : '' }`}>
-                      <a href="buy"><i className="fa fa-money fa-fw"></i>Buy</a></li>
+                      <a href="buy"><i className="fa fa-medkit fa-fw"></i>Medicine</a></li>
+
+  <li className= {`${(page =='/doctor') ? 'active' : '' }`}>
+                      <a href="doctor"><i className="fa fa-user-md fa-fw"></i>Doctor</a></li>
+
+                      
   <li className= {`${(page =='/cart') ? 'active' : '' }`}>
-                      <a href="cart"><i className="fa fa-money fa-fw"></i>Cart</a></li>
+                      <a href="cart"><i className="fa fa-shopping-bag fa-fw"></i>Cart</a></li>
 
                       <li className= {`${(page =='/map') ? 'active' : '' }`}>
                       <a href="map"><i className="fa fa-map-marker fa-fw"></i>Map</a></li>
@@ -154,6 +168,9 @@ function auth(){
     <i> 
 
 {role == 'ROLE_ADMIN' ? admin() : ''}
+
+{role == 'ROLE_DOCTOR' ? doctor() : ''}
+
 {role == 'ROLE_PHARMACY' ? pharmacy() : ''}
 
 {role == 'ROLE_NORMALUSER' ? user() : ''}
@@ -171,14 +188,16 @@ function auth(){
 {/* class="media-object img-circle templatemo-img-bordered" */}
 {greeting}
         <li className="nav-item dropdown">
-                    <a id="navbarDropdown" className="nav-link dropdown-toggle" href="#"
+                    <a id="navbarDropdown" className="nav-link dropdown-toggle"
                     role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {name}
                     </a>
-                    <div className="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                    <div className="dropdown-menu dropdown-menu-right"
+                    style={{ fontSize:'17px',paddingLeft:'5px' }}
+                     aria-labelledby="navbarDropdown">
                          <a className="dropdown-item" href="/profile" >
                          <i className="fa fa-id-badge fa-fw"></i>Profile</a><br/>
-                        <a className="dropdown-item" href="#" onClick= {() => handleLogout()}>
+                        <a className="dropdown-item" onClick= {() => handleLogout()}>
                         <i className="fa fa-sign-out fa-fw"></i>Logout</a>
                     </div>
                 </li>
@@ -203,13 +222,15 @@ function auth(){
     <li className="nav-item dropdown">
 
 
-                    <a id="navbarDropdown" className="nav-link dropdown-toggle" href="#"
+                    <a id="navbarDropdown" className="nav-link dropdown-toggle"
                     role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
                     className="icons-btn" style={{ position: 'relative', marginRight: '20px', marginTop: '10px' }}>
                         <span className="fa fa-bell fa-fw"></span>
                         <span className="number">2</span>
                     </a>
-                    <div className="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                    <div className="dropdown-menu dropdown-menu-right"
+                     style={{ fontSize:'17px',paddingLeft:'5px' }}
+                     aria-labelledby="navbarDropdown">
                          <a className="dropdown-item" >
                          Notification</a><br/>
                     </div>
@@ -253,10 +274,10 @@ return(
                 </ul>
                 <ul className="nav navbar-nav navbar-right">	
                 <li>
-                <a href="#" onClick={() => displayFormSignIn()}>
+                <a onClick={() => displayFormSignIn()}>
                 <i className="fa fa-sign-in fa-fw"></i>Sign in</a></li>
                 <li>
-                <a href="#" onClick={() => displayFormSignUp()} >
+                <a onClick={() => displayFormSignUp()} >
                 <i className="fa fa-eject fa-fw"></i>Sign Up</a></li>
               </ul>
 
@@ -296,19 +317,19 @@ return(
           </nav>
 
           <div id="signin" style={{ display: 'none'}}>
-          <a href="#" onClick={() => displayFormSignIn()} className="closecss">
+          <a  onClick={() => displayFormSignIn()} className="closecss">
         &times;</a>
                 <SignIn/>
               </div>
 
               <div id="signup" style={{ display: 'none'}}>
-              <a href="#" onClick={() => displayFormSignUp()} className="closecss">
+              <a  onClick={() => displayFormSignUp()} className="closecss">
         &times;</a>
                 <SignUp/>
               </div>
 
               <div id="forgetpass" style={{ display: 'none'}}>
-              <a href="#" onClick={() => displayFormForgetPass()} className="closecss">
+              <a  onClick={() => displayFormForgetPass()} className="closecss">
         &times;</a>
                 <ForgetPassword/>
               </div>

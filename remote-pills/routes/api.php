@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthenticationController;
 use App\Http\Controllers\PharmacyController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,7 +34,17 @@ Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_ADM
 
     Route::post('/admin/medicine/addInfo', [AdminController::class, 'addMedicine']); 
 
-    Route::get('/admin/medicine/getInfo/{medicine}', [AdminController::class, 'getInfoMedicine']); 
+    Route::get('/admin/medicine/getInfo/{medicine}', [AdminController::class, 'getInfoMedicine']);
+
+    Route::get('/admin/medicine/{medicine}/pharmacy', [AdminController::class, 'getMedicinePharmacy']);
+
+    Route::put('/admin/medicine/info/{medicine}', [AdminController::class, 'updateInfoMedicine']);
+
+    Route::delete('/admin/medicine/{medicine}', [AdminController::class, 'destroy']);
+
+
+    
+    
   
 
 });
@@ -64,6 +75,11 @@ Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_PHA
     Route::put('/pharmacy/medicine/{medicine}', [PharmacyController::class, 'updateMedicine']); 
 
     
+
+});
+
+Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_NORMALUSER])->group(function() {
+    Route::get('/user/pharmacyMedicine', [UserController::class, 'getAllMedicineAvailable']); 
 
 });
 
