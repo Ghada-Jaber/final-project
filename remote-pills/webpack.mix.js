@@ -1,5 +1,7 @@
 const mix = require('laravel-mix');
 
+
+
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -13,3 +15,4 @@ const mix = require('laravel-mix');
 
 mix.react('resources/js/app.js', 'public/js')
 .postCss('resources/css/app.css', 'public/css');
+// .image('storage/app/uploads/*','public/uploads');

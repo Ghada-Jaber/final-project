@@ -97,7 +97,6 @@ function getQueryStringValue(key) {
 
 function handleReferenceChange(event){
   var reference = event.target.value;
-  alert(reference)
   if(reference == 'getNameOrderAsc'){
     api.getOrderMedicineByNameAsc().then(response => {
       setMedicine(response.data);
@@ -197,7 +196,7 @@ function renderMedicine(){
 
         <div style={{ marginRight:'10px' }}>
           <a className='btn btn-primary' title='Add Medicine' href='/medicine/add'>
-          <i class="fa fa-plus"></i>
+          <i className="fa fa-plus"></i>
                 </a> 
                 </div>  
 
@@ -230,7 +229,7 @@ function renderMedicine(){
 					style={{ background: '#99999978', height: '5px' }}
 					thumbStyle={{ background: '#5900b3', height: '5px' }}
 				/> */}
-        <div id="showSearch">
+        <div id="showSearch" >
       {renderMedicine()}
       </div>
 

@@ -40,6 +40,9 @@ export default{
     getStreet: (city_id) =>
     axios.get(`${BASE_URL}/street/${city_id}`),
 
+    getInfoPharmacy: (id) =>
+    axios.get(`${BASE_URL}/admin/pharmacy/getInfo/${id}`, token),
+
     getInfoMedicine: (id) =>
     axios.get(`${BASE_URL}/admin/medicine/getInfo/${id}`, token),
 
@@ -51,9 +54,15 @@ export default{
 
     getMedicinePharmacy: (id) =>
     axios.get(`${BASE_URL}/admin/medicine/${id}/pharmacy`, token),
+
+    getPharmacyMedicine: (id) =>
+    axios.get(`${BASE_URL}/admin/pharmacy/${id}/medicine`, token),
     
     getAllMedicine: ()=>
     axios.get(`${BASE_URL}/pharmacy/medicine/allMedicine`, token),
+
+    getAllPharmacy: ()=>
+    axios.get(`${BASE_URL}/admin/allUsers`, token),
 
     getMedicine: () =>
     axios.get(`${BASE_URL}/pharmacy/medicine`, token),

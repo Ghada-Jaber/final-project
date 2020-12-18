@@ -26,7 +26,7 @@ class UserController extends Controller
         $user = User::get();
 
 
-        $test = [];
+        $pharmacy = [];
 
     
         $i=0;
@@ -34,15 +34,21 @@ class UserController extends Controller
            $role = $detailMedicine->getRoles();
 
            if($role[0] == 'ROLE_PHARMACY'){
-            $test[$i] = $detailMedicine;
-            $test[$i]->medicine = $detailMedicine->medicine;
+            $pharmacy[$i] = $detailMedicine;
+
+            // $detail = $detailMedicine->detail;
+            
+            // foreach($detail as $price){
+            //     $detailMedicine->medicine->price = $price->price;
+            // }
+            // $pharmacy[$i]->medicine = $detailMedicine->medicine;
            }
 
             $i++;
         }
         
 
-        return response()->json($test, 201);
+        return response()->json($pharmacy, 201);
     }
     
 }

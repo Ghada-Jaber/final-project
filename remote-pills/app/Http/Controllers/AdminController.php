@@ -13,8 +13,17 @@ class AdminController extends Controller
 
         $user = User::latest()->get();
 
+        foreach($user as $address){
+            $user->street = $address->street->name;
+            $user->city = $address->street->city->name;
+            $user->country = $address->street->city->country->name;
+        }
+       
+
         return response()->json($user, 201);
     }
+
+ 
 
 
     public function getMedicinePharmacy(Medicine $medicine){
@@ -23,6 +32,16 @@ class AdminController extends Controller
 
         return response()->json($pharmacy, 201);
     }
+
+
+    public function getPharmacyMedicine(User $pharmacy){
+
+        $pharmacy = $pharmacy->medicine;
+
+        return response()->json($pharmacy, 201);
+    }
+
+    
 
     public function addMedicine(Request $request){
 
@@ -68,6 +87,12 @@ class AdminController extends Controller
 
     public function getInfoMedicine(Medicine $medicine){
         return response()->json($medicine, 201);
+    }
+
+
+    public function getInfoPharmacy(User $pharmacy){
+        
+        return response()->json($pharmacy, 201);
     }
 
 

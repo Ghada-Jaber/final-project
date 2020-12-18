@@ -139,13 +139,10 @@ function renderMedicine(){
         <a href={"/medicine/show/"+medicine.id} key={medicine.id}> 
         <div className="colorhover templatemo-content-widget no-padding white-bg col-sm-6 col-lg-4 text-center item mb-4" >
         <br/>
-        <img src={`./images/medicine/${medicine.image}`} width="350px" height="200px" alt="Image"/>
-       
         <h3 className="text-dark">{medicine.name}</h3>
         <p className="price">
-        <i className="fa fa-money fa-fw"></i> {medicine.detail[0].price} <br/>
+        <i className="fa fa-money fa-fw"></i>  <br/>
 
-        <i className="fa fa-money fa-fw"></i> {medicine.pharmacy[0].name}
         
         </p>
       </div>
@@ -233,7 +230,7 @@ function renderMedicine(){
 					thumbStyle={{ background: '#5900b3', height: '5px' }}
 				/> */}
         <div id="showSearch">
-      {renderMedicine()}
+      {/* {renderMedicine()} */}
       </div>
 
       {/* <ReactPaginate

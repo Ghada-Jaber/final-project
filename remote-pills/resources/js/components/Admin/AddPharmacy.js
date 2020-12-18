@@ -5,7 +5,7 @@ import Header from '../layouts/Header';
 import Footer from '../layouts/Footer';
 import Back from '../Back';
 
-export  default function AddMedicine(){
+export  default function AddPharmacy(props){
 
     const [name, setName] = useState('');
     const [image, setImage] = useState('');
@@ -155,7 +155,7 @@ function handleAddMedicine(event) {
                 </div>
 
 
-                <div className={`form-group ${hasErrorFor('format') ? 'has-error' : ''}`} >
+                <div className={`form-group ${hasErrorFor('email') ? 'has-error' : ''}`} >
           <div className="input-group" >
             <div className="input-group-addon">format</div>	 
             <select className="form-control"value={format} onChange={handleFormatChange} >
@@ -164,13 +164,13 @@ function handleAddMedicine(event) {
               <option value="Cream">Cream</option>
             </select>
 		          	</div>
-                {renderErrorFor('format')} 
+                {renderErrorFor('email')} 
                 </div>
 
 
                 
 
-                <div className={`form-group ${hasErrorFor('description') ? 'has-error' : ''}`} >
+                <div className={`form-group ${hasErrorFor('password') ? 'has-error' : ''}`} >
           <div className="input-group" >
             <div className="input-group-addon">description</div>	        		
             <textarea type="text" className="form-control"
@@ -178,7 +178,7 @@ function handleAddMedicine(event) {
 
                />   
 		          	</div>
-                {renderErrorFor('description')} 
+                {renderErrorFor('password')} 
                 </div>
 
                 <div className={`form-group ${hasErrorFor('ingredient') ? 'has-error' : ''}`} >
@@ -223,15 +223,7 @@ function handleAddMedicine(event) {
 
         
 
-<div className="form-group">
-				    <div >
-				        <input type="checkbox" className="check" id="c2" name="cc2" 
-                 defaultChecked={false}
-                 onChange={handlePrescriptionChange}
-                 />
-						<label htmlFor="c2"><span></span>need prescription</label>
-				    </div>				    
-				</div>
+
             </div>
         
             <div className="form-group">

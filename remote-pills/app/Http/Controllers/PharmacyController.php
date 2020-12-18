@@ -105,7 +105,7 @@ class PharmacyController extends Controller
     public function getOrderMedicineByNameAsc(){
         
         $pharmacy = Auth::user();
-        $medicine = $pharmacy->medicine->sortBy('name')->flatten();
+        $medicine = $pharmacy->medicine->sortByDesc('name')->flatten();//lezem tkun sort by
 
         $i=0;
          foreach($medicine as $detailMedicine){
@@ -124,7 +124,7 @@ class PharmacyController extends Controller
     public function getOrderMedicineByNameDesc(){
         
         $pharmacy = Auth::user();
-        $medicine = $pharmacy->medicine->sortByDesc('name')->flatten();
+        $medicine = $pharmacy->medicine->sortBy('name')->flatten();
 
         $i=0;
          foreach($medicine as $detailMedicine){

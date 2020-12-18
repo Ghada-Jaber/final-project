@@ -23,9 +23,10 @@ export default function Header(){
     const [greeting, setGreeting] = useState('');
 
 
-    //const test = require(`../../../../storage/app/uploads/userimage/NoImage.png`);
+    const test = `../../../../storage/app/uploads/userimage/NoImage.png`;
 
   useEffect(() => {
+    console.log(window.location.origin)
     setCurrentPage(window.location.pathname); 
     var d = new Date();
     var t = d.getHours();
@@ -113,9 +114,9 @@ return(
                     <a className="dropdown-toggle" data-toggle="dropdown" href="#"><i className="fa fa-bar-chart fa-fw"></i>
                     Manage Users<span className="caret"></span></a>
                     <ul className="dropdown-menu">
-                    <li><a href="details.php">Doctor</a></li>
-                    <li><a href="transport.php">Pharmacy</a></li>
-                    <li><a href="transport.php">User</a></li>
+                    <li><a href="/manageDoctor">Doctor</a></li>
+                    <li><a href="/managePharmacy">Pharmacy</a></li>
+                    <li><a href="/manageUser">User</a></li>
                        
                      
                     </ul>
@@ -184,7 +185,7 @@ function auth(){
 			  <div className="panel panel-default  offset-0" style={{ padding: '5px'}} >
 
           
-<img src={'../../../../storage/app/uploads/userimage/NoImage.png'} width="50px" height="50px" className="img"/> &nbsp;
+{/* <img src={require(test)} width="50px" height="50px" className="img"/> &nbsp; */}
 {/* class="media-object img-circle templatemo-img-bordered" */}
 {greeting}
         <li className="nav-item dropdown">

@@ -5,14 +5,14 @@ import Header from '../layouts/Header';
 import Footer from '../layouts/Footer';
 import Back from '../Back';
 
-export  default function AddMedicine(){
+export  default function EditPharmacy(props){
 
     const [name, setName] = useState('');
     const [image, setImage] = useState('');
     const [format, setFormat] = useState('Tablet');
     const [description, setDescription] = useState('');
     const [ingredient, setIngredient] = useState('');
-    const [prescription, setPrescription] = useState(0);
+    const [prescription, setPrescription] = useState();
     const [tablet, setTablet] = useState('');
     const [dosage, setDosage] = useState('');
     const [unit, setUnit] = useState('');
@@ -20,6 +20,21 @@ export  default function AddMedicine(){
 
   const history = useHistory();
 
+  useEffect(() => {
+    api.getInfoMedicine(props.match.params.id).then(response => {
+      setImage(response.data.image);
+        setName(response.data.name);
+        setFormat(response.data.format);
+        setDescription(response.data.description);
+        setIngredient(response.data.ingredient);
+        setPrescription(response.data.prescription);
+        setTablet(response.data.tablet);
+        setDosage(response.data.dosage);
+        setUnit(response.data.dosage_unit);
+      })
+
+
+  },[]);
 
 
   function hasErrorFor (field) {
@@ -38,15 +53,10 @@ function renderErrorFor (field) {
 
 
 
-
 function handleNameChange(event){
   setName(event.target.value);
 }
 
-
-function handleImageChange(event){
-  setImage(event.target.files[0]); 
-}
 
 
 function handleFormatChange(event){
@@ -89,12 +99,11 @@ function handleUnitChange(event){
 
 
    
-function handleAddMedicine(event) {
+function handleUpdateMedicine(event) {
   event.preventDefault();
 
 
   const fd = new FormData();
-        fd.append('image', image);
         fd.append('name', name);
         fd.append('format', format);
         fd.append('description', description);
@@ -103,46 +112,50 @@ function handleAddMedicine(event) {
         fd.append('tablet', tablet);
         fd.append('dosage', dosage);
         fd.append('dosage_unit', unit);
+
+        const medicine = {
+          name: name,
+          format: format,
+          description: description,
+          ingredient: ingredient,
+          prescription: prescription,
+          tablet: tablet,
+          dosage: dosage,
+          dosage_unit: unit
+      }
     
 
-  api.addMedicineInfo(fd , {headers:{'Accept': "application/json",  'Content-Type': "multipart/form-data"}})
+  api.updateMedicineInfo(medicine, props.match.params.id  ) //, {headers:{'Accept': "application/x-www-form-urlencoded"}}
       .then(response => {
-        alert("add success");
-        // setName('');
-        // setImage('');
-        // setFormat('Tablet');
-        // setDescription('');
-        // setIngredient('');
-        // setPrescription(0);
-        // setTablet('');
-        // setDosage('');
-        // setUnit('');
+        alert("update success");
 
         history.push('/manageMedicine')
         window.location.reload();
       })
       .catch(error => {
         console.log(error)
-        setErrors(error.response.data.errors)
+        //  setErrors(error.response.data.errors)
       })
 }
 
     return(
-              <div className="col-1">	
+      <div className="templatemo-flex-row">
+	  
+      <div className="templatemo-content col-1 light-gray-bg">
+      
+       <Header />
+        <div className="templatemo-flex-row flex-content-row " style={{ marginTop:'100px' }}>
+            <div className="col-1">	
+            <Back  />
 
-    <div style={{ marginTop:'10px' }} >
+            <div className="col-md-5 mr-auto">
+          <div className="border text-center">
+            <img src={`./images/medicine/${image}`} alt="Image" className="img-fluid p-5" />
+          </div>
         </div>
 
     <div className="templatemo-content-widget templatemo-login-widget  white-bg">
-    <div className="scrollform">
-    <div className="form-group">
-          <div className="input-group" >
-            <div className="input-group-addon">image</div>	        		
-            <input type="file" className="form-control"
-              onChange={handleImageChange}
-               />   
-		          	</div>
-                </div>
+
 
           <div className={`form-group ${hasErrorFor('name') ? 'has-error' : ''}`} >
           <div className="input-group" >
@@ -221,31 +234,41 @@ function handleAddMedicine(event) {
                 {renderErrorFor('dosage_unit')} 
                 </div>
 
-        
+                <div className="form-group">			    
+		
 
-<div className="form-group">
-				    <div >
-				        <input type="checkbox" className="check" id="c2" name="cc2" 
-                 defaultChecked={false}
-                 onChange={handlePrescriptionChange}
-                 />
-						<label htmlFor="c2"><span></span>need prescription</label>
-				    </div>				    
-				</div>
+                <div className="checkbox squaredTwo">
+                
+				        <input type="checkbox" id="c3" name="cc3"  defaultChecked={prescription}
+                onChange={handlePrescriptionChange}
+                                />
+						<label htmlFor="c3"><span></span>need prescription</label>
+				    </div>	
+
             </div>
+            
         
             <div className="form-group">
 					<button type="submit" className="templatemo-blue-button width-100"
-          onClick={(event) => handleAddMedicine(event)}
+          onClick={(event) => handleUpdateMedicine(event)}
 					 >
-					Add </button>
+					Update </button>
 				</div>
 
 
 
     
           </div>
-        </div>    
+        </div>   
+        </div> 
+
+            
+                     
+<Footer />
+</div>
+
+
+</div> 
 
     )
 

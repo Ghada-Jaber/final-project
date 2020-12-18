@@ -140,7 +140,7 @@ class User extends Authenticatable
     }
 
     public function detail(){
-        return $this->hasMany(Detail::class);
+        return $this->hasMany(Detail::class, 'pharmacy_id');
     }
 
     public function patient(){

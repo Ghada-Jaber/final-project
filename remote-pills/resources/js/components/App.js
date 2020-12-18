@@ -4,7 +4,10 @@ import {BrowserRouter, Route, Switch, HashRouter} from 'react-router-dom';
 //import Login from './Login';
 import Home from './Home';
 
-import Pharmacy from './Admin/Pharmacy';
+import ManagePharmacy from './Admin/ManagePharmacy';
+import ShowPharmacy from './Admin/ShowPharmacy';
+import EditPharmacy from './Admin/EditPharmacy';
+
 import ManageMedicine from './Admin/ManageMedicine';
 import AdminShowMedicine from './Admin/ShowMedicine';
 import AdminEditMedicine from './Admin/EditMedicine';
@@ -49,7 +52,9 @@ function App(){
               <Route exact path='/manageMedicine' component={ManageMedicine} />
             <Route exact path='/manageMedicine/show/:id' component={AdminShowMedicine} />
             <Route exact path='/manageMedicine/edit/:id' component={AdminEditMedicine} />
-            <Route exact path='/managePharmacy' component={Pharmacy} />
+            <Route exact path='/managePharmacy' component={ManagePharmacy} />
+            <Route exact path='/managePharmacy/show/:id' component={ShowPharmacy} />
+            <Route exact path='/managePharmacy/edit/:id' component={EditPharmacy} />
             </Switch>
         )
       }

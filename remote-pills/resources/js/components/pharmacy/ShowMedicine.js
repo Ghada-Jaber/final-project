@@ -48,14 +48,18 @@ export  default function ShowMedicine(props){
   function renderSymtom(){
     return symtom.map(symtom => {
       return(
-        <i>
-       <i style={{ border:'1px solid #2375b8', padding:'10px', borderRadius:'5px'}} key={symtom.id}>
+        <i key={symtom.id}>
+       <i style={{ border:'1px solid #2375b8', padding:'10px', borderRadius:'5px'}} >
           {symtom.name}
        </i>
        &nbsp;&nbsp;
        </i>
         )
       })
+  }
+
+  function editInfo(){
+    document.getElementById('quantity').enabled= 'enabled';
   }
    
 
@@ -82,13 +86,14 @@ export  default function ShowMedicine(props){
             <h2 className="text-black">{name} {format}, {dosage} {unit}</h2>
 
             <h3>Description</h3>
-            <p>{description}</p>
+            <p style={{ overflowY:'auto', width:'100%', height: '100px', whiteSpace: 'pre-line' }}>{description}</p>
 
             <h3>Dosage</h3>
-            <p>dosage.</p>
+            <p style={{ overflowY:'auto', width:'100%', height: '100px', whiteSpace: 'pre-line' }}>dosage.</p>
 
             <h3>Ingredient</h3>
-            <p>{ingredient}</p>
+            <p style={{ overflowY:'auto', width:'100%', height: '100px', whiteSpace: 'pre-line' }}>
+            {ingredient}</p>
             
 </div>
             <div className="col-md-4">
@@ -103,7 +108,7 @@ export  default function ShowMedicine(props){
             
             <b style={{ color:'#2375b8' }}><u>Specifications</u></b>
               &nbsp;
-            <a className='btn btn-primary' >
+            <a onClick= {() => editInfo()} className='btn btn-primary' >
              <i className="fa fa-edit fa-fw"></i>
                 </a> 
               <div className="tab-content">
@@ -119,22 +124,28 @@ export  default function ShowMedicine(props){
                     <tbody>
                       <tr>
                         <th scope="row">Quantity</th>
-                        <td>{detail.quantity}</td>
+                        <td>
+                        <input className="form-control" id="quantity"
+                        type="number" value={detail.quantity} disabled/></td>
                       </tr>
 
                       <tr>
                         <th scope="row">Price</th>
-                        <td>{detail.price}</td>
+                        <td><input className="form-control" id="price"
+                        type="number" value={detail.price} disabled/></td>
                       </tr>
 
                       <tr>
                         <th scope="row">MFD</th>
-                        <td>{detail.MFD}</td>
+                        <td>
+                        <input className="form-control" id="mfd"
+                        type="date" value={detail.MFD} disabled/></td>
 
                       </tr>
                       <tr>
                         <th scope="row">EXP</th>
-                        <td>{detail.EXP}</td>
+                        <td><input className="form-control" id="exp"
+                         type="date" value={detail.EXP} disabled/></td>
 
                       </tr>
                       
