@@ -61,8 +61,8 @@ export default{
     getAllMedicine: ()=>
     axios.get(`${BASE_URL}/pharmacy/medicine/allMedicine`, token),
 
-    getAllPharmacy: ()=>
-    axios.get(`${BASE_URL}/admin/allUsers`, token),
+    getUsers: (type)=>
+    axios.get(`${BASE_URL}/admin/allUsers/${type}`, token),
 
     getMedicine: () =>
     axios.get(`${BASE_URL}/pharmacy/medicine`, token),
@@ -100,5 +100,5 @@ export default{
 
 
     getAllMedicineAvailable: () =>
-    axios.get(`${BASE_URL}/user/pharmacyMedicine`, token),
+    axios.get(`${BASE_URL}/user/allMedicine`, token),
 }

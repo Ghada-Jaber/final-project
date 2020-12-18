@@ -14,7 +14,7 @@ export  default function ManagePharmacy(){
   const [medicine, setMedicine] = useState([]);
 
   useEffect(() => {
-    api.getAllPharmacy().then(response => {
+    api.getUsers('ROLE_PHARMACY').then(response => {
       console.log(response.data)
       setMedicine(response.data);
     })

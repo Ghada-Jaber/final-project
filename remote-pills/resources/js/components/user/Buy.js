@@ -134,16 +134,17 @@ function handleReferenceChange(event){
 
 
 function renderMedicine(){
-  return medicine.map(medicine => {
+  return medicine.map(pharmacy => {
       return(
-        <a href={"/medicine/show/"+medicine.id} key={medicine.id}> 
+        <a href={"/medicine/show/"+pharmacy.id} key={pharmacy.id}> 
         <div className="colorhover templatemo-content-widget no-padding white-bg col-sm-6 col-lg-4 text-center item mb-4" >
         <br/>
-        <h3 className="text-dark">{medicine.name}</h3>
+        <img src={`./images/medicine/${medicine.image}`} width="350px" height="200px" alt="Image"/>
+       
+        <h3 className="text-dark">{pharmacy.name}</h3>
         <p className="price">
-        <i className="fa fa-money fa-fw"></i>  <br/>
-
-        
+          
+        <br/>
         </p>
       </div>
       </a>
@@ -194,12 +195,6 @@ function renderMedicine(){
       <div className="container"  >
         <div className="row" style={{  display: 'flex'}}>
 
-        <div style={{ marginRight:'10px' }}>
-          <a className='btn btn-primary' title='Add Medicine' href='/medicine/add'>
-          <i className="fa fa-plus"></i>
-                </a> 
-                </div>  
-
        
         <div className="search" style={{ marginRight:'10px' }}>   		
 		              	<input type="text" className="form-control"
@@ -207,18 +202,7 @@ function renderMedicine(){
                onChange={filterFunction}
                />   
                </div>
-                
-            <select className="form-control" style={{ width: '200px'}}
-            onChange={handleReferenceChange}>
-            <optgroup label="Filter by Reference" >
-              <option value="getAll">Choose</option>
-              <option value="getNameOrderAsc">Name, A to Z</option>
-              <option value="getNameOrderDesc">Name, Z to A</option>
-              {/* <div className="dropdown-divider"></div> */}
-              <option value="getPriceOrderAsc">Price, low to high</option>
-              <option value="getPriceOrderDesc">Price, high to low</option>
-            </optgroup>
-            </select>
+       
             </div>
 
             <div style={{ marginTop:'10px' }} >
@@ -230,7 +214,7 @@ function renderMedicine(){
 					thumbStyle={{ background: '#5900b3', height: '5px' }}
 				/> */}
         <div id="showSearch">
-      {/* {renderMedicine()} */}
+      {renderMedicine()}
       </div>
 
       {/* <ReactPaginate

@@ -3,18 +3,18 @@ import {Link, useHistory} from 'react-router-dom';
 import api from '../../api';
 import Header from '../layouts/Header';
 import Footer from '../layouts/Footer';
-import AddMedicine from './AddMedicine';
+import SignUp from '../auth/SignUp';
 
 import $ from 'jquery';
 import { add } from 'lodash';
 
 
-export  default function ManageMedicine(){
+export  default function ManageDoctor(){
   const [id, setId] = useState('');
   const [medicine, setMedicine] = useState([]);
 
   useEffect(() => {
-    api.getAllMedicine().then(response => {
+    api.getUsers('ROLE_DOCTOR').then(response => {
       console.log(response.data)
       setMedicine(response.data);
     })
@@ -131,33 +131,20 @@ for (i = 1; i < tr.length; i++) {
                     
                     <img src={`../../../../storage/app/${medicine.image}`} width="100px" height="100px"/></td>
                     <td>{medicine.name}</td>
-                    <td>{medicine.dosage}</td>
-                    <td>
-                      <div style={{ overflowY:'auto', width:'260px' , height: '100px', whiteSpace: 'pre-line' }}>
-                      {medicine.description}
-                      </div>
+                    <td>{medicine.street.name}, {medicine.street.city.name}, {medicine.street.city.country.name}
                     </td>
-                    <td>
-                    <div style={{ overflowY:'auto', width:'260px', height: '100px', whiteSpace: 'pre-line' }}>
-
-                    {medicine.ingredient}
-                    </div>
-                    
-                    </td>
-                    <td>{medicine.format}</td>
-                    <td>{medicine.prescription == 1 ? 'yes' : 'no'}</td>
-                    <td>{medicine.tablet}</td>
-                    <td>{medicine.dosage} {medicine.dosage_unit}</td>
+                    <td>{medicine.email}</td>
+                    <td>{medicine.birthday}</td>
                     <td>
                     <div className="btn-group " role="group">
                     
                                
-                               <a href={`/manageMedicine/show/${medicine.id}`}
+                               <a href={`/managePharmacy/show/${medicine.id}`}
                                className="btn btn-info"
                                    title="Show">
                                    <i className="fa fa-info fa-fw"></i>
                                 </a>
-                                <a href={`/manageMedicine/edit/${medicine.id}`}
+                                <a href={`/managePharmacy/edit/${medicine.id}`}
                                 className="btn btn-primary"
                                    title="Edit">
                                    <i className="fa fa-edit fa-fw"></i>
@@ -224,24 +211,16 @@ for (i = 1; i < tr.length; i++) {
                     className="white-text templatemo-sort-by"># <span className="caret"></span></a>
                     </th>
                     <th>
-                    Medicine image</th>
+                    Pharmacy image</th>
                     <th><a onClick={() => sortTable(2)} 
                      className="white-text templatemo-sort-by">
                     Name <span className="caret"></span></a></th>
                     <th><a onClick={() => sortTable(3)}  className="white-text templatemo-sort-by">
-                    Dosage <span className="caret"></span></a></th>
+                    Address <span className="caret"></span></a></th>
                     <th><a onClick={() => sortTable(4)}  className="white-text templatemo-sort-by">
-                    Medicine description <span className="caret"></span></a></th>
-                    <th><a onClick={() => sortTable(5)}  className="white-text templatemo-sort-by">
-                    Ingredient <span className="caret"></span></a></th>
+                    Email <span className="caret"></span></a></th>
                     <th><a onClick={() => sortTable(6)}  className="white-text templatemo-sort-by">
-                    Format <span className="caret"></span></a></th>
-                    <th><a onClick={() => sortTable(7)}  className="white-text templatemo-sort-by">
-                    Need Prescription <span className="caret"></span></a></th>
-                    <th><a onClick={() => sortTable(8)}  className="white-text templatemo-sort-by">
-                    Tablet <span className="caret"></span></a></th>
-                    <th><a onClick={() => sortTable(9)}  className="white-text templatemo-sort-by">
-                    Dosage <span className="caret"></span></a></th>
+                    opened <span className="caret"></span></a></th>
                     <td>Action</td>
                   </tr>
                 </thead>
@@ -261,7 +240,7 @@ for (i = 1; i < tr.length; i++) {
           <div id="addmedicine" className="formShow">
           <a  onClick={() => addMedicine()} className="closecss">
           &times;</a>
-              <AddMedicine />
+              <SignUp />
 
             </div>
 

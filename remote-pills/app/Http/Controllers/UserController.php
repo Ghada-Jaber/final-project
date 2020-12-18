@@ -9,7 +9,7 @@ use App\Models\User;
 class UserController extends Controller
 {
 
-    public function getAllMedicineAvailable(){
+    public function getAllMedicinePharmacy(){
         // $detail = Medicine::get();
 
     
@@ -34,14 +34,26 @@ class UserController extends Controller
            $role = $detailMedicine->getRoles();
 
            if($role[0] == 'ROLE_PHARMACY'){
-            $pharmacy[$i] = $detailMedicine;
+            // $pharmacy[$i] = $detailMedicine;
+           
 
+            foreach($detailMedicine->medicine as $medicine){
+               $array= $detailMedicine->medicine->toArray();
+               foreach($medicine->detail as $price){
+                $array2 = $medicine->detail->toArray();
+                array_push($array, $array2) ;
+               }
+                
+
+                array_push($array, $medicine) ;
+              
+            }
             // $detail = $detailMedicine->detail;
-            
-            // foreach($detail as $price){
-            //     $detailMedicine->medicine->price = $price->price;
-            // }
+            // $array = $detail->toArray();
+            // array_push($array, $detailMedicine->medicine) ;
             // $pharmacy[$i]->medicine = $detailMedicine->medicine;
+
+            array_push($pharmacy, $detailMedicine) ;
            }
 
             $i++;
@@ -49,6 +61,29 @@ class UserController extends Controller
         
 
         return response()->json($pharmacy, 201);
+    }
+
+
+    public function getAllMedicineAvailable(){
+
+
+        $medicine = Medicine::get();
+
+       
+
+        foreach($medicine as $detail){
+
+            $medicine->detail = $detail->detail;
+
+            $array= $medicine->detail->toArray();
+
+            foreach($medicine->detail as $pharmacy){
+                array_push($array, $pharmacy->pharmacy) ;
+            }
+        }
+
+        return response()->json($medicine, 201);
+
     }
     
 }

@@ -49,7 +49,7 @@ Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_ADM
     Route::delete('/admin/medicine/{medicine}', [AdminController::class, 'destroy']);
 
 
-    Route::get('/admin/allUsers', [AdminController::class, 'getUsers']);
+    Route::get('/admin/allUsers/{type}', [AdminController::class, 'getUsers']);
 
 
     
@@ -91,8 +91,11 @@ Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_PHA
 });
 
 Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_NORMALUSER])->group(function() {
-    Route::get('/user/pharmacyMedicine', [UserController::class, 'getAllMedicineAvailable']); 
+    //get all medicine in each pharmacy
+    Route::get('/user/pharmacyMedicine', [UserController::class, 'getAllMedicinePharmacy']); 
 
+    Route::get('/user/allMedicine', [UserController::class, 'getAllMedicineAvailable']); 
+    
    
 
 });

@@ -19,6 +19,7 @@ export  default function ShowPharmacy(props){
 
   useEffect(() => {
     api.getInfoPharmacy(props.match.params.id).then(response => {
+      // console.log()
       setImage(response.data.image);
         setName(response.data.name);
         setEmail(response.data.email);

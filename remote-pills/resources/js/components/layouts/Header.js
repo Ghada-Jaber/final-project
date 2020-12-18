@@ -23,7 +23,8 @@ export default function Header(){
     const [greeting, setGreeting] = useState('');
 
 
-    const test = `../../../../storage/app/uploads/userimage/NoImage.png`;
+    const test = require(`../../../../storage/app/uploads/userimage/NoImage.png`);
+    // require.context(directory, useSubdirectories = true, regExp = /^\.\/.*$/, mode = 'sync')
 
   useEffect(() => {
     console.log(window.location.origin)
@@ -141,6 +142,8 @@ return(
   <ul className="nav navbar-nav" >
   <li className= {`${(page =='/medicine') ? 'active' : '' }`}>
   <a href="medicine"><i className="fa fa-medkit fa-fw"></i>Medicine</a></li>
+  <li className= {`${(page =='/customer') ? 'active' : '' }`}>
+  <a href="medicine"><i className="fa fa-medkit fa-fw"></i>Customer</a></li>
   </ul>
 )
 }
@@ -184,8 +187,12 @@ function auth(){
       <div className="panel-group" id="accordion">
 			  <div className="panel panel-default  offset-0" style={{ padding: '5px'}} >
 
-          
-{/* <img src={require(test)} width="50px" height="50px" className="img"/> &nbsp; */}
+        {/* <img src={require(test)} width="50px" height="50px" className="img"/> &nbsp;          */}
+        
+        
+        <img src={test} 
+        width="50px" height="50px" className="img"/> 
+{/* <img src={require('../../../../storage/app/' + image)} width="50px" height="50px" className="img"/> &nbsp; */}
 {/* class="media-object img-circle templatemo-img-bordered" */}
 {greeting}
         <li className="nav-item dropdown">

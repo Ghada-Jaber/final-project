@@ -9,18 +9,34 @@ use App\Models\Medicine;
 
 class AdminController extends Controller
 {
-    public function getUsers(){
+    public function getUsers($type){
 
-        $user = User::latest()->get();
+        $user = User::latest()->get()->flatten();
 
         foreach($user as $address){
             $user->street = $address->street->name;
             $user->city = $address->street->city->name;
             $user->country = $address->street->city->country->name;
         }
+
+        $pharmacy = [];
+
+        $i=0;
+ 
+         foreach($user as $infoProject){
+            $role = $infoProject->getRoles();
+
+            if($role[0] == $type){
+                array_push($pharmacy, $infoProject) ;
+            }
+           
+             // $arr = $project[$i]->toArray();
+             // array_push($arr, $access) ;
+             $i++;
+         }
        
 
-        return response()->json($user, 201);
+        return response()->json($pharmacy, 201);
     }
 
  
