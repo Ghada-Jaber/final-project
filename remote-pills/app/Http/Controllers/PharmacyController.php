@@ -185,5 +185,25 @@ class PharmacyController extends Controller
     }
 
 
+    public function updateMedicine(Request $request, Detail $detail){
+
+        $request->validate([
+            'quantity' => 'required|integer',
+            'price' => 'required|numeric',
+            'MFD' => 'required|date',
+            'EXP' => 'required|date',
+        ]);
+        
+
+        $detail->update([
+            'quantity' => $request['quantity'],
+            'price' => $request['price'],
+            'MFD' => $request['MFD'],
+            'EXP' => $request['EXP'],
+          ]);
+
+
+          return response()->json($detail,200);
+    }
     
 }

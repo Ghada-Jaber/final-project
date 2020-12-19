@@ -191,12 +191,11 @@ function auth(){
         {/* <img src={require(test)} width="50px" height="50px" className="img"/> &nbsp;          */}
         
         
-        /home/ghada/Desktop/final-project/remote-pills/storage/app/uploads/userimage/JLHSB3Vtc6pNAcM9IpT5IxZMIBPky2qG2UwHf67M.png
-        <img src= {`http://127.0.0.1:8000${image}`} 
+        <img src= {image} 
         width="50px" height="50px" className="img"/> 
 {/* <img src={require('../../../../storage/app/' + image)} width="50px" height="50px" className="img"/> &nbsp; */}
 {/* class="media-object img-circle templatemo-img-bordered" */}
-{greeting}
+{greeting} {}
         <li className="nav-item dropdown">
                     <a id="navbarDropdown" className="nav-link dropdown-toggle"
                     role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

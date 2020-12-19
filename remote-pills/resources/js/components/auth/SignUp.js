@@ -203,7 +203,7 @@ export  default function SignUp(){
     }
 
     return(
-		<div className="logincontainer">
+		<div className="logincontainer" style={{  backgroundImage: 'url(../images/background.png)' }}>
         <br/>
 		<div className="templatemo-content-widget templatemo-login-widget  white-bg"
 		 >

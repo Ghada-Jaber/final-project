@@ -64,25 +64,60 @@ class UserController extends Controller
     }
 
 
-    public function getAllMedicineAvailable(){
+    public function getAllMedicineAvailable($id){
 
 
         $medicine = Medicine::get();
 
-       
+       $near = [];
 
         foreach($medicine as $detail){
+           $detail->detail;
 
-            $medicine->detail = $detail->detail;
+            foreach($detail->detail as $pharmacy){
+                if($pharmacy->pharmacy->street_id == $id){
+                    // $medicine->detail = $detail->detail;
+                    $array = $pharmacy->medicine->toArray();
+                    $array2 = $pharmacy->medicine->pharmacy->toArray();
+                    
 
-            $array= $medicine->detail->toArray();
+                    // foreach($pharmacy->medicine->pharmacy as $price){
+                    //     $ok= false;
+                    //     foreach($price->detail as $single){
+                    //         if($price->id == $single->pharmacy_id){
+                    //             if()
+                    //             $ok= true;
+                    //         }
+                    //     }
+                    //     if($ok==true){
+                    //         $array3 = $price->detail->toArray();
+                    //         array_push($array2, $array3);
+                    //     }
+                       
+                    // }
 
-            foreach($medicine->detail as $pharmacy){
-                array_push($array, $pharmacy->pharmacy) ;
+                    foreach($pharmacy->medicine->detail as $price){
+                        $array3 = $price->price;
+                        foreach($pharmacy->medicine->pharmacy as $pri){
+                        }
+                       
+                      array_push($array2, $array3);
+                    }
+
+                    // 
+
+                    // 
+                        array_push($array, $array2);
+
+                    
+                }
+                
             }
+            array_push($near, $array) ;
+            
         }
 
-        return response()->json($medicine, 201);
+        return response()->json($near, 201);
 
     }
     

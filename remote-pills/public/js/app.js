@@ -98818,6 +98818,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _Service_CookieService__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Service/CookieService */ "./resources/js/Service/CookieService.js");
+var _checkLogin$register$;
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 
 
 var BASE_URL = '/api';
@@ -98829,7 +98833,7 @@ var token = {
     'Authorization': 'Bearer ' + cookie
   }
 };
-/* harmony default export */ __webpack_exports__["default"] = ({
+/* harmony default export */ __webpack_exports__["default"] = (_checkLogin$register$ = {
   checkLogin: function checkLogin(login) {
     return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("".concat(BASE_URL, "/login"), login);
   },
@@ -98899,6 +98903,9 @@ var token = {
   showMedicine: function showMedicine(id) {
     return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(BASE_URL, "/pharmacy/medicine/").concat(id), token);
   },
+  updateMedicineDetail: function updateMedicineDetail(detail, id) {
+    return axios__WEBPACK_IMPORTED_MODULE_0___default.a.put("".concat(BASE_URL, "/pharmacy/medicine/").concat(id), medicine, token);
+  },
   addMedicine: function addMedicine(medicine) {
     return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("".concat(BASE_URL, "/pharmacy/medicine"), medicine, token);
   },
@@ -98907,14 +98914,12 @@ var token = {
   },
   editMedicine: function editMedicine(id) {
     return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(BASE_URL, "/pharmacy/medicine/").concat(id), token);
-  },
-  updateMedicine: function updateMedicine(medicine, id) {
-    return axios__WEBPACK_IMPORTED_MODULE_0___default.a.put("".concat(BASE_URL, "/pharmacy/medicine/").concat(id), medicine, token);
-  },
-  getAllMedicineAvailable: function getAllMedicineAvailable() {
-    return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(BASE_URL, "/user/allMedicine"), token);
   }
-});
+}, _defineProperty(_checkLogin$register$, "updateMedicineDetail", function updateMedicineDetail(detail, id) {
+  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.put("".concat(BASE_URL, "/pharmacy/medicine/").concat(id), detail, token);
+}), _defineProperty(_checkLogin$register$, "getAllMedicineAvailable", function getAllMedicineAvailable(id) {
+  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(BASE_URL, "/user/allMedicine/").concat(id), token);
+}), _checkLogin$register$);
 
 /***/ }),
 
@@ -101728,8 +101733,7 @@ function App() {
     _api__WEBPACK_IMPORTED_MODULE_28__["default"].details().then(function (response) {
       setDetail(response.data);
       setRole(response.data.roles[0]);
-    })["catch"](function (error) {
-      history.push('/');
+    })["catch"](function (error) {//  history.push('/');
     });
   }
 
@@ -101857,6 +101861,10 @@ function App() {
       path: "/chat",
       component: _Chat__WEBPACK_IMPORTED_MODULE_24__["default"]
     }));
+  }
+
+  function redirect() {
+    window.location.href = '/';
   }
 
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["BrowserRouter"], null, other(), role == 'ROLE_ADMIN' ? admin() : '', role == 'ROLE_DOCTOR' ? doctor() : '', role == 'ROLE_PHARMACY' ? pharmacy() : '', role == 'ROLE_NORMALUSER' ? user() : '');
@@ -102171,7 +102179,8 @@ function Home() {
     src: "./images/hero_1.jpg",
     alt: "Los Angeles",
     style: {
-      width: '100%'
+      width: '100%',
+      height: '500px'
     }
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "item"
@@ -102179,7 +102188,8 @@ function Home() {
     src: "./images/bg_2.jpg",
     alt: "Chicago",
     style: {
-      width: '100%'
+      width: '100%',
+      height: '500px'
     }
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "item"
@@ -102187,7 +102197,8 @@ function Home() {
     src: "./images/bg_3.jpg",
     alt: "New york",
     style: {
-      width: '100%'
+      width: '100%',
+      height: '500px'
     }
   }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
     className: "left carousel-control",
@@ -102635,7 +102646,10 @@ function SignIn() {
   }
 
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "logincontainer"
+    className: "logincontainer",
+    style: {
+      backgroundImage: 'url(../images/background.png)'
+    }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "templatemo-content-widget templatemo-login-widget white-bg"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
@@ -102968,7 +102982,10 @@ function SignUp() {
   }
 
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "logincontainer"
+    className: "logincontainer",
+    style: {
+      backgroundImage: 'url(../images/background.png)'
+    }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "templatemo-content-widget templatemo-login-widget  white-bg"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -103409,12 +103426,12 @@ function Header() {
       style: {
         padding: '5px'
       }
-    }, "/home/ghada/Desktop/final-project/remote-pills/storage/app/uploads/userimage/JLHSB3Vtc6pNAcM9IpT5IxZMIBPky2qG2UwHf67M.png", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-      src: "http://127.0.0.1:8000".concat(image),
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+      src: image,
       width: "50px",
       height: "50px",
       className: "img"
-    }), greeting, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
+    }), greeting, " ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
       className: "nav-item dropdown"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
       id: "navbarDropdown",
@@ -104065,7 +104082,7 @@ function ListMedicine() {
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "colorhover templatemo-content-widget no-padding white-bg col-sm-6 col-lg-4 text-center item mb-4"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        src: "./images/medicine/".concat(medicine.image),
+        src: medicine.image,
         width: "350px",
         height: "200px",
         alt: "Image"
@@ -104259,10 +104276,10 @@ function ShowMedicine(props) {
       setUnit = _useState18[1]; //description
 
 
-  var _useState19 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
+  var _useState19 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
       _useState20 = _slicedToArray(_useState19, 2),
-      detail = _useState20[0],
-      setDetail = _useState20[1];
+      detailId = _useState20[0],
+      setDetailId = _useState20[1];
 
   var _useState21 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
       _useState22 = _slicedToArray(_useState21, 2),
@@ -104289,6 +104306,11 @@ function ShowMedicine(props) {
       symtom = _useState30[0],
       setSymtom = _useState30[1];
 
+  var _useState31 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
+      _useState32 = _slicedToArray(_useState31, 2),
+      errors = _useState32[0],
+      setErrors = _useState32[1];
+
   var history = Object(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["useHistory"])();
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
     _api__WEBPACK_IMPORTED_MODULE_2__["default"].showMedicine(props.match.params.id).then(function (response) {
@@ -104301,8 +104323,11 @@ function ShowMedicine(props) {
       setTablet(response.data.tablet);
       setDosage(response.data.dosage);
       setUnit(response.data.dosage_unit);
-      setDetail(response.data.detail[0]);
-      setSymtom(response.data.symtom);
+      setDetailId(response.data.detail[0].id);
+      setQuantity(response.data.detail[0].quantity);
+      setPrice(response.data.detail[0].price);
+      setMfd(response.data.detail[0].MFD);
+      setExp(response.data.detail[0].EXP);
     })["catch"](function (error) {});
   }, []);
 
@@ -104321,11 +104346,50 @@ function ShowMedicine(props) {
   }
 
   function editInfo() {
-    console.log('here');
+    document.getElementById('edit').style.display = "none";
+    document.getElementById('save').style.display = "";
     document.getElementById('quantity').disabled = false;
     document.getElementById('price').disabled = false;
     document.getElementById('mfd').disabled = false;
     document.getElementById('exp').disabled = false;
+  }
+
+  function hasErrorFor(field) {
+    return !!errors[field];
+  }
+
+  function renderErrorFor(field) {
+    if (hasErrorFor(field)) {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        style: {
+          color: '#D7425C'
+        }
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, errors[field][0]));
+    }
+  }
+
+  function updateInfo() {
+    var detail = {
+      quantity: quantity,
+      price: price,
+      MFD: mfd,
+      EXP: exp
+    };
+    _api__WEBPACK_IMPORTED_MODULE_2__["default"].updateMedicineDetail(detail, detailId).then(function (response) {
+      document.getElementById('edit').innerHTML = "<i  class='fa fa-edit fa-fw'></i>";
+      document.getElementById('quantity').disabled = true;
+      document.getElementById('price').disabled = true;
+      document.getElementById('mfd').disabled = true;
+      document.getElementById('exp').disabled = true;
+      setQuantity(response.data.quantity);
+      setPrice(response.data.price);
+      setMfd(response.data.MFD);
+      setExp(response.data.EXP);
+      document.getElementById('edit').style.display = "";
+      document.getElementById('save').style.display = "none";
+    })["catch"](function (error) {
+      setErrors(error.response.data.errors);
+    });
   }
 
   function handleQuantityChange(event) {
@@ -104360,14 +104424,15 @@ function ShowMedicine(props) {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "row"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "col-md-4 mr-auto"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "border text-center"
+    className: "col-md-4"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-    src: "./images/medicine/".concat(image),
+    src: image,
     alt: "Image",
-    className: "img-fluid p-5"
-  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    style: {
+      width: '100%',
+      height: '300px'
+    }
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "col-md-4"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", {
     className: "text-black"
@@ -104410,6 +104475,18 @@ function ShowMedicine(props) {
       color: '#2375b8'
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("u", null, "Specifications")), "\xA0", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+    id: "save",
+    onClick: function onClick() {
+      return updateInfo();
+    },
+    className: "btn btn-primary",
+    style: {
+      display: 'none'
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+    className: "fa fa-save fa-fw"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+    id: "edit",
     onClick: function onClick() {
       return editInfo();
     },
@@ -104424,27 +104501,49 @@ function ShowMedicine(props) {
     className: "table custom-table"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Title"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Information"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
     scope: "row"
-  }, "Quantity")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+  }, "Quantity"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "form-group ".concat(hasErrorFor('quantity') ? 'has-error' : '')
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    className: "form-control",
+    id: "quantity",
+    type: "number",
+    value: quantity,
+    onChange: handleQuantityChange,
+    disabled: true
+  }), renderErrorFor('quantity')))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
     scope: "row"
-  }, "Price")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+  }, "Price"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "form-group ".concat(hasErrorFor('price') ? 'has-error' : '')
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    className: "form-control",
+    id: "price",
+    type: "number",
+    value: price,
+    onChange: handlePriceChange,
+    disabled: true
+  }), renderErrorFor('price')))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
     scope: "row"
-  }, "MFD"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+  }, "MFD"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "form-group ".concat(hasErrorFor('MFD') ? 'has-error' : '')
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
     className: "form-control",
     id: "mfd",
     type: "date",
-    value: detail.MFD,
+    value: mfd,
     onChange: handleMfdChange,
     disabled: true
-  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+  }), renderErrorFor('MFD')))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
     scope: "row"
-  }, "EXP"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+  }, "EXP"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "form-group ".concat(hasErrorFor('MFD') ? 'has-error' : '')
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
     className: "form-control",
     id: "exp",
     type: "date",
-    value: detail.EXP,
+    value: exp,
     onChange: handleExpChange,
     disabled: true
-  })))))))))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layouts_Footer__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
+  }), renderErrorFor('EXP'))))))))))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layouts_Footer__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
 }
 
 /***/ }),
@@ -104499,10 +104598,42 @@ function Buy(props) {
   // const [currentPage, setCurrentPage] = useState();
 
 
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
+      _useState4 = _slicedToArray(_useState3, 2),
+      city = _useState4[0],
+      setCity = _useState4[1];
+
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
+      _useState6 = _slicedToArray(_useState5, 2),
+      cityId = _useState6[0],
+      setCityId = _useState6[1];
+
+  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
+      _useState8 = _slicedToArray(_useState7, 2),
+      street = _useState8[0],
+      setStreet = _useState8[1];
+
+  var _useState9 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
+      _useState10 = _slicedToArray(_useState9, 2),
+      streetId = _useState10[0],
+      setStreetId = _useState10[1];
+
   var history = Object(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["useHistory"])();
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    console.log(props.props.name);
-    fetchMedicine();
+    _api__WEBPACK_IMPORTED_MODULE_3__["default"].getCity(props.props.street.city.country.id).then(function (res) {
+      setCityId(props.props.street.city.id);
+      setCity(res.data);
+      _api__WEBPACK_IMPORTED_MODULE_3__["default"].getStreet(props.props.street.city.id).then(function (re) {
+        if (re.data.length == 0) {
+          setStreetId('0');
+        } else {
+          setStreetId(props.props.street.id);
+        }
+
+        setStreet(re.data);
+        fetchMedicine(props.props.street.id);
+      });
+    });
   }, []); //  useEffect(() => {
   // console.log(currentPage)
   // },[currentPage]);
@@ -104513,7 +104644,7 @@ function Buy(props) {
     fetchMedicine();
   }
 
-  function fetchMedicine() {
+  function fetchMedicine(id) {
     // const newUrl =
     //   window.location.protocol +
     //   '//' +
@@ -104524,9 +104655,9 @@ function Buy(props) {
     // window.history.pushState({ path: newUrl }, '', newUrl);
     // const response = axios.post(newUrl);
     // Progress.show();
-    _api__WEBPACK_IMPORTED_MODULE_3__["default"].getAllMedicineAvailable().then(function (response) {
-      setMedicine(response.data);
-      console.log(response.data); // setMedicine(response.data.data);
+    _api__WEBPACK_IMPORTED_MODULE_3__["default"].getAllMedicineAvailable(id).then(function (response) {
+      console.log(response.data);
+      setMedicine(response.data); // setMedicine(response.data.data);
       // setCurrentPage(response.data.current_page);
       // setPageCount(response.data.last_page);
       // window.scrollTo(0, 0);
@@ -104587,7 +104718,7 @@ function Buy(props) {
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "colorhover templatemo-content-widget no-padding white-bg col-sm-6 col-lg-4 text-center item mb-4"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        src: "./images/medicine/".concat(medicine.image),
+        src: "".concat(pharmacy.image),
         width: "350px",
         height: "200px",
         alt: "Image"
@@ -104595,7 +104726,11 @@ function Buy(props) {
         className: "text-dark"
       }, pharmacy.name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
         className: "price"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null))));
+      }, pharmacy[0].map(function (namepharmacy) {
+        return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+          key: namepharmacy.id
+        }, namepharmacy.name, " ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null));
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null))));
     });
   }
 
@@ -104611,6 +104746,39 @@ function Buy(props) {
     })["catch"](function (error) {
       console.log(error);
     });
+  }
+
+  function renderCity() {
+    return city.map(function (city) {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
+        key: city.id,
+        value: city.id
+      }, city.name);
+    });
+  }
+
+  function renderStreet() {
+    return street.map(function (street) {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
+        key: street.id,
+        value: street.id
+      }, street.name);
+    });
+  }
+
+  function handleCityChange(event) {
+    setCityId(event.target.value);
+    var city_id = event.target.value;
+    _api__WEBPACK_IMPORTED_MODULE_3__["default"].getStreet(city_id).then(function (response) {
+      setStreetId(response.data[0].id);
+      setStreet(response.data);
+    })["catch"](function (error) {
+      setStreet([]);
+    });
+  }
+
+  function handleStreetChange(event) {
+    setStreetId(event.target.value);
   }
 
   function filterFunction(event) {
@@ -104668,13 +104836,12 @@ function Buy(props) {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
     className: "fa fa-building fa-fw"
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", {
-    className: "form-control" // value={cityId} 
-    //   required 
-    //   onChange={handleCityChange}
-
+    className: "form-control",
+    value: cityId,
+    onChange: handleCityChange
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("optgroup", {
     label: "select city"
-  })))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }, city.length > 0 ? renderCity() : '')))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "form-group"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "input-group"
@@ -104683,12 +104850,13 @@ function Buy(props) {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
     className: "fa fa-street-view fa-fw"
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", {
-    className: "form-control" // value={streetId} 
-    //   required onChange={handleStreetChange}
-
+    className: "form-control",
+    value: streetId,
+    required: true,
+    onChange: handleStreetChange
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("optgroup", {
     label: "select street"
-  }))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }, city.length > 0 ? renderStreet() : ''))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     style: {
       marginTop: '10px'
     }

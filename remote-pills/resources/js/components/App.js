@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
-import {BrowserRouter, Route, Switch, HashRouter} from 'react-router-dom';
+import {BrowserRouter, Redirect, Route, Switch, useHistory} from 'react-router-dom';
 //import Login from './Login';
 import Home from './Home';
 
@@ -53,7 +53,7 @@ function App(){
             setRole(response.data.roles[0])
             
         }).catch(error => {
-           history.push('/');
+          //  history.push('/');
         })
       }
 
@@ -133,9 +133,14 @@ function App(){
         )
       }
 
+
+      function redirect(){
+        window.location.href = '/'; 
+      }
+
     return(
 
-    <BrowserRouter>
+      <BrowserRouter>
        
             
             {other()}

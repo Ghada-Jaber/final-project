@@ -16,13 +16,15 @@ export  default function ShowMedicine(props){
   const [dosage, setDosage] = useState('');
   const [unit, setUnit] = useState('');
   //description
-  const [detail, setDetail] = useState([]);
+  const [detailId, setDetailId] = useState('');
   const [quantity, setQuantity] = useState('');
   const [price, setPrice] = useState('');
   const [mfd, setMfd] = useState('');
   const [exp, setExp] = useState('');
 
   const [symtom, setSymtom] = useState([]);
+
+  const [errors, setErrors] = useState([]);
 
   const history = useHistory();
 
@@ -38,10 +40,11 @@ export  default function ShowMedicine(props){
           setTablet(response.data.tablet);
           setDosage(response.data.dosage);
           setUnit(response.data.dosage_unit);
-
-
-          setDetail(response.data.detail[0]);
-          setSymtom(response.data.symtom);
+          setDetailId(response.data.detail[0].id);
+          setQuantity(response.data.detail[0].quantity);
+          setPrice(response.data.detail[0].price);
+          setMfd(response.data.detail[0].MFD);
+          setExp(response.data.detail[0].EXP);
       }) .catch(error => {
       })
 
@@ -61,11 +64,58 @@ export  default function ShowMedicine(props){
   }
 
   function editInfo(){
-    console.log('here')
+    
+    document.getElementById('edit').style.display="none";
+    document.getElementById('save').style.display="";
     document.getElementById('quantity').disabled= false;
     document.getElementById('price').disabled= false;
     document.getElementById('mfd').disabled= false;
     document.getElementById('exp').disabled= false;
+  
+  }
+
+
+  function hasErrorFor (field) {
+    return !!errors[field]
+}
+
+function renderErrorFor (field) {
+    if (hasErrorFor(field)) {
+        return (
+    <span style={{ color: '#D7425C' }}>
+                <strong>{errors[field][0]}</strong>
+            </span>
+        )
+    }
+}
+
+  function updateInfo(){
+    const detail = {
+      quantity: quantity,
+      price: price,
+      MFD: mfd,
+      EXP:exp
+  }
+  api.updateMedicineDetail(detail, detailId)
+      .then(response => {
+        document.getElementById('edit').innerHTML= "<i  class='fa fa-edit fa-fw'></i>";
+        document.getElementById('quantity').disabled= true;
+        document.getElementById('price').disabled= true;
+        document.getElementById('mfd').disabled= true;
+        document.getElementById('exp').disabled= true;
+
+        setQuantity(response.data.quantity);
+        setPrice(response.data.price);
+        setMfd(response.data.MFD);
+        setExp(response.data.EXP);
+
+        document.getElementById('edit').style.display="";
+    document.getElementById('save').style.display="none";
+          
+      })
+      .catch(error => {
+          setErrors(error.response.data.errors)
+      })
   }
 
 
@@ -102,10 +152,8 @@ export  default function ShowMedicine(props){
 
     <div className="container">
         <div className="row">
-          <div className="col-md-4 mr-auto">
-            <div className="border text-center">
-              <img src={`./images/medicine/${image}`} alt="Image" className="img-fluid p-5" />
-            </div>
+          <div className="col-md-4">
+              <img src={image} alt="Image"  style={{ width:'100%' , height:'300px'}}/>
           </div>
           <div className="col-md-4">
             <h2 className="text-black">{name} {format}, {dosage} {unit}</h2>
@@ -133,9 +181,16 @@ export  default function ShowMedicine(props){
             
             <b style={{ color:'#2375b8' }}><u>Specifications</u></b>
               &nbsp;
-            <a onClick= {() => editInfo()} className='btn btn-primary' >
-             <i className="fa fa-edit fa-fw"></i>
+              <a  id="save" onClick= {() => updateInfo()} className='btn btn-primary' 
+                style={{ display:'none' }}>
+                <i  className="fa fa-save fa-fw"></i>
                 </a> 
+            <a  id="edit" onClick= {() => editInfo()} className='btn btn-primary' >
+             <i  className="fa fa-edit fa-fw"></i>
+                </a> 
+
+        
+
               <div className="tab-content">
               
                 <div className="tab-pane active">
@@ -149,36 +204,56 @@ export  default function ShowMedicine(props){
                     <tbody>
                       <tr>
                         <th scope="row">Quantity</th>
-                        {/* <td>
+                        <td>
+                        <div className={`form-group ${hasErrorFor('quantity') ? 'has-error' : ''}`} >
                         <input className="form-control" id="quantity"
-                        type="number" value={detail.quantity} 
-                        onChange={handleQuantityChange}
-                        disabled/></td> */}
+                        type="number" value={quantity} 
+                        onChange={handleQuantityChange} disabled
+                        />
+                        {renderErrorFor('quantity')}
+                        </div>
+                        </td>
                       </tr>
 
                       <tr>
                         <th scope="row">Price</th>
-                        {/* <td><input className="form-control" id="price"
-                        type="number" value={detail.price}
+                        
+                        <td>
+                        <div className={`form-group ${hasErrorFor('price') ? 'has-error' : ''}`} >
+                        <input className="form-control" id="price"
+                        type="number" value={price}
                         onChange={handlePriceChange} 
-                        disabled/></td> */}
+                        disabled/>
+                        {renderErrorFor('price')}
+                        </div>
+                        </td>
                       </tr>
 
                       <tr>
                         <th scope="row">MFD</th>
                         <td>
+                        <div className={`form-group ${hasErrorFor('MFD') ? 'has-error' : ''}`} >
                         <input className="form-control" id="mfd"
-                        type="date" value={detail.MFD} 
-                        onChange={handleMfdChange}
-                        disabled/></td>
+                        type="date" value={mfd} 
+                        onChange={handleMfdChange} disabled
+                        />
+                        {renderErrorFor('MFD')}
+                        </div>
+                        </td>
 
                       </tr>
                       <tr>
                         <th scope="row">EXP</th>
-                        <td><input className="form-control" id="exp"
-                         type="date" value={detail.EXP} 
+                        <td>
+                        <div className={`form-group ${hasErrorFor('MFD') ? 'has-error' : ''}`} >
+
+                        <input className="form-control" id="exp"
+                         type="date" value={exp} 
                          onChange={handleExpChange}
-                         disabled/></td>
+                         disabled/>
+                         {renderErrorFor('EXP')}
+                         </div>
+                         </td>
 
                       </tr>
                       

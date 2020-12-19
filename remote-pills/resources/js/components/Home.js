@@ -46,15 +46,15 @@ export  default function Home(){
     </ol>
     <div className="carousel-inner">
       <div className="item active">
-        <img src="./images/hero_1.jpg" alt="Los Angeles" style={{ width: '100%' }}/>
+        <img src="./images/hero_1.jpg" alt="Los Angeles" style={{ width: '100%', height:'500px' }}/>
       </div>
 
       <div className="item">
-        <img src="./images/bg_2.jpg" alt="Chicago" style={{ width: '100%' }}/>
+        <img src="./images/bg_2.jpg" alt="Chicago" style={{ width: '100%', height:'500px'  }}/>
       </div>
     
       <div className="item">
-        <img src="./images/bg_3.jpg" alt="New york" style={{ width: '100%' }}/>
+        <img src="./images/bg_3.jpg" alt="New york" style={{ width: '100%', height:'500px'  }}/>
       </div>
     </div>
     <a className="left carousel-control" href="#myCarousel" data-slide="prev">

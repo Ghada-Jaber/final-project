@@ -103,18 +103,21 @@ class AuthenticationController extends Controller
 
              
 
-              $image = $request['image']->store('uploads/userimage');
+              $image = $request['image']->store('public/uploads/userimage');
+
+
+              
               $url = Storage::url($image);
 
+
+              //php artisan storage:link
+
         }else{
-            $image = "uploads/userimage/NoImage.png";
+            $image = "public/uploads/userimage/NoImage.png";
         }
 
-        
-
-        
-            
-            
+        $url = Storage::url($image);
+  
         $user = User::create([
             'name' => $request['name'],
             'email' => $request['email'],

@@ -86,6 +86,9 @@ export default{
     showMedicine: (id) =>
     axios.get(`${BASE_URL}/pharmacy/medicine/${id}`, token),
 
+    updateMedicineDetail: (detail, id) =>
+    axios.put(`${BASE_URL}/pharmacy/medicine/${id}`, medicine, token),
+
     addMedicine: (medicine) =>
     axios.post(`${BASE_URL}/pharmacy/medicine`, medicine, token),
 
@@ -95,10 +98,10 @@ export default{
     editMedicine: (id) =>
     axios.get(`${BASE_URL}/pharmacy/medicine/${id}`, token),
 
-    updateMedicine: (medicine, id) =>
-    axios.put(`${BASE_URL}/pharmacy/medicine/${id}`, medicine, token),
+    updateMedicineDetail: (detail, id) =>
+    axios.put(`${BASE_URL}/pharmacy/medicine/${id}`, detail, token),
 
 
-    getAllMedicineAvailable: () =>
-    axios.get(`${BASE_URL}/user/allMedicine`, token),
+    getAllMedicineAvailable: (id) =>
+    axios.get(`${BASE_URL}/user/allMedicine/${id}`, token),
 }

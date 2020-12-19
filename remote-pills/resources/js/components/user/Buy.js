@@ -17,6 +17,11 @@ export  default function Buy(props){
 
   // const [currentPage, setCurrentPage] = useState();
 
+  const [city, setCity] = useState([]);
+	const [cityId, setCityId] = useState('');
+	const [street, setStreet] = useState([]);
+	const [streetId, setStreetId] = useState('');
+
       
   const history = useHistory();
 
@@ -24,8 +29,26 @@ export  default function Buy(props){
 
   useEffect(() => {
 
-    console.log(props.props.name)
-    fetchMedicine();
+    api.getCity(props.props.street.city.country.id).then(res => {
+        setCityId(props.props.street.city.id)
+      
+      
+        setCity(res.data);
+        api.getStreet(props.props.street.city.id).then(re => {
+          if(re.data.length ==0){
+            setStreetId('0')
+          }else{
+            setStreetId(props.props.street.id)
+          }
+          setStreet(re.data)
+
+          fetchMedicine(props.props.street.id);
+        })
+    })
+
+
+
+    
  
     
  },[]);
@@ -51,7 +74,7 @@ export  default function Buy(props){
 
  
 
- function fetchMedicine(){
+ function fetchMedicine(id){
     // const newUrl =
     //   window.location.protocol +
     //   '//' +
@@ -63,9 +86,10 @@ export  default function Buy(props){
 
     // const response = axios.post(newUrl);
   // Progress.show();
-    api.getAllMedicineAvailable().then(response => {
-      setMedicine(response.data);
+    api.getAllMedicineAvailable(id).then(response => {
       console.log(response.data)
+      setMedicine(response.data);
+      
       // setMedicine(response.data.data);
       // setCurrentPage(response.data.current_page);
       // setPageCount(response.data.last_page);
@@ -140,11 +164,16 @@ function renderMedicine(){
         <a href={"/medicine/show/"+pharmacy.id} key={pharmacy.id}> 
         <div className="colorhover templatemo-content-widget no-padding white-bg col-sm-6 col-lg-4 text-center item mb-4" >
         <br/>
-        <img src={`./images/medicine/${medicine.image}`} width="350px" height="200px" alt="Image"/>
-       
+        <img src={`${pharmacy.image}`} width="350px" height="200px" alt="Image"/>
         <h3 className="text-dark">{pharmacy.name}</h3>
         <p className="price">
-          
+          {pharmacy[0].map(namepharmacy=>{
+             return(
+               <i key={namepharmacy.id}>
+                 {namepharmacy.name} <br/>
+               </i>
+             )
+          })}
         <br/>
         </p>
       </div>
@@ -168,6 +197,43 @@ function renderMedicine(){
   })
 
   }
+
+
+  function renderCity(){
+    return  city.map(city => {
+        return(
+            <option key={city.id} value={city.id}>
+                {city.name}
+            </option>
+        )
+    })
+}
+
+function renderStreet(){
+    return  street.map(street => {
+        return(
+            <option key={street.id} value={street.id} >
+                {street.name}
+            </option>
+        )
+    })
+}
+
+function handleCityChange(event){
+  setCityId(event.target.value);
+  let city_id = event.target.value;
+  api.getStreet(city_id).then(response => {
+    
+          setStreetId(response.data[0].id)
+          setStreet(response.data)
+      }) .catch(error => {
+          setStreet([])
+      })
+}
+
+function handleStreetChange(event){
+  setStreetId(event.target.value);
+}
 
   function filterFunction(event){
     var search = event.target.value;
@@ -207,13 +273,11 @@ function renderMedicine(){
 				<div className="form-group" style={{ marginRight:'10px' }}>
 	        		<div className="input-group">
 		        		<div className="input-group-addon"><i className="fa fa-building fa-fw"></i></div>	        		
-		              	<select className="form-control"   
-						// value={cityId} 
-						//   required 
-            //   onChange={handleCityChange}
+		              	<select className="form-control"  value={cityId} 
+                    onChange={handleCityChange}
               > 
-						  <optgroup label="select city">
-							{/* { city.length >0 ? renderCity() : '' } */}
+						  <optgroup label="select city" >
+							{ city.length >0 ? renderCity() : '' }
 
 							</optgroup>
                         					
@@ -225,11 +289,11 @@ function renderMedicine(){
 	        		<div className="input-group">
 		        		<div className="input-group-addon"><i className="fa fa-street-view fa-fw"></i></div>	        		
 		              	<select className="form-control"  
-						// value={streetId} 
-						//   required onChange={handleStreetChange}
+						value={streetId} 
+						  required onChange={handleStreetChange}
               > 
 						  <optgroup label="select street">
-							  {/* { city.length >0 ? renderStreet() : '' } */}
+							  { city.length >0 ? renderStreet() : '' }
 							</optgroup>
                         					
                          </select>						

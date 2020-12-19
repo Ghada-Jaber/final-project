@@ -84,7 +84,7 @@ Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_PHA
     Route::get('/pharmacy/medicine/{medicine}', [PharmacyController::class, 'showMedicine']); 
 
 
-    Route::put('/pharmacy/medicine/{medicine}', [PharmacyController::class, 'updateMedicine']); 
+    Route::put('/pharmacy/medicine/{detail}', [PharmacyController::class, 'updateMedicine']); 
 
     
 
@@ -94,7 +94,7 @@ Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_NOR
     //get all medicine in each pharmacy
     Route::get('/user/pharmacyMedicine', [UserController::class, 'getAllMedicinePharmacy']); 
 
-    Route::get('/user/allMedicine', [UserController::class, 'getAllMedicineAvailable']); 
+    Route::get('/user/allMedicine/{id}', [UserController::class, 'getAllMedicineAvailable']); 
     
    
 
