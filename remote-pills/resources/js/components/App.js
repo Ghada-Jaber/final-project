@@ -40,6 +40,7 @@ import ForgetPassword from './auth/ForgetPassword';
 import api from '../api';
 
 function App(){
+  const [detail, setDetail] = useState([]);
     const [role, setRole] = useState('');
 
     useEffect(() => {
@@ -48,6 +49,7 @@ function App(){
 
     function details(){
         api.details().then(response => {
+            setDetail(response.data);
             setRole(response.data.roles[0])
             
         }).catch(error => {
@@ -101,7 +103,13 @@ function App(){
             <Switch>
             <Route exact path='/cart' component={IndexUser} />
             {/* <Route exact path='/doctor' component={Doctor} /> */}
-            <Route exact path='/buy' component={Buy} />
+            <Route exact path='/buy' >
+              <Buy props={detail}/>
+            </Route>
+
+                <Route exact path='/profile'>
+             <Profile props={detail}/>
+          </Route>
             <Route exact path='/map' component={ShowMap} />
             <Route exact path='/test' component={Test} />
             </Switch>
@@ -119,7 +127,7 @@ function App(){
           <Route exact path='/signup' component={SignUp}/>
           <Route exact path='/forpass' component={ForgetPassword}/>
           
-          <Route exact path='/profile' component={Profile} />
+      
           <Route exact path='/chat' component={Chat} />
           </Switch>
         )

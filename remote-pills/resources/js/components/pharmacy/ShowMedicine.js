@@ -17,6 +17,10 @@ export  default function ShowMedicine(props){
   const [unit, setUnit] = useState('');
   //description
   const [detail, setDetail] = useState([]);
+  const [quantity, setQuantity] = useState('');
+  const [price, setPrice] = useState('');
+  const [mfd, setMfd] = useState('');
+  const [exp, setExp] = useState('');
 
   const [symtom, setSymtom] = useState([]);
 
@@ -25,8 +29,6 @@ export  default function ShowMedicine(props){
   useEffect(() => {
       api.showMedicine(props.match.params.id)
       .then(response => {
-
-        console.log(response.data)
         setImage(response.data.image);
           setName(response.data.name);
           setFormat(response.data.format);
@@ -59,7 +61,30 @@ export  default function ShowMedicine(props){
   }
 
   function editInfo(){
-    document.getElementById('quantity').enabled= 'enabled';
+    console.log('here')
+    document.getElementById('quantity').disabled= false;
+    document.getElementById('price').disabled= false;
+    document.getElementById('mfd').disabled= false;
+    document.getElementById('exp').disabled= false;
+  }
+
+
+  function handleQuantityChange(event){
+    setQuantity(event.target.value);
+  }
+
+
+  function handlePriceChange(event){
+    setPrice(event.target.value);
+  }
+
+
+  function handleMfdChange(event){
+    setMfd(event.target.value);
+  }
+
+  function handleExpChange(event){
+    setExp(event.target.value);
   }
    
 
@@ -124,28 +149,36 @@ export  default function ShowMedicine(props){
                     <tbody>
                       <tr>
                         <th scope="row">Quantity</th>
-                        <td>
+                        {/* <td>
                         <input className="form-control" id="quantity"
-                        type="number" value={detail.quantity} disabled/></td>
+                        type="number" value={detail.quantity} 
+                        onChange={handleQuantityChange}
+                        disabled/></td> */}
                       </tr>
 
                       <tr>
                         <th scope="row">Price</th>
-                        <td><input className="form-control" id="price"
-                        type="number" value={detail.price} disabled/></td>
+                        {/* <td><input className="form-control" id="price"
+                        type="number" value={detail.price}
+                        onChange={handlePriceChange} 
+                        disabled/></td> */}
                       </tr>
 
                       <tr>
                         <th scope="row">MFD</th>
                         <td>
                         <input className="form-control" id="mfd"
-                        type="date" value={detail.MFD} disabled/></td>
+                        type="date" value={detail.MFD} 
+                        onChange={handleMfdChange}
+                        disabled/></td>
 
                       </tr>
                       <tr>
                         <th scope="row">EXP</th>
                         <td><input className="form-control" id="exp"
-                         type="date" value={detail.EXP} disabled/></td>
+                         type="date" value={detail.EXP} 
+                         onChange={handleExpChange}
+                         disabled/></td>
 
                       </tr>
                       

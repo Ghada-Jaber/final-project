@@ -4,7 +4,7 @@ import api from '../api';
 import Header from './layouts/Header';
 import Footer from './layouts/Footer';
 
-export  default function Profile(){
+export  default function Profile(props){
     const [pharmacy, setPharmacy] = useState([]);
   const history = useHistory();
   const [name, setName] = useState('');
@@ -20,20 +20,16 @@ export  default function Profile(){
 
 
   useEffect(() => {
-    details();
+    setId(props.props.id)
+    setName(props.props.name)
+    setEmail(props.props.email)
+    setBirthday(props.props.birthday)
+    setImage(props.props.image)
+    setAddress(props.props.address)
+
  },[]);
 
 
- function details(){
-  api.details().then(response => {
-    setId(response.data.id)
-      setName(response.data.name)
-      setEmail(response.data.email)
-      setBirthday(response.data.birthday)
-      setImage(response.data.image)
-      setAddress(response.data.address)
-  })
-}
 
     function functionalert(id){
         if (document.getElementById(id).style.display ==""){

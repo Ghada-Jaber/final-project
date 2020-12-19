@@ -9,7 +9,7 @@ import ReactDOM from 'react-dom';
 // import Progress from 'react-progress-2';
 // import 'react-progress-2/main.css';
 
-export  default function Buy(){
+export  default function Buy(props){
 
   const [medicine, setMedicine] = useState([]);
 
@@ -24,6 +24,7 @@ export  default function Buy(){
 
   useEffect(() => {
 
+    console.log(props.props.name)
     fetchMedicine();
  
     
@@ -202,6 +203,39 @@ function renderMedicine(){
                onChange={filterFunction}
                />   
                </div>
+
+				<div className="form-group" style={{ marginRight:'10px' }}>
+	        		<div className="input-group">
+		        		<div className="input-group-addon"><i className="fa fa-building fa-fw"></i></div>	        		
+		              	<select className="form-control"   
+						// value={cityId} 
+						//   required 
+            //   onChange={handleCityChange}
+              > 
+						  <optgroup label="select city">
+							{/* { city.length >0 ? renderCity() : '' } */}
+
+							</optgroup>
+                        					
+                         </select>						
+		          	</div>	
+	        	</div>
+
+				<div className="form-group">
+	        		<div className="input-group">
+		        		<div className="input-group-addon"><i className="fa fa-street-view fa-fw"></i></div>	        		
+		              	<select className="form-control"  
+						// value={streetId} 
+						//   required onChange={handleStreetChange}
+              > 
+						  <optgroup label="select street">
+							  {/* { city.length >0 ? renderStreet() : '' } */}
+							</optgroup>
+                        					
+                         </select>						
+		          	</div>	
+	        	</div>
+
        
             </div>
 

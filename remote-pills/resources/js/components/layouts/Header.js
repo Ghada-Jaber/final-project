@@ -6,7 +6,7 @@ import ForgetPassword from '../auth/ForgetPassword';
 import api from '../../api';
 import CookieService from '../../Service/CookieService';
 import logo from '../../../images/logo.png';
-//import no from '../../../../storage/app/uploads/userimage/NoImage.png';
+// import no from '../../../../storage/app/uploads/userimage/NoImage.png';
 // import styles from './../../../css/templatemo-style.css';
 // import s2 from './../../../css/font-awesome.min.css';
 // import classNames from 'classnames/bind';
@@ -23,11 +23,11 @@ export default function Header(){
     const [greeting, setGreeting] = useState('');
 
 
-    const test = require(`../../../../storage/app/uploads/userimage/NoImage.png`);
+    // const test = require('../../../../storage/app/uploads/userimage/NoImage.png');
     // require.context(directory, useSubdirectories = true, regExp = /^\.\/.*$/, mode = 'sync')
 
   useEffect(() => {
-    console.log(window.location.origin)
+    // console.log(window.location.origin)
     setCurrentPage(window.location.pathname); 
     var d = new Date();
     var t = d.getHours();
@@ -163,6 +163,7 @@ return(
 
                       <li className= {`${(page =='/map') ? 'active' : '' }`}>
                       <a href="map"><i className="fa fa-map-marker fa-fw"></i>Map</a></li>
+                      
                       </ul>
 )
 }
@@ -190,7 +191,8 @@ function auth(){
         {/* <img src={require(test)} width="50px" height="50px" className="img"/> &nbsp;          */}
         
         
-        <img src={test} 
+        /home/ghada/Desktop/final-project/remote-pills/storage/app/uploads/userimage/JLHSB3Vtc6pNAcM9IpT5IxZMIBPky2qG2UwHf67M.png
+        <img src= {`http://127.0.0.1:8000${image}`} 
         width="50px" height="50px" className="img"/> 
 {/* <img src={require('../../../../storage/app/' + image)} width="50px" height="50px" className="img"/> &nbsp; */}
 {/* class="media-object img-circle templatemo-img-bordered" */}

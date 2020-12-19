@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\File;
 use Exception;
 use App\Models\User;
 use Illuminate\Database\QueryException;
+use Illuminate\Support\Facades\Storage;
 
 class AuthenticationController extends Controller
 {
@@ -99,8 +100,11 @@ class AuthenticationController extends Controller
             //  $img->move(public_path().'/images/userimage/', $fileNameToStore);
              //$img->move('uploads/', $fileNameToStore);
 
-             $image = $request['image']->store('uploads/userimage');
+
              
+
+              $image = $request['image']->store('uploads/userimage');
+              $url = Storage::url($image);
 
         }else{
             $image = "uploads/userimage/NoImage.png";
@@ -115,7 +119,7 @@ class AuthenticationController extends Controller
             'name' => $request['name'],
             'email' => $request['email'],
             'password' => bcrypt($request['password']),
-            'image' => $image,
+            'image' => $url,
             'birthday' => $request['birthday'],
             'street_id' => $request['street_id'],
           ]);

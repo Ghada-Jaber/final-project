@@ -101710,10 +101710,15 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 function App() {
-  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
       _useState2 = _slicedToArray(_useState, 2),
-      role = _useState2[0],
-      setRole = _useState2[1];
+      detail = _useState2[0],
+      setDetail = _useState2[1];
+
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
+      _useState4 = _slicedToArray(_useState3, 2),
+      role = _useState4[0],
+      setRole = _useState4[1];
 
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
     details();
@@ -101721,6 +101726,7 @@ function App() {
 
   function details() {
     _api__WEBPACK_IMPORTED_MODULE_28__["default"].details().then(function (response) {
+      setDetail(response.data);
       setRole(response.data.roles[0]);
     })["catch"](function (error) {
       history.push('/');
@@ -101806,9 +101812,15 @@ function App() {
       component: _user_IndexUser__WEBPACK_IMPORTED_MODULE_17__["default"]
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       exact: true,
-      path: "/buy",
-      component: _user_Buy__WEBPACK_IMPORTED_MODULE_16__["default"]
-    }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
+      path: "/buy"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_user_Buy__WEBPACK_IMPORTED_MODULE_16__["default"], {
+      props: detail
+    })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
+      exact: true,
+      path: "/profile"
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Profile__WEBPACK_IMPORTED_MODULE_23__["default"], {
+      props: detail
+    })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       exact: true,
       path: "/map",
       component: _user_ShowMap__WEBPACK_IMPORTED_MODULE_18__["default"]
@@ -101840,10 +101852,6 @@ function App() {
       exact: true,
       path: "/forpass",
       component: _auth_ForgetPassword__WEBPACK_IMPORTED_MODULE_27__["default"]
-    }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
-      exact: true,
-      path: "/profile",
-      component: _Profile__WEBPACK_IMPORTED_MODULE_23__["default"]
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       exact: true,
       path: "/chat",
@@ -102254,7 +102262,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-function Profile() {
+function Profile(props) {
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
       _useState2 = _slicedToArray(_useState, 2),
       pharmacy = _useState2[0],
@@ -102303,19 +102311,13 @@ function Profile() {
       setId = _useState18[1];
 
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    details();
+    setId(props.props.id);
+    setName(props.props.name);
+    setEmail(props.props.email);
+    setBirthday(props.props.birthday);
+    setImage(props.props.image);
+    setAddress(props.props.address);
   }, []);
-
-  function details() {
-    _api__WEBPACK_IMPORTED_MODULE_2__["default"].details().then(function (response) {
-      setId(response.data.id);
-      setName(response.data.name);
-      setEmail(response.data.email);
-      setBirthday(response.data.birthday);
-      setImage(response.data.image);
-      setAddress(response.data.address);
-    });
-  }
 
   function functionalert(id) {
     if (document.getElementById(id).style.display == "") {
@@ -103096,7 +103098,7 @@ function SignUp() {
     onChange: handleStreetChange
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("optgroup", {
     label: "select street"
-  }, city.length > 0 ? renderStreet() : '')))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }, street.length > 0 ? renderStreet() : '')))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "form-group"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "input-group"
@@ -103191,7 +103193,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
- //import no from '../../../../storage/app/uploads/userimage/NoImage.png';
+ // import no from '../../../../storage/app/uploads/userimage/NoImage.png';
 // import styles from './../../../css/templatemo-style.css';
 // import s2 from './../../../css/font-awesome.min.css';
 // import classNames from 'classnames/bind';
@@ -103226,13 +103228,12 @@ function Header() {
   var _useState9 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
       _useState10 = _slicedToArray(_useState9, 2),
       greeting = _useState10[0],
-      setGreeting = _useState10[1];
-
-  var test = __webpack_require__(/*! ../../../../storage/app/uploads/userimage/NoImage.png */ "./storage/app/uploads/userimage/NoImage.png"); // require.context(directory, useSubdirectories = true, regExp = /^\.\/.*$/, mode = 'sync')
+      setGreeting = _useState10[1]; // const test = require('../../../../storage/app/uploads/userimage/NoImage.png');
+  // require.context(directory, useSubdirectories = true, regExp = /^\.\/.*$/, mode = 'sync')
 
 
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    console.log(window.location.origin);
+    // console.log(window.location.origin)
     setCurrentPage(window.location.pathname);
     var d = new Date();
     var t = d.getHours();
@@ -103408,8 +103409,8 @@ function Header() {
       style: {
         padding: '5px'
       }
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-      src: test,
+    }, "/home/ghada/Desktop/final-project/remote-pills/storage/app/uploads/userimage/JLHSB3Vtc6pNAcM9IpT5IxZMIBPky2qG2UwHf67M.png", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+      src: "http://127.0.0.1:8000".concat(image),
       width: "50px",
       height: "50px",
       className: "img"
@@ -104263,15 +104264,34 @@ function ShowMedicine(props) {
       detail = _useState20[0],
       setDetail = _useState20[1];
 
-  var _useState21 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
+  var _useState21 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
       _useState22 = _slicedToArray(_useState21, 2),
-      symtom = _useState22[0],
-      setSymtom = _useState22[1];
+      quantity = _useState22[0],
+      setQuantity = _useState22[1];
+
+  var _useState23 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
+      _useState24 = _slicedToArray(_useState23, 2),
+      price = _useState24[0],
+      setPrice = _useState24[1];
+
+  var _useState25 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
+      _useState26 = _slicedToArray(_useState25, 2),
+      mfd = _useState26[0],
+      setMfd = _useState26[1];
+
+  var _useState27 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
+      _useState28 = _slicedToArray(_useState27, 2),
+      exp = _useState28[0],
+      setExp = _useState28[1];
+
+  var _useState29 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
+      _useState30 = _slicedToArray(_useState29, 2),
+      symtom = _useState30[0],
+      setSymtom = _useState30[1];
 
   var history = Object(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["useHistory"])();
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
     _api__WEBPACK_IMPORTED_MODULE_2__["default"].showMedicine(props.match.params.id).then(function (response) {
-      console.log(response.data);
       setImage(response.data.image);
       setName(response.data.name);
       setFormat(response.data.format);
@@ -104301,7 +104321,27 @@ function ShowMedicine(props) {
   }
 
   function editInfo() {
-    document.getElementById('quantity').enabled = 'enabled';
+    console.log('here');
+    document.getElementById('quantity').disabled = false;
+    document.getElementById('price').disabled = false;
+    document.getElementById('mfd').disabled = false;
+    document.getElementById('exp').disabled = false;
+  }
+
+  function handleQuantityChange(event) {
+    setQuantity(event.target.value);
+  }
+
+  function handlePriceChange(event) {
+    setPrice(event.target.value);
+  }
+
+  function handleMfdChange(event) {
+    setMfd(event.target.value);
+  }
+
+  function handleExpChange(event) {
+    setExp(event.target.value);
   }
 
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -104384,27 +104424,16 @@ function ShowMedicine(props) {
     className: "table custom-table"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Title"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Information"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
     scope: "row"
-  }, "Quantity"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-    className: "form-control",
-    id: "quantity",
-    type: "number",
-    value: detail.quantity,
-    disabled: true
-  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+  }, "Quantity")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
     scope: "row"
-  }, "Price"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-    className: "form-control",
-    id: "price",
-    type: "number",
-    value: detail.price,
-    disabled: true
-  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
+  }, "Price")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
     scope: "row"
   }, "MFD"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
     className: "form-control",
     id: "mfd",
     type: "date",
     value: detail.MFD,
+    onChange: handleMfdChange,
     disabled: true
   }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
     scope: "row"
@@ -104413,6 +104442,7 @@ function ShowMedicine(props) {
     id: "exp",
     type: "date",
     value: detail.EXP,
+    onChange: handleExpChange,
     disabled: true
   })))))))))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layouts_Footer__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
 }
@@ -104461,7 +104491,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 // import Progress from 'react-progress-2';
 // import 'react-progress-2/main.css';
 
-function Buy() {
+function Buy(props) {
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
       _useState2 = _slicedToArray(_useState, 2),
       medicine = _useState2[0],
@@ -104471,6 +104501,7 @@ function Buy() {
 
   var history = Object(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["useHistory"])();
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    console.log(props.props.name);
     fetchMedicine();
   }, []); //  useEffect(() => {
   // console.log(currentPage)
@@ -104625,7 +104656,39 @@ function Buy() {
     className: "form-control",
     placeholder: "Serach",
     onChange: filterFunction
-  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "form-group",
+    style: {
+      marginRight: '10px'
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "input-group"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "input-group-addon"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+    className: "fa fa-building fa-fw"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", {
+    className: "form-control" // value={cityId} 
+    //   required 
+    //   onChange={handleCityChange}
+
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("optgroup", {
+    label: "select city"
+  })))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "form-group"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "input-group"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "input-group-addon"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+    className: "fa fa-street-view fa-fw"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", {
+    className: "form-control" // value={streetId} 
+    //   required onChange={handleStreetChange}
+
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("optgroup", {
+    label: "select street"
+  }))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     style: {
       marginTop: '10px'
     }
@@ -104975,19 +105038,6 @@ function Test() {
 /* harmony default export */ __webpack_exports__["default"] = (Object(google_maps_react__WEBPACK_IMPORTED_MODULE_1__["GoogleApiWrapper"])({
   apiKey: 'AIzaSyBp6txXqL4CpgictG68veqo6MmEb89yFE4'
 })(Test));
-
-/***/ }),
-
-/***/ "./storage/app/uploads/userimage/NoImage.png":
-/*!***************************************************!*\
-  !*** ./storage/app/uploads/userimage/NoImage.png ***!
-  \***************************************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("/images/NoImage.png?9b8b94d39f86b932cf37f9bf5c9a6709");
 
 /***/ }),
 

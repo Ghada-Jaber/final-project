@@ -314,7 +314,7 @@ export  default function SignUp(){
 						value={streetId} 
 						  required onChange={handleStreetChange}> 
 						  <optgroup label="select street">
-							  { city.length >0 ? renderStreet() : '' }
+							  { street.length >0 ? renderStreet() : '' }
 							</optgroup>
                         					
                          </select>						
