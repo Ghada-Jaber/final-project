@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Medicine;
 use App\Models\User;
+use App\Models\Customer;
+use App\Models\Buy;
 
 class UserController extends Controller
 {
@@ -78,10 +81,12 @@ class UserController extends Controller
                 if($pharmacy->pharmacy->street_id == $id){
                     // $medicine->detail = $detail->detail;
                     $array = $pharmacy->medicine->toArray();
-                    $array2 = $pharmacy->medicine->pharmacy->toArray();
-                    
 
-                    // foreach($pharmacy->medicine->pharmacy as $price){
+                    $array2 = $pharmacy->medicine->pharmacy->toArray();
+
+               
+                   
+                // foreach($pharmacy->medicine->pharmacy as $price){
                     //     $ok= false;
                     //     foreach($price->detail as $single){
                     //         if($price->id == $single->pharmacy_id){
@@ -95,18 +100,6 @@ class UserController extends Controller
                     //     }
                        
                     // }
-
-                    foreach($pharmacy->medicine->detail as $price){
-                        $array3 = $price->price;
-                        foreach($pharmacy->medicine->pharmacy as $pri){
-                        }
-                       
-                      array_push($array2, $array3);
-                    }
-
-                    // 
-
-                    // 
                         array_push($array, $array2);
 
                     
@@ -118,6 +111,43 @@ class UserController extends Controller
         }
 
         return response()->json($near, 201);
+
+    }
+
+
+    public function showMedicine(Medicine $medicine){
+        $medicine->symtom = $medicine->symtom->flatten();
+        foreach($medicine->detail as $detail){
+            $medicine->detail = $detail->pharmacy;
+        }
+
+        return response()->json($medicine,200);
+    }
+
+
+
+    public function buyMedicinde(Request $request, Medicine $medicine){
+
+        $user = Auth::user();
+
+
+
+        $customer =  Customer::create([
+            'pharmacy_id' => $request['pharmacy_id'],
+            'customer_id' => $user->id
+        ]);
+
+
+        $buy = Buy::create([
+            'customer_id' => $customer->id,
+            'medicine_id' => $medicine->id,
+            'price' => $request['price'],
+            'reservation' =>$request['reservation']
+        ]);
+
+        if($buy->reservation == true){
+            
+        }
 
     }
     

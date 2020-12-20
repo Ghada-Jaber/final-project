@@ -109,6 +109,14 @@ a:hover { text-decoration: none !important;}
 		 color:white !important;
 	 }
 
+	 .colorhover img{
+		background-color: white ;
+	}
+
+	 .colorhover img:hover{
+		 background-color: white ;
+	 }
+
 nav li {
 	font-size: 1.1em;
 	list-style: none;	
@@ -812,6 +820,7 @@ select option{
    padding:10px;
 	border-radius: 2px;  
   }
+
 
   .logincontainer{
 	background-repeat: no-repeat;

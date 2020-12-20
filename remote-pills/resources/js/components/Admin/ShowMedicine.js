@@ -17,6 +17,8 @@ export  default function ShowMedicine(props){
     const [dosage, setDosage] = useState('');
     const [unit, setUnit] = useState('');
 
+    const [symtom, setSymtom] = useState([]);
+
     const [pharmacy, setPharmacy] = useState([]);
 
   const history = useHistory();
@@ -32,6 +34,7 @@ export  default function ShowMedicine(props){
         setTablet(response.data.tablet);
         setDosage(response.data.dosage);
         setUnit(response.data.dosage_unit);
+        setSymtom(response.data.symtom);
       })
 
       api.getMedicinePharmacy(props.match.params.id).then(response => {
@@ -39,6 +42,20 @@ export  default function ShowMedicine(props){
       })
 
   },[]);
+
+
+  function renderSymtom(){
+    return symtom.map(symtom => {
+      return(
+        <i key={symtom.id}>
+       <i style={{ border:'1px solid #2375b8', padding:'10px', borderRadius:'5px'}} >
+          {symtom.name}
+       </i>
+       &nbsp;&nbsp;
+       </i>
+        )
+      })
+  }
 
 
   function renderPharmacy(){
@@ -66,11 +83,9 @@ export  default function ShowMedicine(props){
 
   <div className="container">
       <div className="row">
-        <div className="col-md-4 mr-auto">
-          <div className="border text-center">
-            <img src={`./images/medicine/${image}`} alt="Image" className="img-fluid p-5" />
+      <div className="col-md-4">
+              <img src={image} alt="Image"  style={{ width:'100%' , height:'300px'}}/>
           </div>
-        </div>
         <div className="col-md-4">
           <h2 className="text-black">{name} {format}, {dosage} {unit}</h2>
 
@@ -90,6 +105,15 @@ export  default function ShowMedicine(props){
   
         </div>
         <div className="col-md-4">
+        <h4 style={{ color:'#2375b8' }}>Symtom</h4>
+            
+            <div style={{ overflow:'auto', width:'260px', height:'70px', padding:'10px' }}>
+            {renderSymtom()}
+
+            </div>
+<hr/>
+            <br/>
+            
         <h3>Pharmacy have medicine {name} / Number: {pharmacy.length}</h3>
     <div className="scrollform">
 

@@ -161,21 +161,32 @@ function handleReferenceChange(event){
 function renderMedicine(){
   return medicine.map(pharmacy => {
       return(
-        <a href={"/medicine/show/"+pharmacy.id} key={pharmacy.id}> 
+        <a href={"/user/medicine/show/"+pharmacy.id} key={pharmacy.id}> 
         <div className="colorhover templatemo-content-widget no-padding white-bg col-sm-6 col-lg-4 text-center item mb-4" >
         <br/>
         <img src={`${pharmacy.image}`} width="350px" height="200px" alt="Image"/>
         <h3 className="text-dark">{pharmacy.name}</h3>
-        <p className="price">
-          {pharmacy[0].map(namepharmacy=>{
+      
+        <div className="table-responsive" style={{ overflow:'auto', height:'100px'}}>
+                <table className="table">
+                <thead >
+                    <tr >
+                      <td><b>Pharmacy</b></td>
+                      <td><b>Price</b></td>
+                      </tr>
+                    </thead>
+                  <tbody>
+                  {pharmacy[0].map(namepharmacy=>{
              return(
-               <i key={namepharmacy.id}>
-                 {namepharmacy.name} <br/>
-               </i>
+               <tr key={namepharmacy.id}>
+               <td> {namepharmacy.name} </td><td>price</td>
+               </tr>
              )
           })}
-        <br/>
-        </p>
+                                   
+                  </tbody>
+                </table>
+              </div>  
       </div>
       </a>
         )
@@ -233,6 +244,8 @@ function handleCityChange(event){
 
 function handleStreetChange(event){
   setStreetId(event.target.value);
+  fetchMedicine(event.target.value);
+
 }
 
   function filterFunction(event){

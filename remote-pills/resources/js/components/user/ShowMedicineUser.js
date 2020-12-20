@@ -1,11 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {Component, useState, useEffect} from 'react';
 import {Link, useHistory} from 'react-router-dom';
 import api from '../../api';
 import Header from '../layouts/Header';
 import Footer from '../layouts/Footer';
 import Back from '../Back';
 
-export  default function ShowMedicine(props){
+export  default function ShowMedicineUser(props){
   const [image, setImage] = useState('');
   const [name, setName] = useState('');
   const [format, setFormat] = useState('');
@@ -24,13 +24,17 @@ export  default function ShowMedicine(props){
 
   const [symtom, setSymtom] = useState([]);
 
+  const[detail, setDetail]= useState([]);
+
   const [errors, setErrors] = useState([]);
 
   const history = useHistory();
 
   useEffect(() => {
-      api.showMedicine(props.match.params.id)
+      api.showUserMedicine(props.match.params.id)
       .then(response => {
+
+        console.log(response.data)
         setImage(response.data.image);
           setName(response.data.name);
           setFormat(response.data.format);
@@ -40,11 +44,14 @@ export  default function ShowMedicine(props){
           setTablet(response.data.tablet);
           setDosage(response.data.dosage);
           setUnit(response.data.dosage_unit);
-          setDetailId(response.data.detail[0].id);
-          setQuantity(response.data.detail[0].quantity);
-          setPrice(response.data.detail[0].price);
-          setMfd(response.data.detail[0].MFD);
-          setExp(response.data.detail[0].EXP);
+
+          setDetail(response.data.detail);
+          // setDetailId(response.data.detail[0].id);
+          // setQuantity(response.data.detail[0].quantity);
+          // setPrice(response.data.detail[0].price);
+          // setMfd(response.data.detail[0].MFD);
+          // setExp(response.data.detail[0].EXP);
+
 
           setSymtom(response.data.symtom);
       }) .catch(error => {
@@ -65,16 +72,7 @@ export  default function ShowMedicine(props){
       })
   }
 
-  function editInfo(){
-    
-    document.getElementById('edit').style.display="none";
-    document.getElementById('save').style.display="";
-    document.getElementById('quantity').disabled= false;
-    document.getElementById('price').disabled= false;
-    document.getElementById('mfd').disabled= false;
-    document.getElementById('exp').disabled= false;
-  
-  }
+
 
 
   function hasErrorFor (field) {
@@ -90,6 +88,27 @@ function renderErrorFor (field) {
         )
     }
 }
+
+function renderDetail(){
+  return detail.map(detail => {
+      return(
+        <tr key={detail.id}>
+        <th scope="row">{detail.pharmacy.name}</th>
+        <td>
+        {detail.price}
+        </td>
+        <td>
+        {detail.MFD}
+        </td>
+        <td>
+        {detail.EXP}
+        </td>
+      </tr>
+
+        )
+      })
+  }
+
 
   function updateInfo(){
     const detail = {
@@ -154,8 +173,8 @@ function renderErrorFor (field) {
 
     <div className="container">
         <div className="row">
-          <div className="col-md-4">
-              <img src={image} alt="Image"  style={{ width:'100%' , height:'300px'}}/>
+          <div className="col-md-4" style={{ top:'10px', left:'-2%'}}>
+              <img src={image} alt="Image"  style={{ width:'100%' , height:'300px'}} className="test"/>
           </div>
           <div className="col-md-4">
             <h2 className="text-black">{name} {format}, {dosage} {unit}</h2>
@@ -181,83 +200,23 @@ function renderErrorFor (field) {
 <hr/>
             <br/>
             
-            <b style={{ color:'#2375b8' }}><u>Specifications</u></b>
+            <b style={{ color:'#2375b8' }}><u>Details</u></b>
               &nbsp;
-              <a  id="save" onClick= {() => updateInfo()} className='btn btn-primary' 
-                style={{ display:'none' }}>
-                <i  className="fa fa-save fa-fw"></i>
-                </a> 
-            <a  id="edit" onClick= {() => editInfo()} className='btn btn-primary' >
-             <i  className="fa fa-edit fa-fw"></i>
-                </a> 
-
-        
-
               <div className="tab-content">
               
                 <div className="tab-pane active">
                   <table className="table custom-table">
                     <thead>
                     <tr>
-                      <th>Title</th>
-                      <th>Information</th>
+                      <th>Pharmacy</th>
+                      <th>Price</th>
+                      <th>MFD</th>
+                      <th>EXP</th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <th scope="row">Quantity</th>
-                        <td>
-                        <div className={`form-group ${hasErrorFor('quantity') ? 'has-error' : ''}`} >
-                        <input className="form-control" id="quantity"
-                        type="number" value={quantity} 
-                        onChange={handleQuantityChange} disabled
-                        />
-                        {renderErrorFor('quantity')}
-                        </div>
-                        </td>
-                      </tr>
-
-                      <tr>
-                        <th scope="row">Price</th>
-                        
-                        <td>
-                        <div className={`form-group ${hasErrorFor('price') ? 'has-error' : ''}`} >
-                        <input className="form-control" id="price"
-                        type="number" value={price}
-                        onChange={handlePriceChange} 
-                        disabled/>
-                        {renderErrorFor('price')}
-                        </div>
-                        </td>
-                      </tr>
-
-                      <tr>
-                        <th scope="row">MFD</th>
-                        <td>
-                        <div className={`form-group ${hasErrorFor('MFD') ? 'has-error' : ''}`} >
-                        <input className="form-control" id="mfd"
-                        type="date" value={mfd} 
-                        onChange={handleMfdChange} disabled
-                        />
-                        {renderErrorFor('MFD')}
-                        </div>
-                        </td>
-
-                      </tr>
-                      <tr>
-                        <th scope="row">EXP</th>
-                        <td>
-                        <div className={`form-group ${hasErrorFor('MFD') ? 'has-error' : ''}`} >
-
-                        <input className="form-control" id="exp"
-                         type="date" value={exp} 
-                         onChange={handleExpChange}
-                         disabled/>
-                         {renderErrorFor('EXP')}
-                         </div>
-                         </td>
-
-                      </tr>
+                    {renderDetail()}
+                     
                       
                     </tbody>
                   </table>

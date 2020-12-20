@@ -129,7 +129,7 @@ for (i = 1; i < tr.length; i++) {
                     <td>{medicine.id}</td>
                     <td>
                     
-                    <img src={`../../../../storage/app/${medicine.image}`} width="100px" height="100px"/></td>
+                    <img src={medicine.image} width="100px" height="100px"/></td>
                     <td>{medicine.name}</td>
                     <td>{medicine.dosage}</td>
                     <td>

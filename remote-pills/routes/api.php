@@ -95,6 +95,9 @@ Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_NOR
     Route::get('/user/pharmacyMedicine', [UserController::class, 'getAllMedicinePharmacy']); 
 
     Route::get('/user/allMedicine/{id}', [UserController::class, 'getAllMedicineAvailable']); 
+
+
+    Route::get('/user/medicine/{medicine}', [UserController::class, 'showMedicine']); 
     
    
 

@@ -25,6 +25,7 @@ import Buy from './user/Buy';
 import IndexUser from './user/IndexUser';
 import ShowMap from './user/ShowMap';
 import Test from './user/Test';
+import ShowMedicineUser from './user/ShowMedicineUser';
 
 import ListMedicine from './pharmacy/ListMedicine';
 import AddMedicine from './pharmacy/AddMedicine';
@@ -102,6 +103,7 @@ function App(){
           return(
             <Switch>
             <Route exact path='/cart' component={IndexUser} />
+            <Route exact path='/user/medicine/show/:id' component={ShowMedicineUser} />
             {/* <Route exact path='/doctor' component={Doctor} /> */}
             <Route exact path='/buy' >
               <Buy props={detail}/>

@@ -86,6 +86,9 @@ export default{
     showMedicine: (id) =>
     axios.get(`${BASE_URL}/pharmacy/medicine/${id}`, token),
 
+    showUserMedicine: (id) =>
+    axios.get(`${BASE_URL}/user/medicine/${id}`, token),
+
     updateMedicineDetail: (detail, id) =>
     axios.put(`${BASE_URL}/pharmacy/medicine/${id}`, medicine, token),
 

@@ -107,7 +107,7 @@ class AuthenticationController extends Controller
 
 
               
-              $url = Storage::url($image);
+              //$url = Storage::url($image);
 
 
               //php artisan storage:link

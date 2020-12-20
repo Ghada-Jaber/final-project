@@ -31,6 +31,9 @@ Route::view('medicine/add', 'app');
 Route::view('medicine/show/{id}', 'app');
 
 
+Route::view('user/medicine/show/{id}', 'app');
+
+
 
 
 

@@ -102,6 +102,7 @@ class AdminController extends Controller
     }
 
     public function getInfoMedicine(Medicine $medicine){
+        $medicine->symtom = $medicine->symtom->flatten();
         return response()->json($medicine, 201);
     }
 
