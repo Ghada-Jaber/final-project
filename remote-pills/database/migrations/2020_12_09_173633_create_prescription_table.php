@@ -17,6 +17,7 @@ class CreatePrescriptionTable extends Migration
             $table->id();
             $table->foreignId('patient_id')->constrained('patient')->onDelete('cascade');
             $table->foreignId('medicine_id')->constrained('medicine')->onDelete('cascade');
+            $table->integer('quantity');
             $table->timestamps();
         });
     }

@@ -103,6 +103,13 @@ function renderDetail(){
         <td>
         {detail.EXP}
         </td>
+        <td>
+        <a 
+                    className="btn btn-primary"
+                        title="Add to cart">
+                        <i className="fa fa-plus fa-fw"></i>
+                     </a>
+        </td>
       </tr>
 
         )
@@ -212,6 +219,7 @@ function renderDetail(){
                       <th>Price</th>
                       <th>MFD</th>
                       <th>EXP</th>
+                      <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>

@@ -13,12 +13,12 @@ class CreatePaymentConditionTable extends Migration
      */
     public function up()
     {
-        Schema::create('payment_condition', function (Blueprint $table) {
+        Schema::create('payment', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('buy_id')->constrained('buy')->onDelete('cascade');
-            $table->foreignId('payment_type_id')->constrained('payment_type')->onDelete('cascade');
+            $table->foreignId('customer_id')->constrained('customer')->onDelete('cascade');
+            $table->string('type');
+            $table->double('price');
             $table->timestamps();
-            $table->unique(['buy_id', 'payment_type_id']);
         });
     }
 

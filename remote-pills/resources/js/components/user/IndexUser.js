@@ -30,15 +30,7 @@ console.log(currentPage)
          <Header />
           <div className="templatemo-flex-row flex-content-row " style={{ marginTop:'100px' }}>
               <div className="col-1">				 
-              
-              <div className="container">
-        <div className="row">
-          <div className="col-md-12 mb-0">
-            <a href="index.html">Home</a> <span className="mx-2 mb-0">/</span> 
-            <strong className="text-black">Cart</strong>
-          </div>
-        </div>
-      </div>
+            
     
       <div className="container">
         <div className="row">
@@ -48,7 +40,7 @@ console.log(currentPage)
                 <thead>
                   <tr>
                     <th className="product-thumbnail">Image</th>
-                    <th className="product-name">Product</th>
+                    <th className="product-name">Medicine</th>
                     <th className="product-price">Price</th>
                     <th className="product-quantity">Quantity</th>
                     <th className="product-total">Total</th>

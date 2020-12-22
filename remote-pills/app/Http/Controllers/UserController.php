@@ -141,13 +141,12 @@ class UserController extends Controller
         $buy = Buy::create([
             'customer_id' => $customer->id,
             'medicine_id' => $medicine->id,
+            'quantity' => $request['quantity'],
             'price' => $request['price'],
             'reservation' =>$request['reservation']
         ]);
 
-        if($buy->reservation == true){
-            
-        }
+       
 
     }
     

@@ -192,10 +192,10 @@ function auth(){
         
         
         <img src= {image} 
-        width="50px" height="50px" className="img"/> 
+        width="50px" height="50px" className="img"/>&nbsp;
 {/* <img src={require('../../../../storage/app/' + image)} width="50px" height="50px" className="img"/> &nbsp; */}
 {/* class="media-object img-circle templatemo-img-bordered" */}
-{greeting} {}
+{greeting}
         <li className="nav-item dropdown">
                     <a id="navbarDropdown" className="nav-link dropdown-toggle"
                     role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

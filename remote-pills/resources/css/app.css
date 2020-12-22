@@ -100,6 +100,12 @@ ol li{
  -o-transition:all .2s ease-in-out;
  transition:all .2s ease-in-out;
 }
+/* 
+tr:hover {
+	background:#ededed;;
+	  color:#00cccc;;
+	  border: solid 1px #fff;;
+	}	 */
 
 a{
 text-decoration: none;

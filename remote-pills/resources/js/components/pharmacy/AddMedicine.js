@@ -82,7 +82,8 @@ function handleMfdChange(event){
   if (start_date <= d)
   setMfd(event.target.value);
   else
-      console.log("Cannot choose a date afer the current date");
+     alert('here')
+     console.log("Cannot choose a date afer the current date");
   
 }
 
@@ -105,6 +106,7 @@ function handleExpChange(event){
     if(start_date> mfd_date){
   setExp(event.target.value);
   }else{
+  
   console.log("Choose a exp date after the mfd date");
   }
    } else{
