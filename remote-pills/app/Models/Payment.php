@@ -5,12 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PaymentType extends Model
+class PaymentCondition extends Model
 {
     use HasFactory;
 
-
-    protected $table = 'payment_type';
+    protected $table = 'payment_condition';
 
     /**
     * The database primary key value.
@@ -26,10 +25,17 @@ class PaymentType extends Model
      * @var array
      */
     protected $fillable = [
-                  'type'
+                  'customer_id',
+                  'type',
+                  'price'
               ];
 
-    public function paymentCondition(){
-     return $this->hasMany(PaymentCondition::class);
+    public function buy(){
+     return $this->belongsTo(Buy::class);
     }
+
+    public function paymentType(){
+        return $this->belongsTo(PaymentType::class);//payment_type_id
+    }
+
 }

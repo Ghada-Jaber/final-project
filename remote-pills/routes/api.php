@@ -98,8 +98,13 @@ Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_NOR
 
 
     Route::get('/user/medicine/{medicine}', [UserController::class, 'showMedicine']); 
+
+
+    Route::post('/user/medicine/addCartMedicine/{medicine}', [UserController::class, 'addCartMedicine']);
     
    
+    Route::get('/user/cart/getCartMedicine', [UserController::class, 'getCartMedicine']);
+    
 
 });
 

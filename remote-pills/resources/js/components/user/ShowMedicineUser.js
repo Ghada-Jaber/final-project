@@ -17,14 +17,18 @@ export  default function ShowMedicineUser(props){
   const [unit, setUnit] = useState('');
   //description
   const [detailId, setDetailId] = useState('');
+
+
   const [quantity, setQuantity] = useState('');
   const [price, setPrice] = useState('');
-  const [mfd, setMfd] = useState('');
-  const [exp, setExp] = useState('');
+  const [reservation, setReservation] = useState(0);
+
 
   const [symtom, setSymtom] = useState([]);
 
   const[detail, setDetail]= useState([]);
+
+  
 
   const [errors, setErrors] = useState([]);
 
@@ -33,8 +37,7 @@ export  default function ShowMedicineUser(props){
   useEffect(() => {
       api.showUserMedicine(props.match.params.id)
       .then(response => {
-
-        console.log(response.data)
+        
         setImage(response.data.image);
           setName(response.data.name);
           setFormat(response.data.format);
@@ -89,6 +92,26 @@ function renderErrorFor (field) {
     }
 }
 
+
+function addToCart(event, pharmacy_id, price){
+  event.preventDefault();
+
+  const addtocart = {
+    pharmacy_id: pharmacy_id,
+    quantity: quantity,
+    price: price,
+    reservation: reservation
+}
+
+api.addToCart(props.match.params.id, addtocart)
+.then(response => {
+    
+})
+.catch(error => {
+   // setErrors(error.response.data.errors)
+})
+}
+
 function renderDetail(){
   return detail.map(detail => {
       return(
@@ -103,8 +126,19 @@ function renderDetail(){
         <td>
         {detail.EXP}
         </td>
+     
         <td>
-        <a 
+        <input type="number" style={{ width:'70px'}} className="form-control"
+          onChange={handleQuantityChange}
+        />
+        </td>
+        <td>
+        <input type="checkbox" style={{ display:'block' }}
+          onChange={handleReservationChange}
+        />
+        </td>
+        <td>
+        <a onClick={(event)=> addToCart(event, detail.pharmacy.id, detail.price)}
                     className="btn btn-primary"
                         title="Add to cart">
                         <i className="fa fa-plus fa-fw"></i>
@@ -117,34 +151,7 @@ function renderDetail(){
   }
 
 
-  function updateInfo(){
-    const detail = {
-      quantity: quantity,
-      price: price,
-      MFD: mfd,
-      EXP:exp
-  }
-  api.updateMedicineDetail(detail, detailId)
-      .then(response => {
-        document.getElementById('edit').innerHTML= "<i  class='fa fa-edit fa-fw'></i>";
-        document.getElementById('quantity').disabled= true;
-        document.getElementById('price').disabled= true;
-        document.getElementById('mfd').disabled= true;
-        document.getElementById('exp').disabled= true;
 
-        setQuantity(response.data.quantity);
-        setPrice(response.data.price);
-        setMfd(response.data.MFD);
-        setExp(response.data.EXP);
-
-        document.getElementById('edit').style.display="";
-    document.getElementById('save').style.display="none";
-          
-      })
-      .catch(error => {
-          setErrors(error.response.data.errors)
-      })
-  }
 
 
   function handleQuantityChange(event){
@@ -152,18 +159,16 @@ function renderDetail(){
   }
 
 
-  function handlePriceChange(event){
-    setPrice(event.target.value);
+  function handleReservationChange(event){
+    if(event.target.checked){
+      setReservation(1)
+  }else{
+      setReservation(0)
+  }
   }
 
 
-  function handleMfdChange(event){
-    setMfd(event.target.value);
-  }
-
-  function handleExpChange(event){
-    setExp(event.target.value);
-  }
+  
    
 
     return(
@@ -185,7 +190,7 @@ function renderDetail(){
           </div>
           <div className="col-md-4">
             <h2 className="text-black">{name} {format}, {dosage} {unit}</h2>
-
+Tablet {tablet}
             <h3>Description</h3>
             <p style={{ overflowY:'auto', width:'100%', height: '100px', whiteSpace: 'pre-line' }}>{description}</p>
 
@@ -219,7 +224,9 @@ function renderDetail(){
                       <th>Price</th>
                       <th>MFD</th>
                       <th>EXP</th>
-                      <th>Action</th>
+                      <th>Quantity</th>
+                      <th>Reservation</th>
+                      <th>Add</th>
                       </tr>
                     </thead>
                     <tbody>

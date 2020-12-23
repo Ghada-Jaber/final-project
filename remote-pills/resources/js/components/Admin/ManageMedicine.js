@@ -198,7 +198,7 @@ for (i = 1; i < tr.length; i++) {
              
         <div className="search" style={{ marginRight:'10px' }}>  	        		
 		              	<input type="text" className="form-control"
-						   placeholder="Serach" 
+						   placeholder="Search" 
                            onChange={filterFunction} 
                />  
                </div>

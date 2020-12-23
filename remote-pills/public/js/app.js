@@ -98922,6 +98922,10 @@ var token = {
   return axios__WEBPACK_IMPORTED_MODULE_0___default.a.put("".concat(BASE_URL, "/pharmacy/medicine/").concat(id), detail, token);
 }), _defineProperty(_checkLogin$register$, "getAllMedicineAvailable", function getAllMedicineAvailable(id) {
   return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(BASE_URL, "/user/allMedicine/").concat(id), token);
+}), _defineProperty(_checkLogin$register$, "addToCart", function addToCart(id, addtocart) {
+  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("".concat(BASE_URL, "/user/medicine/addCartMedicine/").concat(id), addtocart, token);
+}), _defineProperty(_checkLogin$register$, "getCartMedicine", function getCartMedicine() {
+  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(BASE_URL, "/user/cart/getCartMedicine"), token);
 }), _checkLogin$register$);
 
 /***/ }),
@@ -100547,7 +100551,7 @@ function ManageMedicine() {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
     type: "text",
     className: "form-control",
-    placeholder: "Serach",
+    placeholder: "Search",
     onChange: filterFunction
   }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "pagination-wrap",
@@ -101698,15 +101702,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _user_ShowMap__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./user/ShowMap */ "./resources/js/components/user/ShowMap.js");
 /* harmony import */ var _user_Test__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./user/Test */ "./resources/js/components/user/Test.js");
 /* harmony import */ var _user_ShowMedicineUser__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./user/ShowMedicineUser */ "./resources/js/components/user/ShowMedicineUser.js");
-/* harmony import */ var _pharmacy_ListMedicine__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./pharmacy/ListMedicine */ "./resources/js/components/pharmacy/ListMedicine.js");
-/* harmony import */ var _pharmacy_AddMedicine__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./pharmacy/AddMedicine */ "./resources/js/components/pharmacy/AddMedicine.js");
-/* harmony import */ var _pharmacy_ShowMedicine__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./pharmacy/ShowMedicine */ "./resources/js/components/pharmacy/ShowMedicine.js");
-/* harmony import */ var _Profile__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./Profile */ "./resources/js/components/Profile.js");
-/* harmony import */ var _Chat__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./Chat */ "./resources/js/components/Chat.js");
-/* harmony import */ var _auth_SignIn__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./auth/SignIn */ "./resources/js/components/auth/SignIn.js");
-/* harmony import */ var _auth_SignUp__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ./auth/SignUp */ "./resources/js/components/auth/SignUp.js");
-/* harmony import */ var _auth_ForgetPassword__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ./auth/ForgetPassword */ "./resources/js/components/auth/ForgetPassword.js");
-/* harmony import */ var _api__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ../api */ "./resources/js/api.js");
+/* harmony import */ var _user_Cart__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./user/Cart */ "./resources/js/components/user/Cart.js");
+/* harmony import */ var _pharmacy_ListMedicine__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./pharmacy/ListMedicine */ "./resources/js/components/pharmacy/ListMedicine.js");
+/* harmony import */ var _pharmacy_AddMedicine__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./pharmacy/AddMedicine */ "./resources/js/components/pharmacy/AddMedicine.js");
+/* harmony import */ var _pharmacy_ShowMedicine__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./pharmacy/ShowMedicine */ "./resources/js/components/pharmacy/ShowMedicine.js");
+/* harmony import */ var _Profile__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./Profile */ "./resources/js/components/Profile.js");
+/* harmony import */ var _Chat__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./Chat */ "./resources/js/components/Chat.js");
+/* harmony import */ var _auth_SignIn__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ./auth/SignIn */ "./resources/js/components/auth/SignIn.js");
+/* harmony import */ var _auth_SignUp__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ./auth/SignUp */ "./resources/js/components/auth/SignUp.js");
+/* harmony import */ var _auth_ForgetPassword__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ./auth/ForgetPassword */ "./resources/js/components/auth/ForgetPassword.js");
+/* harmony import */ var _api__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ../api */ "./resources/js/api.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -101722,6 +101727,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
  //import Login from './Login';
+
 
 
 
@@ -101767,7 +101773,7 @@ function App() {
   }, []);
 
   function details() {
-    _api__WEBPACK_IMPORTED_MODULE_29__["default"].details().then(function (response) {
+    _api__WEBPACK_IMPORTED_MODULE_30__["default"].details().then(function (response) {
       setDetail(response.data);
       setRole(response.data.roles[0]);
     })["catch"](function (error) {//  history.push('/');
@@ -101834,15 +101840,15 @@ function App() {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Switch"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       exact: true,
       path: "/medicine",
-      component: _pharmacy_ListMedicine__WEBPACK_IMPORTED_MODULE_21__["default"]
+      component: _pharmacy_ListMedicine__WEBPACK_IMPORTED_MODULE_22__["default"]
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       exact: true,
       path: "/medicine/add",
-      component: _pharmacy_AddMedicine__WEBPACK_IMPORTED_MODULE_22__["default"]
+      component: _pharmacy_AddMedicine__WEBPACK_IMPORTED_MODULE_23__["default"]
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       exact: true,
       path: "/medicine/show/:id",
-      component: _pharmacy_ShowMedicine__WEBPACK_IMPORTED_MODULE_23__["default"]
+      component: _pharmacy_ShowMedicine__WEBPACK_IMPORTED_MODULE_24__["default"]
     }));
   }
 
@@ -101850,7 +101856,7 @@ function App() {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Switch"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       exact: true,
       path: "/cart",
-      component: _user_IndexUser__WEBPACK_IMPORTED_MODULE_17__["default"]
+      component: _user_Cart__WEBPACK_IMPORTED_MODULE_21__["default"]
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       exact: true,
       path: "/user/medicine/show/:id",
@@ -101863,7 +101869,7 @@ function App() {
     })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       exact: true,
       path: "/profile"
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Profile__WEBPACK_IMPORTED_MODULE_24__["default"], {
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Profile__WEBPACK_IMPORTED_MODULE_25__["default"], {
       props: detail
     })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       exact: true,
@@ -101888,19 +101894,19 @@ function App() {
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       exact: true,
       path: "/signin",
-      component: _auth_SignIn__WEBPACK_IMPORTED_MODULE_26__["default"]
+      component: _auth_SignIn__WEBPACK_IMPORTED_MODULE_27__["default"]
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       exact: true,
       path: "/signup",
-      component: _auth_SignUp__WEBPACK_IMPORTED_MODULE_27__["default"]
+      component: _auth_SignUp__WEBPACK_IMPORTED_MODULE_28__["default"]
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       exact: true,
       path: "/forpass",
-      component: _auth_ForgetPassword__WEBPACK_IMPORTED_MODULE_28__["default"]
+      component: _auth_ForgetPassword__WEBPACK_IMPORTED_MODULE_29__["default"]
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       exact: true,
       path: "/chat",
-      component: _Chat__WEBPACK_IMPORTED_MODULE_25__["default"]
+      component: _Chat__WEBPACK_IMPORTED_MODULE_26__["default"]
     }));
   }
 
@@ -103412,13 +103418,13 @@ function Header() {
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
       className: "".concat(page == '/medicine' ? 'active' : '')
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-      href: "medicine"
+      href: "/medicine"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
       className: "fa fa-medkit fa-fw"
     }), "Medicine")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
       className: "".concat(page == '/customer' ? 'active' : '')
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-      href: "medicine"
+      href: "/medicine"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
       className: "fa fa-medkit fa-fw"
     }), "Customer")));
@@ -103430,25 +103436,25 @@ function Header() {
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
       className: "".concat(page == '/buy' ? 'active' : '')
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-      href: "buy"
+      href: "/buy"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
       className: "fa fa-medkit fa-fw"
     }), "Medicine")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
       className: "".concat(page == '/doctor' ? 'active' : '')
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-      href: "doctor"
+      href: "/doctor"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
       className: "fa fa-user-md fa-fw"
     }), "Doctor")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
       className: "".concat(page == '/cart' ? 'active' : '')
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-      href: "cart"
+      href: "/cart"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
       className: "fa fa-shopping-bag fa-fw"
     }), "Cart")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
       className: "".concat(page == '/map' ? 'active' : '')
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-      href: "map"
+      href: "/map"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
       className: "fa fa-map-marker fa-fw"
     }), "Map")));
@@ -103813,7 +103819,7 @@ function ShowMedicine(props) {
     start_date.setHours(0);
     start_date.setMinutes(0);
     start_date.setSeconds(0);
-    if (start_date <= d) setMfd(event.target.value);else alert('here'); //console.log("Cannot choose a date afer the current date");
+    if (start_date <= d) setMfd(event.target.value);else alert('Cannot choose a date afer the current date'); //console.log("Cannot choose a date afer the current date");
   }
 
   function handleExpChange(event) {
@@ -103832,13 +103838,13 @@ function ShowMedicine(props) {
         if (start_date > mfd_date) {
           setExp(event.target.value);
         } else {
-          console.log("Choose a exp date after the mfd date");
+          alert('Choose a exp date after the mfd date'); //console.log("Choose a exp date after the mfd date");
         }
       } else {
-        console.log("Cannot choose a date before the current date");
+        alert('Cannot choose a date before the current date'); // console.log("Cannot choose a date before the current date");
       }
     } else {
-      console.log("You have to choose mfd date first");
+      alert('You have to choose mfd date first'); // console.log("You have to choose mfd date first");
     }
   }
 
@@ -104505,7 +104511,7 @@ function ShowMedicine(props) {
     style: {
       color: '#2375b8'
     }
-  }, "Symtom"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }, "Symptoms"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     style: {
       overflow: 'auto',
       width: '260px',
@@ -104820,6 +104826,8 @@ function Buy(props) {
     _api__WEBPACK_IMPORTED_MODULE_3__["default"].getStreet(city_id).then(function (response) {
       setStreetId(response.data[0].id);
       setStreet(response.data);
+      console.log(response.data[0].id);
+      fetchMedicine(response.data[0].id);
     })["catch"](function (error) {
       setStreet([]);
     });
@@ -104918,6 +104926,137 @@ function Buy(props) {
 
 /***/ }),
 
+/***/ "./resources/js/components/user/Cart.js":
+/*!**********************************************!*\
+  !*** ./resources/js/components/user/Cart.js ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Cart; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+/* harmony import */ var _api__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../api */ "./resources/js/api.js");
+/* harmony import */ var _layouts_Header__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./../layouts/Header */ "./resources/js/components/layouts/Header.js");
+/* harmony import */ var _layouts_Footer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./../layouts/Footer */ "./resources/js/components/layouts/Footer.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
+
+
+function Cart() {
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
+      _useState2 = _slicedToArray(_useState, 2),
+      cart = _useState2[0],
+      setCart = _useState2[1];
+
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    _api__WEBPACK_IMPORTED_MODULE_2__["default"].getCartMedicine().then(function (response) {
+      console.log(response.data);
+      setCart(response.data);
+    });
+  }, []);
+  var total = 0;
+
+  function renderBuy(carts) {
+    return carts.buy.map(function (buy) {
+      total = total + buy.price * buy.quantity;
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", {
+        key: buy.id
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, carts.pharmacy.name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+        src: buy.medicine.image,
+        width: "100px",
+        height: "100px"
+      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, buy.medicine.name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, buy.price), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, buy.quantity), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, buy.price * buy.quantity), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        className: "btn btn-default",
+        title: "Delete"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: "fa fa-trash fa-fw"
+      }))));
+    });
+  }
+
+  function renderCart() {
+    return cart.map(function (cart) {
+      return renderBuy(cart);
+    });
+  }
+
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "templatemo-flex-row"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "templatemo-content col-1 light-gray-bg"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layouts_Header__WEBPACK_IMPORTED_MODULE_3__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "templatemo-flex-row flex-content-row ",
+    style: {
+      marginTop: '100px'
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "col-1"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "templatemo-content-widget no-padding"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "panel panel-default table-responsive"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
+    id: "myTable",
+    className: "table table-striped table-bordered templatemo-user-table",
+    cellSpacing: "0",
+    width: "100%"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Pharmacy"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Image"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Medicine"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Price"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Quantity"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Total"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Action"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, cart.length > 0 ? renderCart() : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+    colSpan: "7",
+    style: {
+      textAlign: 'center'
+    }
+  }, "no data")))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "row"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "col-md-6 pl-5"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "row justify-content-end"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "col-md-7"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "row"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "col-md-12 text-right border-bottom mb-5"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", {
+    className: "text-black h4 text-uppercase"
+  }, "Cart Totals"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "row mb-5"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "col-md-6"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+    className: "text-black"
+  }, "Total")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "col-md-6 text-right"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", {
+    className: "text-black"
+  }, total))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "row"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "col-md-12"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    className: "btn btn-primary btn-lg btn-block"
+  }, "Proceed To Checkout"))))))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layouts_Footer__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
+}
+
+/***/ }),
+
 /***/ "./resources/js/components/user/IndexUser.js":
 /*!***************************************************!*\
   !*** ./resources/js/components/user/IndexUser.js ***!
@@ -104952,18 +105091,17 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 function IndexUser() {
-  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(),
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
       _useState2 = _slicedToArray(_useState, 2),
-      currentPage = _useState2[0],
-      setCurrentPage = _useState2[1];
+      cart = _useState2[0],
+      setCart = _useState2[1];
 
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    setCurrentPage(1);
+    _api__WEBPACK_IMPORTED_MODULE_2__["default"].getCartMedicine().then(function (response) {
+      console.log(response.data);
+      setCart(response.data);
+    });
   }, []);
-  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    setCurrentPage(2);
-    console.log(currentPage);
-  }, [currentPage]);
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "templatemo-flex-row"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -105072,32 +105210,10 @@ function IndexUser() {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "row mb-5"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "col-md-6 mb-3 mb-md-0"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-    className: "btn btn-primary btn-md btn-block"
-  }, "Update Cart")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "col-md-6"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
     className: "btn btn-outline-primary btn-md btn-block"
-  }, "Continue Shopping"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "row"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "col-md-12"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
-    className: "text-black h4",
-    htmlFor: "coupon"
-  }, "Coupon"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, "Enter your coupon code if you have one.")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "col-md-8 mb-3 mb-md-0"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-    type: "text",
-    className: "form-control py-3",
-    id: "coupon",
-    placeholder: "Coupon Code"
-  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "col-md-4"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
-    className: "btn btn-primary btn-md px-4"
-  }, "Apply Coupon")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }, "Continue Shopping")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "col-md-6 pl-5"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "row justify-content-end"
@@ -105110,16 +105226,6 @@ function IndexUser() {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", {
     className: "text-black h4 text-uppercase"
   }, "Cart Totals"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "row mb-3"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "col-md-6"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
-    className: "text-black"
-  }, "Subtotal")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "col-md-6 text-right"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", {
-    className: "text-black"
-  }, "$230.00"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "row mb-5"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "col-md-6"
@@ -105306,35 +105412,29 @@ function ShowMedicineUser(props) {
       price = _useState24[0],
       setPrice = _useState24[1];
 
-  var _useState25 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
+  var _useState25 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(0),
       _useState26 = _slicedToArray(_useState25, 2),
-      mfd = _useState26[0],
-      setMfd = _useState26[1];
+      reservation = _useState26[0],
+      setReservation = _useState26[1];
 
-  var _useState27 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
+  var _useState27 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
       _useState28 = _slicedToArray(_useState27, 2),
-      exp = _useState28[0],
-      setExp = _useState28[1];
+      symtom = _useState28[0],
+      setSymtom = _useState28[1];
 
   var _useState29 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
       _useState30 = _slicedToArray(_useState29, 2),
-      symtom = _useState30[0],
-      setSymtom = _useState30[1];
+      detail = _useState30[0],
+      setDetail = _useState30[1];
 
   var _useState31 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
       _useState32 = _slicedToArray(_useState31, 2),
-      detail = _useState32[0],
-      setDetail = _useState32[1];
-
-  var _useState33 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
-      _useState34 = _slicedToArray(_useState33, 2),
-      errors = _useState34[0],
-      setErrors = _useState34[1];
+      errors = _useState32[0],
+      setErrors = _useState32[1];
 
   var history = Object(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["useHistory"])();
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
     _api__WEBPACK_IMPORTED_MODULE_2__["default"].showUserMedicine(props.match.params.id).then(function (response) {
-      console.log(response.data);
       setImage(response.data.image);
       setName(response.data.name);
       setFormat(response.data.format);
@@ -105382,13 +105482,41 @@ function ShowMedicineUser(props) {
     }
   }
 
+  function addToCart(event, pharmacy_id, price) {
+    event.preventDefault();
+    var addtocart = {
+      pharmacy_id: pharmacy_id,
+      quantity: quantity,
+      price: price,
+      reservation: reservation
+    };
+    _api__WEBPACK_IMPORTED_MODULE_2__["default"].addToCart(props.match.params.id, addtocart).then(function (response) {})["catch"](function (error) {// setErrors(error.response.data.errors)
+    });
+  }
+
   function renderDetail() {
     return detail.map(function (detail) {
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", {
         key: detail.id
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
         scope: "row"
-      }, detail.pharmacy.name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, detail.price), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, detail.MFD), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, detail.EXP), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+      }, detail.pharmacy.name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, detail.price), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, detail.MFD), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, detail.EXP), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "number",
+        style: {
+          width: '70px'
+        },
+        className: "form-control",
+        onChange: handleQuantityChange
+      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "checkbox",
+        style: {
+          display: 'block'
+        },
+        onChange: handleReservationChange
+      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        onClick: function onClick(event) {
+          return addToCart(event, detail.pharmacy.id, detail.price);
+        },
         className: "btn btn-primary",
         title: "Add to cart"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
@@ -105397,44 +105525,16 @@ function ShowMedicineUser(props) {
     });
   }
 
-  function updateInfo() {
-    var detail = {
-      quantity: quantity,
-      price: price,
-      MFD: mfd,
-      EXP: exp
-    };
-    _api__WEBPACK_IMPORTED_MODULE_2__["default"].updateMedicineDetail(detail, detailId).then(function (response) {
-      document.getElementById('edit').innerHTML = "<i  class='fa fa-edit fa-fw'></i>";
-      document.getElementById('quantity').disabled = true;
-      document.getElementById('price').disabled = true;
-      document.getElementById('mfd').disabled = true;
-      document.getElementById('exp').disabled = true;
-      setQuantity(response.data.quantity);
-      setPrice(response.data.price);
-      setMfd(response.data.MFD);
-      setExp(response.data.EXP);
-      document.getElementById('edit').style.display = "";
-      document.getElementById('save').style.display = "none";
-    })["catch"](function (error) {
-      setErrors(error.response.data.errors);
-    });
-  }
-
   function handleQuantityChange(event) {
     setQuantity(event.target.value);
   }
 
-  function handlePriceChange(event) {
-    setPrice(event.target.value);
-  }
-
-  function handleMfdChange(event) {
-    setMfd(event.target.value);
-  }
-
-  function handleExpChange(event) {
-    setExp(event.target.value);
+  function handleReservationChange(event) {
+    if (event.target.checked) {
+      setReservation(1);
+    } else {
+      setReservation(0);
+    }
   }
 
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -105470,7 +105570,7 @@ function ShowMedicineUser(props) {
     className: "col-md-4"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", {
     className: "text-black"
-  }, name, " ", format, ", ", dosage, " ", unit), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "Description"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+  }, name, " ", format, ", ", dosage, " ", unit), "Tablet ", tablet, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "Description"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
     style: {
       overflowY: 'auto',
       width: '100%',
@@ -105514,7 +105614,7 @@ function ShowMedicineUser(props) {
     className: "tab-pane active"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
     className: "table custom-table"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Pharmacy"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Price"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "MFD"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "EXP"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Action"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, renderDetail()))))))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layouts_Footer__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Pharmacy"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Price"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "MFD"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "EXP"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Quantity"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Reservation"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Add"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, renderDetail()))))))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layouts_Footer__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
 }
 
 /***/ }),

@@ -136,7 +136,7 @@ class User extends Authenticatable
 
 
     public function customer(){
-        return $this->hasMany(Customer::class);
+        return $this->hasMany(Customer::class, 'customer_id');
     }
 
     public function detail(){
@@ -159,4 +159,7 @@ class User extends Authenticatable
     public function medicine(){
         return $this->belongsToMany(Medicine::class, 'detail', 'pharmacy_id', 'medicine_id');
     }
+
+
+   
 }

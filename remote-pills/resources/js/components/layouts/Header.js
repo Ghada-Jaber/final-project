@@ -141,9 +141,9 @@ function pharmacy(){
 return(
   <ul className="nav navbar-nav" >
   <li className= {`${(page =='/medicine') ? 'active' : '' }`}>
-  <a href="medicine"><i className="fa fa-medkit fa-fw"></i>Medicine</a></li>
+  <a href="/medicine"><i className="fa fa-medkit fa-fw"></i>Medicine</a></li>
   <li className= {`${(page =='/customer') ? 'active' : '' }`}>
-  <a href="medicine"><i className="fa fa-medkit fa-fw"></i>Customer</a></li>
+  <a href="/medicine"><i className="fa fa-medkit fa-fw"></i>Customer</a></li>
   </ul>
 )
 }
@@ -152,17 +152,17 @@ function user(){
 return(
   <ul className="nav navbar-nav" >
   <li className= {`${(page =='/buy') ? 'active' : '' }`}>
-                      <a href="buy"><i className="fa fa-medkit fa-fw"></i>Medicine</a></li>
+                      <a href="/buy"><i className="fa fa-medkit fa-fw"></i>Medicine</a></li>
 
   <li className= {`${(page =='/doctor') ? 'active' : '' }`}>
-                      <a href="doctor"><i className="fa fa-user-md fa-fw"></i>Doctor</a></li>
+                      <a href="/doctor"><i className="fa fa-user-md fa-fw"></i>Doctor</a></li>
 
                       
   <li className= {`${(page =='/cart') ? 'active' : '' }`}>
-                      <a href="cart"><i className="fa fa-shopping-bag fa-fw"></i>Cart</a></li>
+                      <a href="/cart"><i className="fa fa-shopping-bag fa-fw"></i>Cart</a></li>
 
                       <li className= {`${(page =='/map') ? 'active' : '' }`}>
-                      <a href="map"><i className="fa fa-map-marker fa-fw"></i>Map</a></li>
+                      <a href="/map"><i className="fa fa-map-marker fa-fw"></i>Map</a></li>
                       
                       </ul>
 )

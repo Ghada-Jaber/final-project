@@ -13,10 +13,10 @@ class CreateMedicineSymtomTable extends Migration
      */
     public function up()
     {
-        Schema::create('medicine_symtom', function (Blueprint $table) {
+        Schema::create('medicine_symptom', function (Blueprint $table) {
             $table->id();
             $table->foreignId('medicine_id')->constrained('medicine')->onDelete('cascade');
-            $table->foreignId('symtom_id')->constrained('symtom')->onDelete('cascade');
+            $table->foreignId('symptom_id')->constrained('symptom')->onDelete('cascade');
             $table->timestamps();
         });
     }

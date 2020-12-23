@@ -82,8 +82,8 @@ function handleMfdChange(event){
   if (start_date <= d)
   setMfd(event.target.value);
   else
-     alert('here')
-     console.log("Cannot choose a date afer the current date");
+     alert('Cannot choose a date afer the current date');
+     //console.log("Cannot choose a date afer the current date");
   
 }
 
@@ -106,15 +106,17 @@ function handleExpChange(event){
     if(start_date> mfd_date){
   setExp(event.target.value);
   }else{
-  
-  console.log("Choose a exp date after the mfd date");
+  alert('Choose a exp date after the mfd date');
+  //console.log("Choose a exp date after the mfd date");
   }
    } else{
-      console.log("Cannot choose a date before the current date");
+     alert('Cannot choose a date before the current date');
+     // console.log("Cannot choose a date before the current date");
    }
 }
 else {
-  console.log("You have to choose mfd date first");
+  alert('You have to choose mfd date first');
+ // console.log("You have to choose mfd date first");
 }
 }
    

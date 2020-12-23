@@ -172,7 +172,7 @@ function renderErrorFor (field) {
             
 </div>
             <div className="col-md-4">
-            <h4 style={{ color:'#2375b8' }}>Symtom</h4>
+            <h4 style={{ color:'#2375b8' }}>Symptoms</h4>
             
             <div style={{ overflow:'auto', width:'260px', height:'70px', padding:'10px' }}>
             {renderSymtom()}

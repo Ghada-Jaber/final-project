@@ -107,4 +107,11 @@ export default{
 
     getAllMedicineAvailable: (id) =>
     axios.get(`${BASE_URL}/user/allMedicine/${id}`, token),
+
+    addToCart: (id, addtocart) =>
+    axios.post(`${BASE_URL}/user/medicine/addCartMedicine/${id}`, addtocart, token),
+
+
+    getCartMedicine: () =>
+    axios.get(`${BASE_URL}/user/cart/getCartMedicine`, token),
 }

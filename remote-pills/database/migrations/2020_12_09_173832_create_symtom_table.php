@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSymtomTable extends Migration
+class CreateSymptomTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateSymtomTable extends Migration
      */
     public function up()
     {
-        Schema::create('symtom', function (Blueprint $table) {
+        Schema::create('symptom', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->timestamps();

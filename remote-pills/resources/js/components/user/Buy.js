@@ -233,10 +233,13 @@ function renderStreet(){
 function handleCityChange(event){
   setCityId(event.target.value);
   let city_id = event.target.value;
+
   api.getStreet(city_id).then(response => {
     
           setStreetId(response.data[0].id)
           setStreet(response.data)
+          console.log(response.data[0].id)
+          fetchMedicine(response.data[0].id);
       }) .catch(error => {
           setStreet([])
       })

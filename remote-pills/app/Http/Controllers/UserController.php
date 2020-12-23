@@ -126,20 +126,30 @@ class UserController extends Controller
 
 
 
-    public function buyMedicinde(Request $request, Medicine $medicine){
+    public function addCartMedicine(Request $request, Medicine $medicine){
 
         $user = Auth::user();
 
 
 
+        $customer= Customer::where('pharmacy_id', '=', $request['pharmacy_id'])
+        ->where('customer_id', '=', $user->id)->get()->flatten();
+
+
+
+        if($customer->count()==0){
         $customer =  Customer::create([
             'pharmacy_id' => $request['pharmacy_id'],
             'customer_id' => $user->id
         ]);
+        $id= $customer->id;
 
+        }else{
+            $id = $customer[0]->id;
+        }
 
         $buy = Buy::create([
-            'customer_id' => $customer->id,
+            'customer_id' => $id,
             'medicine_id' => $medicine->id,
             'quantity' => $request['quantity'],
             'price' => $request['price'],
@@ -148,6 +158,33 @@ class UserController extends Controller
 
        
 
+        return response()->json($buy, 201);
+
+    }
+
+
+
+    public function getCartMedicine(){
+
+        $user = Auth::user();
+
+
+        $customer = $user->customer;
+
+       
+        foreach($customer as $buy){
+            $buy->pharmacy;
+           $buy->buy;
+           
+                foreach($buy->buy as $medicine){
+
+                    $medicine->medicine; 
+
+                }
+        }
+
+
+        return response()->json($customer, 201);
     }
     
 }

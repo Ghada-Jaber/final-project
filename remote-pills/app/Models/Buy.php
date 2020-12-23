@@ -28,7 +28,9 @@ class Buy extends Model
     protected $fillable = [
                   'customer_id',
                   'medicine_id',
-                  'payment_id'
+                  'quantity',
+                  'price',
+                  'reservation'
               ];
 
 

@@ -26,6 +26,7 @@ import IndexUser from './user/IndexUser';
 import ShowMap from './user/ShowMap';
 import Test from './user/Test';
 import ShowMedicineUser from './user/ShowMedicineUser';
+import Cart from './user/Cart';
 
 import ListMedicine from './pharmacy/ListMedicine';
 import AddMedicine from './pharmacy/AddMedicine';
@@ -102,7 +103,7 @@ function App(){
       function user(){
           return(
             <Switch>
-            <Route exact path='/cart' component={IndexUser} />
+            <Route exact path='/cart' component={Cart} />
             <Route exact path='/user/medicine/show/:id' component={ShowMedicineUser} />
             {/* <Route exact path='/doctor' component={Doctor} /> */}
             <Route exact path='/buy' >
