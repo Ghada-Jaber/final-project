@@ -31,6 +31,9 @@ class Customer extends Model
     
               
 
+              public function cart(){
+                return $this->hasMany(Cart::class);
+            }
 
     public function buy(){
         return $this->hasMany(Buy::class);

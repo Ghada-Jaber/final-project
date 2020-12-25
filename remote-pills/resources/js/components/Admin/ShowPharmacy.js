@@ -19,25 +19,21 @@ export  default function ShowPharmacy(props){
 
   useEffect(() => {
     api.getInfoPharmacy(props.match.params.id).then(response => {
-      // console.log()
       setImage(response.data.image);
         setName(response.data.name);
         setEmail(response.data.email);
-        setOpened(response.data.birthay);
-      })
-
-      api.getPharmacyMedicine(props.match.params.id).then(response => {
-        setMedicine(response.data)
+        setOpened(response.data.birthday);
+        setMedicine(response.data.medicine);
       })
 
   },[]);
 
 
   function renderPharmacy(){
-    return pharmacy.map(pharmacy => {
+    return medicine.map(medicine => {
       return(
-      <li  key={pharmacy.id}>
-      {pharmacy.name}
+      <li  key={medicine.id}>
+      {medicine.name}
       </li> 
 
         )
@@ -58,12 +54,8 @@ export  default function ShowPharmacy(props){
 
   <div className="container">
       <div className="row">
-        <div className="col-md-4 mr-auto">
-          <div className="border text-center">
-            <img src={`./images/medicine/${image}`} alt="Image" className="img-fluid p-5" />
-          </div>
-        </div>
         <div className="col-md-4">
+        <img src={image} alt="Image" width="50px" height="50px" className="img-fluid p-5" />
           <h2 className="text-black">{name}</h2>
 
           <h3>email</h3>
@@ -84,7 +76,7 @@ export  default function ShowPharmacy(props){
     <div className ="templatemo-content-widget blue-bg" >   
    
    <ol>
-    {/* {pharmacy.length > 0 ? renderPharmacy() : 'Not Exist in any pharmacy'} */}
+    {medicine.length > 0 ? renderPharmacy() : 'No medicine exist yet'}
 
     </ol>
     

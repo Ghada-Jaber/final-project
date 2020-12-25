@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MedicineSymtom extends Model
+class Cart extends Model
 {
     use HasFactory;
 
-    protected $table = 'medicine_symtom';
+    protected $table = 'cart';
 
     /**
     * The database primary key value.
@@ -25,17 +25,19 @@ class MedicineSymtom extends Model
      * @var array
      */
     protected $fillable = [
+                  'customer_id',
                   'medicine_id',
-                  'symtom_id'
+                  'quantity',
+                  'price',
+                  'reservation'
               ];
 
+
+    public function customer(){
+        return $this->belongsTo(Customer::class);
+    }
 
     public function medicine(){
         return $this->belongsTo(Medicine::class);
     }
-    
-    public function symtom(){
-        return $this->belongsTo(Symtom::class);
-    }
-
 }

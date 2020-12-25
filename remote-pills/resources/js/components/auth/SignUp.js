@@ -4,7 +4,7 @@ import api from './../../api';
 import CookieService from '../../Service/CookieService';
 
 
-export  default function SignUp(){
+export  default function SignUp(props){
 
 	const [country, setCountry] = useState([]);
 	const [countryId, setCountryId] = useState('');
@@ -185,28 +185,45 @@ export  default function SignUp(){
 		fd.append('confirm_password', confirm_password);
 		fd.append('birthday', birthday);
 		fd.append('street_id', streetId);
+		fd.append('role', props.props);
 		
 		//console.log(name+" "+email+" "+password+" "+confirm_password+" "+birthday+" "+streetId+" "+img);
 
         api.register(fd, {headers:{'Accept': "application/json",  'Content-Type': "multipart/form-data"}})
             .then(response => {
-				console.log(response.data)
+				if(props.props=='ROLE_NORMALUSER'){
                 const options = {Path: "/",Expires: response.data.expires, Secure: true};
                 CookieService.set('access_token', response.data.access, options);
-                history.push('/home');
+				history.push('/home');
+				}
+				if(props.props=='ROLE_PHARMACY'){
+					history.push('/managePharmacy');
+				}
+
+				if(props.props=='ROLE_DOCTOR'){
+					history.push('/manageDoctor');
+				}
+
 				window.location.reload();
 				console.log('ehre')
             }) .catch(error => {
 				console.log(error)
                 setErrors(error.response.data.errors);
             })
-    }
+	}
+	
+
+	function displayFormSignUp(){
+		document.getElementById("signup").style.display="none";
+		window.location.reload();
+      }
 
     return(
-		<div className="logincontainer" style={{  backgroundImage: 'url(../images/background.png)' }}>
+		<div id="signup" className="logincontainer">
         <br/>
 		<div className="templatemo-content-widget templatemo-login-widget  white-bg"
 		 >
+		 <a onClick={() => displayFormSignUp()} ><i className="fa fa-times"></i></a>
 
 		 <div className="scrollform">
 

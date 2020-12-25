@@ -34,7 +34,7 @@ Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_ADM
 
     Route::post('/admin/medicine/addInfo', [AdminController::class, 'addMedicine']); 
 
-    Route::get('/admin/pharmacy/getInfo/{medicine}', [AdminController::class, 'getInfoPharmacy']);
+    Route::get('/admin/pharmacy/getInfo/{user}', [AdminController::class, 'getInfoPharmacy']);
 
     Route::get('/admin/medicine/getInfo/{medicine}', [AdminController::class, 'getInfoMedicine']);
 
@@ -42,9 +42,19 @@ Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_ADM
 
     Route::get('/admin/pharmacy/{pharmacy}/medicine', [AdminController::class, 'getPharmacyMedicine']);
 
+    Route::get('/admin/getAllSymptom', [AdminController::class, 'getAllSymptom']);
+
+    Route::post('/admin/symptom', [AdminController::class, 'addSymptom']);
+    
+
     
     
     Route::put('/admin/medicine/info/{medicine}', [AdminController::class, 'updateInfoMedicine']);
+
+
+    Route::put('/admin/pharmacy/{user}', [AdminController::class, 'updatePharmacy']);
+
+    
 
     Route::delete('/admin/medicine/{medicine}', [AdminController::class, 'destroy']);
 
@@ -104,6 +114,27 @@ Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_NOR
     
    
     Route::get('/user/cart/getCartMedicine', [UserController::class, 'getCartMedicine']);
+
+
+    Route::delete('/user/cart/deleteCart/{buy}', [UserController::class, 'deleteCartMedicine']);
+
+
+    Route::post('/user/addPayment', [UserController::class, 'addPayment']);
+
+    Route::post('/user/askPrescription', [UserController::class, 'askPrescription']);
+
+    Route::get('/user/getPrescription', [UserController::class, 'getPrescription']);
+
+
+    Route::get('/user/prescription/{patient}', [UserController::class, 'showPrescription']);
+
+
+
+
+    
+    
+
+
     
 
 });

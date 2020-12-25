@@ -148,11 +148,9 @@ function handleUpdateMedicine(event) {
             <div className="col-1">	
             <Back  />
 
-            <div className="col-md-5 mr-auto">
-          <div className="border text-center">
-            <img src={`./images/medicine/${image}`} alt="Image" className="img-fluid p-5" />
+            <div className="col-md-4">
+              <img src={image} alt="Image"  style={{ width:'100%' , height:'300px'}}/>
           </div>
-        </div>
 
     <div className="templatemo-content-widget templatemo-login-widget  white-bg">
 

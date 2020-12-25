@@ -5,14 +5,12 @@ import Header from '../layouts/Header';
 import Footer from '../layouts/Footer';
 import SignUp from '../auth/SignUp';
 
-import $ from 'jquery';
-import { add } from 'lodash';
-
 
 export  default function ManagePharmacy(){
   const [id, setId] = useState('');
   const [medicine, setMedicine] = useState([]);
 
+  var role = 'ROLE_PHARMACY';
   useEffect(() => {
     api.getUsers('ROLE_PHARMACY').then(response => {
       console.log(response.data)
@@ -129,7 +127,7 @@ for (i = 1; i < tr.length; i++) {
                     <td>{medicine.id}</td>
                     <td>
                     
-                    <img src={`../../../../storage/app/${medicine.image}`} width="100px" height="100px"/></td>
+                    <img src={medicine.image} width="100px" height="100px"/></td>
                     <td>{medicine.name}</td>
                     <td>{medicine.street.name}, {medicine.street.city.name}, {medicine.street.city.country.name}
                     </td>
@@ -237,10 +235,11 @@ for (i = 1; i < tr.length; i++) {
             </div> 
                                      
           </div>   
-          <div id="addmedicine" className="formShow">
-          <a  onClick={() => addMedicine()} className="closecss">
-          &times;</a>
-              <SignUp />
+          <div id="addmedicine" style={{ display:'none' }}>
+                  <h4 className="closecss"> 
+                  The field date in add pharmacy is when<br/> the pharmacy did open
+                  </h4>
+              <SignUp props={role}/>
 
             </div>
 

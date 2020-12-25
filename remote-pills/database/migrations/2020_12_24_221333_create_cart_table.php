@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMedicineSymtomTable extends Migration
+class CreateCartTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,15 @@ class CreateMedicineSymtomTable extends Migration
      */
     public function up()
     {
-        Schema::create('medicine_symptom', function (Blueprint $table) {
+        Schema::create('cart', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('customer_id')->constrained('customer')->onDelete('cascade');
             $table->foreignId('medicine_id')->constrained('medicine')->onDelete('cascade');
-            $table->foreignId('symptom_id')->constrained('symptom')->onDelete('cascade');
+            $table->integer('quantity');
+            $table->double('price');
+            $table->boolean('reservation');
             $table->timestamps();
+            $table->unique(['customer_id', 'medicine_id', 'created_at']);
         });
     }
 
@@ -28,6 +32,6 @@ class CreateMedicineSymtomTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('medicine_symtom');
+        Schema::dropIfExists('cart');
     }
 }

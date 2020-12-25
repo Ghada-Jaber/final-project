@@ -8,22 +8,15 @@ use App\Models\Medicine;
 use App\Models\User;
 use App\Models\Customer;
 use App\Models\Buy;
+use App\Models\Payment;
+use App\Models\Cart;
+use App\Models\Patient;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
 
     public function getAllMedicinePharmacy(){
-        // $detail = Medicine::get();
-
-    
-        // $i=0;
-        // foreach($detail as $detailMedicine){
-        //     $detail->detail = $detailMedicine->detail;
-
-        //     $detail->pharmacy = $detailMedicine->pharmacy;
-
-        //     $i++;
-        // }
 
 
         $user = User::get();
@@ -74,49 +67,50 @@ class UserController extends Controller
 
        $near = [];
 
-        foreach($medicine as $detail){
-           $detail->detail;
-
-            foreach($detail->detail as $pharmacy){
-                if($pharmacy->pharmacy->street_id == $id){
-                    // $medicine->detail = $detail->detail;
-                    $array = $pharmacy->medicine->toArray();
-
-                    $array2 = $pharmacy->medicine->pharmacy->toArray();
-
+       foreach($medicine as $pharmacy){
+           $array = $pharmacy->toArray();
+           $array2 = [];
+           foreach($pharmacy->pharmacy as $info){
+               if($info->street_id == $id){
                
-                   
-                // foreach($pharmacy->medicine->pharmacy as $price){
-                    //     $ok= false;
-                    //     foreach($price->detail as $single){
-                    //         if($price->id == $single->pharmacy_id){
-                    //             if()
-                    //             $ok= true;
-                    //         }
-                    //     }
-                    //     if($ok==true){
-                    //         $array3 = $price->detail->toArray();
-                    //         array_push($array2, $array3);
-                    //     }
-                       
-                    // }
-                        array_push($array, $array2);
+               $array3 = [];
+             
+               foreach($pharmacy->detail as $detail){
+                   if($detail->pharmacy_id == $info->id){
+                   // array_push($info->id,  $detail->price); 
+                    $info->price = $detail->price;
+                   }
+               }
 
-                    
-                }
-                
+               array_push($array2,  $info->toArray()); 
+
+            //    array_push($array2,  $array3); 
             }
+           }
+
+           array_push($array, $array2); 
+           
+        array_push($near, $array);
+       }
+
+            return response()->json($near, 201);
+
             array_push($near, $array) ;
+
+
+
+            $query = DB::table('medicine')
+            ->join('detail', 'detail.medicine_id', '=', 'medicine.id')
+            ->join('users', 'detail.pharmacy_id', '=', 'users.id')
+            ->select('medicine.name as medicine','medicine.image','price','users.name as pharmacy')
+            ->where('users.street_id', '=', $id)
+             ->get();
             
-        }
-
-        return response()->json($near, 201);
-
     }
 
 
     public function showMedicine(Medicine $medicine){
-        $medicine->symtom = $medicine->symtom->flatten();
+        $medicine->symptom = $medicine->symptom->flatten();
         foreach($medicine->detail as $detail){
             $medicine->detail = $detail->pharmacy;
         }
@@ -148,7 +142,7 @@ class UserController extends Controller
             $id = $customer[0]->id;
         }
 
-        $buy = Buy::create([
+        $buy = Cart::create([
             'customer_id' => $id,
             'medicine_id' => $medicine->id,
             'quantity' => $request['quantity'],
@@ -174,9 +168,10 @@ class UserController extends Controller
        
         foreach($customer as $buy){
             $buy->pharmacy;
-           $buy->buy;
+           $buy->cart;
            
-                foreach($buy->buy as $medicine){
+                foreach($buy->cart as $medicine){
+                    
 
                     $medicine->medicine; 
 
@@ -185,6 +180,123 @@ class UserController extends Controller
 
 
         return response()->json($customer, 201);
+    }
+
+
+    function deleteCartMedicine(Buy $buy){
+        $buy->delete();
+        return response()->json($buy, 201);
+    }
+
+
+    function addPayment(Request $request){
+        
+        if($request['type']== 'credit card'){
+            $request->validate([
+                'creditCardNumber' => 'required|integer',
+                'nameOnCard' => 'required|string',
+                'expiryDate' => 'required|string',
+                'cvvCode' => 'required|integer'
+            ]);
+        }
+
+        
+
+        $payment =  Payment::create([
+            'type' => $request['type'],
+            'price' => $request['price'],
+            'creditCardNumber' => $request['creditCardNumber'],
+            'nameOnCard' => $request['nameOnCard'],
+            'expiryDate' => $request['expiryDate'],
+            'cvvCode' => $request['cvvCode']
+        ]);
+
+        
+
+        $buy = $request['buy'];
+
+        
+
+        foreach($buy as $id){
+            $cart = Cart::find($id);
+
+            $addPayment = Buy::create([
+                'customer_id' => $cart->customer_id,
+                'medicine_id' => $cart->medicine_id,
+                'quantity' => $cart->quantity,
+                'price' => $cart->price,
+                'payment_id' => $payment->id
+            ]);
+
+            $cart->delete();
+        }
+        
+
+
+
+        return response()->json(['add'=>'succcess add'], 201);
+    }
+
+
+    public function askPrescription(Request $request){
+
+        $user = Auth::user();
+
+        $request->validate([
+            'description' => 'required|string'
+        ]);
+
+
+        $addPayment = Patient::create([
+            'patient_id' => $user->id,
+            'description' => $request['name']." ".$request['description']
+        ]);
+
+
+        return response()->json(['add'=>'succcess add'], 201);
+
+
+    }
+
+    public function getPrescription(){
+
+        $user = Auth::user();
+
+        $prescription = [];
+
+        $array = $user->patient->toArray();
+
+        foreach($user->patient as $patient){
+
+            if($patient->doctor_id !=null){
+                foreach($patient->doctor as $doctor){
+
+                    array_push($array, $doctor);
+                }
+
+            }
+
+        }
+
+        array_push($prescription, $array);
+
+
+        return response()->json($user->patient, 201);
+
+    }
+
+
+    public function showPrescription(Patient $patient){
+
+        $prescription = $patient->prescription;
+
+        foreach($patient->prescription as $medicine){
+            $prescription->$medicine = $medicine->medicine;
+
+        }
+
+
+        return response()->json($prescription, 201);
     }
     
 }

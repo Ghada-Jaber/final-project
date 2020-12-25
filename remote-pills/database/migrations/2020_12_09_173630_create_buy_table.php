@@ -19,9 +19,7 @@ class CreateBuyTable extends Migration
             $table->foreignId('medicine_id')->constrained('medicine')->onDelete('cascade');
             $table->integer('quantity');
             $table->double('price');
-            $table->boolean('reservation');
-
-            $table->foreignId('payment_id')->constrained('payment')->onDelete('cascade');
+            $table->foreignId('payment_id')->nullable()->constrained('payment')->onDelete('cascade');
             $table->timestamps();
             $table->unique(['customer_id', 'medicine_id', 'created_at']);
         });

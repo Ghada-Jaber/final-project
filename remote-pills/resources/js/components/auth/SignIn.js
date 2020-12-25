@@ -69,13 +69,19 @@ export  default function SignIn(){
             })
     }
 
+    function displayFormSignIn(){
+        document.getElementById("signin").style.display="none";
+      }
+
     return( 
-        <div className="logincontainer" style={{  backgroundImage: 'url(../images/background.png)' }}>
+        <div  id="signin" className="logincontainer">
         
         <br/>
         <div className="templatemo-content-widget templatemo-login-widget white-bg">
+        <a onClick={() => displayFormSignIn()} ><i className="fa fa-times"></i></a>
 	
 	        <form  className="templatemo-login-form" onSubmit={handleLogin}>
+            
 	        	<div  className={`form-group ${hasErrorFor('email') ? 'has-error' : ''}`} >
 	        		<div className="input-group">
 		        		<div className="input-group-addon"><i className="fa fa-user fa-fw"></i></div>	        		

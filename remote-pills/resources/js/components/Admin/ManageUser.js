@@ -129,7 +129,7 @@ for (i = 1; i < tr.length; i++) {
                     <td>{medicine.id}</td>
                     <td>
                     
-                    <img src={`../../../../storage/app/${medicine.image}`} width="100px" height="100px"/></td>
+                    <img src={medicine.image} width="100px" height="100px"/></td>
                     <td>{medicine.name}</td>
                     <td>{medicine.street.name}, {medicine.street.city.name}, {medicine.street.city.country.name}
                     </td>
@@ -178,12 +178,9 @@ for (i = 1; i < tr.length; i++) {
              cellSpacing="0" width="100%">
              <caption>
              <div className="row" style={{  display: 'flex', float:'left'}}>
-             <a className="btn btn-primary" style={{ marginLeft:'10px', marginRight:'10px' }} 
-             onClick={() => addMedicine()} >
-             <i className="fa fa-plus"></i></a>			 
               
              
-        <div className="search" style={{ marginRight:'10px' }}>  	        		
+        <div className="search" style={{ marginLeft:'10px', marginRight:'10px' }}>  	        		
 		              	<input type="text" className="form-control"
 						   placeholder="Serach" 
                            onChange={filterFunction} 
@@ -211,7 +208,7 @@ for (i = 1; i < tr.length; i++) {
                     className="white-text templatemo-sort-by"># <span className="caret"></span></a>
                     </th>
                     <th>
-                    Pharmacy image</th>
+                    User image</th>
                     <th><a onClick={() => sortTable(2)} 
                      className="white-text templatemo-sort-by">
                     Name <span className="caret"></span></a></th>
@@ -236,13 +233,7 @@ for (i = 1; i < tr.length; i++) {
               </table>    
             </div> 
                                      
-          </div>   
-          <div id="addmedicine" className="formShow">
-          <a  onClick={() => addMedicine()} className="closecss">
-          &times;</a>
-              <SignUp />
-
-            </div>
+          </div>  
 
   
        </div>                       

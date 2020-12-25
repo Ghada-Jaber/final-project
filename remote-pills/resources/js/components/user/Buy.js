@@ -20,7 +20,14 @@ export  default function Buy(props){
   const [city, setCity] = useState([]);
 	const [cityId, setCityId] = useState('');
 	const [street, setStreet] = useState([]);
-	const [streetId, setStreetId] = useState('');
+  const [streetId, setStreetId] = useState('');
+  
+
+  const [quantity, setQuantity] = useState('');
+  const [reservation, setReservation] = useState(0);
+
+
+  const[description, setDescription] = useState('');
 
       
   const history = useHistory();
@@ -62,7 +69,13 @@ export  default function Buy(props){
 
 
 
-
+function handleReservationChange(event){
+  if(event.target.checked){
+    setReservation(1)
+}else{
+    setReservation(0)
+}
+}
 
  function  handlePageClick(data) {
   const page = data.selected >= 0 ? data.selected + 1 : 0;
@@ -158,37 +171,117 @@ function handleReferenceChange(event){
 }
 
 
+function handleQuantityChange(event){
+  setQuantity(event.target.value);
+}
+
+
+function  askPrescription(event, name){
+  event.preventDefault();
+
+  const patient = {
+    name: name,
+    description : description
+  }
+
+  api.askPrescription(patient)
+  .then(response => {
+    alert('ask done')
+  })
+  .catch(error => {
+     // setErrors(error.response.data.errors)
+  })
+}
+
+
+function addToCart(event, medicine_id, pharmacy_id, price){
+  event.preventDefault();
+
+  const addtocart = {
+    pharmacy_id: pharmacy_id,
+    quantity: quantity,
+    price: price,
+    reservation: reservation
+}
+
+api.addToCart(medicine_id, addtocart)
+.then(response => {
+  alert('add done')
+})
+.catch(error => {
+   // setErrors(error.response.data.errors)
+})
+}
+
+function handleDescriptionChange(event){
+  setDescription(event.target.value)
+}
+
+
 function renderMedicine(){
   return medicine.map(pharmacy => {
       return(
-        <a href={"/user/medicine/show/"+pharmacy.id} key={pharmacy.id}> 
-        <div className="colorhover templatemo-content-widget no-padding white-bg col-sm-6 col-lg-4 text-center item mb-4" >
+        
+        <div key={pharmacy.id}
+        className={`templatemo-content-widget no-padding white-bg col-sm-6 col-lg-4 text-center item mb-4
+        colorhover ${pharmacy.prescription == 1 ? 'orange-bg' : ''}`} >
         <br/>
+        <a href={"/user/medicine/show/"+pharmacy.id} key={pharmacy.id}> 
         <img src={`${pharmacy.image}`} width="350px" height="200px" alt="Image"/>
         <h3 className="text-dark">{pharmacy.name}</h3>
-      
-        <div className="table-responsive" style={{ overflow:'auto', height:'100px'}}>
+        </a>
+
+        {pharmacy.prescription == 0 ? <div className="table-responsive" style={{ overflow:'auto', height:'100px'}}>
                 <table className="table">
                 <thead >
                     <tr >
                       <td><b>Pharmacy</b></td>
                       <td><b>Price</b></td>
+                      <td><b>Quantity</b></td>
+                      <td><b>Reservation</b></td>
+                      <td><b>Add</b></td>
                       </tr>
                     </thead>
                   <tbody>
                   {pharmacy[0].map(namepharmacy=>{
              return(
                <tr key={namepharmacy.id}>
-               <td> {namepharmacy.name} </td><td>price</td>
+               <td> {namepharmacy.name} </td><td>{namepharmacy.price}</td>
+               <td>
+               <input type="number" style={{ width:'70px'}} className="form-control"
+          onChange={handleQuantityChange}
+        />
+               </td>
+               <td>
+               <input type="checkbox" style={{ display:'block' }}
+          onChange={handleReservationChange}
+        />
+               </td>
+               <td>
+               <a onClick={(event)=> addToCart(event, pharmacy.id, namepharmacy.id, namepharmacy.price)}
+                    className="btn btn-primary"
+                        title="Add to cart">
+                        <i className="fa fa-plus fa-fw"></i>
+                     </a>
+               </td>
                </tr>
              )
           })}
                                    
                   </tbody>
                 </table>
-              </div>  
+              </div> : 
+              <div style={{ padding:'5px'}}>
+              Description:<textarea  onChange={handleDescriptionChange}
+               className="form-control"></textarea><br/>
+               need prescription &nbsp;
+               <button onClick={(event) => askPrescription(event, pharmacy.name)}
+               className="btn btn-primary">Ask Prescription</button>
+              <br/><br/></div>}
+      
+         
       </div>
-      </a>
+    
         )
       })
   }

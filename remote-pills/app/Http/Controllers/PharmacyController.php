@@ -61,7 +61,7 @@ class PharmacyController extends Controller
     }
 
     public function showMedicine(Medicine $medicine){
-        $medicine->symtom = $medicine->symtom->flatten();
+        $medicine->symptom = $medicine->symptom->flatten();
         $medicine->detail = $medicine->detail->flatten();
 
         return response()->json($medicine,200);

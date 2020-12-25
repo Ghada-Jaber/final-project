@@ -9,28 +9,17 @@ export  default function EditPharmacy(props){
 
     const [name, setName] = useState('');
     const [image, setImage] = useState('');
-    const [format, setFormat] = useState('Tablet');
-    const [description, setDescription] = useState('');
-    const [ingredient, setIngredient] = useState('');
-    const [prescription, setPrescription] = useState();
-    const [tablet, setTablet] = useState('');
-    const [dosage, setDosage] = useState('');
-    const [unit, setUnit] = useState('');
+    const [email, setEmail] = useState('');
     const [errors, setErrors] = useState([]);
 
   const history = useHistory();
 
   useEffect(() => {
-    api.getInfoMedicine(props.match.params.id).then(response => {
+    api.getInfoPharmacy(props.match.params.id).then(response => {
       setImage(response.data.image);
         setName(response.data.name);
-        setFormat(response.data.format);
-        setDescription(response.data.description);
-        setIngredient(response.data.ingredient);
-        setPrescription(response.data.prescription);
-        setTablet(response.data.tablet);
-        setDosage(response.data.dosage);
-        setUnit(response.data.dosage_unit);
+        setEmail(response.data.email);
+
       })
 
 
@@ -105,31 +94,17 @@ function handleUpdateMedicine(event) {
 
   const fd = new FormData();
         fd.append('name', name);
-        fd.append('format', format);
-        fd.append('description', description);
-        fd.append('ingredient', ingredient);
-        fd.append('prescription', prescription);
-        fd.append('tablet', tablet);
-        fd.append('dosage', dosage);
-        fd.append('dosage_unit', unit);
 
         const medicine = {
-          name: name,
-          format: format,
-          description: description,
-          ingredient: ingredient,
-          prescription: prescription,
-          tablet: tablet,
-          dosage: dosage,
-          dosage_unit: unit
+          name: name
       }
     
 
-  api.updateMedicineInfo(medicine, props.match.params.id  ) //, {headers:{'Accept': "application/x-www-form-urlencoded"}}
+  api.updatePharmacy(medicine, props.match.params.id  ) //, {headers:{'Accept': "application/x-www-form-urlencoded"}}
       .then(response => {
         alert("update success");
 
-        history.push('/manageMedicine')
+        history.push('/managePharmacy')
         window.location.reload();
       })
       .catch(error => {
@@ -148,15 +123,10 @@ function handleUpdateMedicine(event) {
             <div className="col-1">	
             <Back  />
 
-            <div className="col-md-5 mr-auto">
-          <div className="border text-center">
-            <img src={`./images/medicine/${image}`} alt="Image" className="img-fluid p-5" />
-          </div>
-        </div>
-
+        
     <div className="templatemo-content-widget templatemo-login-widget  white-bg">
 
-
+    <img src={image} alt="Image"  style={{ width:'50px' , height:'50px'}}/><br/><br/>
           <div className={`form-group ${hasErrorFor('name') ? 'has-error' : ''}`} >
           <div className="input-group" >
             <div className="input-group-addon">name</div>	        		
@@ -167,85 +137,12 @@ function handleUpdateMedicine(event) {
                 {renderErrorFor('name')} 
                 </div>
 
-
-                <div className={`form-group ${hasErrorFor('format') ? 'has-error' : ''}`} >
+                <div className="form-group" >
           <div className="input-group" >
-            <div className="input-group-addon">format</div>	 
-            <select className="form-control"value={format} onChange={handleFormatChange} >
-              <option value="Tablet">Tablet</option>
-              <option value="Liquid">Liquid</option>
-              <option value="Cream">Cream</option>
-            </select>
+          <i className="fa fa-envelope-o"></i> &nbsp;
+            {email} 
 		          	</div>
-                {renderErrorFor('format')} 
                 </div>
-
-
-                
-
-                <div className={`form-group ${hasErrorFor('description') ? 'has-error' : ''}`} >
-          <div className="input-group" >
-            <div className="input-group-addon">description</div>	        		
-            <textarea type="text" className="form-control"
-             value={description} onChange={handleDescriptionChange}
-
-               />   
-		          	</div>
-                {renderErrorFor('description')} 
-                </div>
-
-                <div className={`form-group ${hasErrorFor('ingredient') ? 'has-error' : ''}`} >
-          <div className="input-group" >
-            <div className="input-group-addon">ingredient</div>	        		
-            <textarea type="text" className="form-control"
-             value={ingredient} onChange={handleIngredientChange}
-               />   
-		          	</div>
-                {renderErrorFor('ingredient')} 
-                </div>
-
-                <div className={`form-group ${hasErrorFor('tablet') ? 'has-error' : ''}`} >
-          <div className="input-group" >
-            <div className="input-group-addon">tablet</div>	        		
-            <input type="number" className="form-control"
-             value={tablet} onChange={handleTabletChange}
-               />   
-		          	</div>
-                {renderErrorFor('tablet')} 
-                </div>
-
-                <div className={`form-group ${hasErrorFor('dosage') ? 'has-error' : ''}`} >
-          <div className="input-group" >
-            <div className="input-group-addon">dosage</div>	        		
-            <input type="number" className="form-control"
-             value={dosage} onChange={handleDosageChange}
-               />   
-		          	</div>
-                {renderErrorFor('dosage')} 
-                </div>
-
-                <div className={`form-group ${hasErrorFor('dosage_unit') ? 'has-error' : ''}`} >
-          <div className="input-group" >
-            <div className="input-group-addon">dosage unit</div>	        		
-            <input type="text" className="form-control"
-               value={unit} onChange={handleUnitChange}
-               />   
-		          	</div>
-                {renderErrorFor('dosage_unit')} 
-                </div>
-
-                <div className="form-group">			    
-		
-
-                <div className="checkbox squaredTwo">
-                
-				        <input type="checkbox" id="c3" name="cc3"  defaultChecked={prescription}
-                onChange={handlePrescriptionChange}
-                                />
-						<label htmlFor="c3"><span></span>need prescription</label>
-				    </div>	
-
-            </div>
             
         
             <div className="form-group">

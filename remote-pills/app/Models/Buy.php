@@ -30,7 +30,7 @@ class Buy extends Model
                   'medicine_id',
                   'quantity',
                   'price',
-                  'reservation'
+                  'payment_id'
               ];
 
 

@@ -22,7 +22,7 @@ export  default function ShowMedicine(props){
   const [mfd, setMfd] = useState('');
   const [exp, setExp] = useState('');
 
-  const [symtom, setSymtom] = useState([]);
+  const [symptom, setSymptom] = useState([]);
 
   const [errors, setErrors] = useState([]);
 
@@ -46,18 +46,18 @@ export  default function ShowMedicine(props){
           setMfd(response.data.detail[0].MFD);
           setExp(response.data.detail[0].EXP);
 
-          setSymtom(response.data.symtom);
+          setSymptom(response.data.symptom);
       }) .catch(error => {
       })
 
   },[]);
 
-  function renderSymtom(){
-    return symtom.map(symtom => {
+  function renderSymptom(){
+    return symptom.map(symptom => {
       return(
-        <i key={symtom.id}>
+        <i key={symptom.id}>
        <i style={{ border:'1px solid #2375b8', padding:'10px', borderRadius:'5px'}} >
-          {symtom.name}
+          {symptom.name}
        </i>
        &nbsp;&nbsp;
        </i>
@@ -175,7 +175,7 @@ function renderErrorFor (field) {
             <h4 style={{ color:'#2375b8' }}>Symptoms</h4>
             
             <div style={{ overflow:'auto', width:'260px', height:'70px', padding:'10px' }}>
-            {renderSymtom()}
+            {renderSymptom()}
 
             </div>
 <hr/>

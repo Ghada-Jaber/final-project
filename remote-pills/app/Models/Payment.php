@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PaymentCondition extends Model
+class Payment extends Model
 {
     use HasFactory;
 
-    protected $table = 'payment_condition';
+    protected $table = 'payment';
 
     /**
     * The database primary key value.
@@ -25,9 +25,12 @@ class PaymentCondition extends Model
      * @var array
      */
     protected $fillable = [
-                  'customer_id',
                   'type',
-                  'price'
+                  'price',
+                  'creditCardNumber',
+                  'nameOnCard',
+                  'expiryDate',
+                  'cvvCode'
               ];
 
     public function buy(){

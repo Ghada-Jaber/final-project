@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Symtom extends Model
+class MedicineSymptom extends Model
 {
     use HasFactory;
 
-    protected $table = 'symtom';
+    protected $table = 'medicine_symptom';
 
     /**
     * The database primary key value.
@@ -25,17 +25,17 @@ class Symtom extends Model
      * @var array
      */
     protected $fillable = [
-                  'name'
+                  'medicine_id',
+                  'symptom_id'
               ];
 
 
-    public function medicineSymtom(){
-        return $this->hasMany(MedicineSymtom::class);
+    public function medicine(){
+        return $this->belongsTo(Medicine::class);
     }
-
-
-    public function symtom(){
-        return $this->belongsToMany(Medicine::class);
+    
+    public function symptom(){
+        return $this->belongsTo(Symptom::class);
     }
 
 }

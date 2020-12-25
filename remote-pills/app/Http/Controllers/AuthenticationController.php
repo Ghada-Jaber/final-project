@@ -128,7 +128,7 @@ class AuthenticationController extends Controller
           ]);
 
         
-          $user->setRoles(['ROLE_NORMALUSER']);
+          $user->setRoles([$request['role']]);
           $user->save();
 
 

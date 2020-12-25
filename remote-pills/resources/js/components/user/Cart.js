@@ -3,6 +3,7 @@ import {Link, useHistory} from 'react-router-dom';
 import api from '../../api';
 import Header from './../layouts/Header';
 import Footer from './../layouts/Footer';
+import Payment from './Payment';
 
 export  default function Cart(){
   const [cart, setCart] = useState([]);
@@ -18,12 +19,13 @@ export  default function Cart(){
  },[]);
  var total =0;
 
+ 
+
  function renderBuy(carts){
-   
-    return carts.buy.map(buy=>{
+    return carts.cart.map(buy=>{
         total = total +(buy.price * buy.quantity);
         return(
-            <tr key={buy.id}>
+            <tr key={buy.id}  className={`${buy.reservation==1 ? 'orange-bg' : ''}`} >
             <td>
                 {carts.pharmacy.name}
             </td>
@@ -46,8 +48,11 @@ export  default function Cart(){
             <td> 
             {buy.price * buy.quantity}
             </td>
+            <td> 
+            {buy.reservation==1 ? 'yes' : 'no'}
+            </td>
             <td>
-            <a 
+            <a onClick= {() => handleDeleteCartMedicine(buy.id)}
                       className="btn btn-default"
                         title="Delete">
                         <i className="fa fa-trash fa-fw"></i>
@@ -61,15 +66,38 @@ export  default function Cart(){
     
  }
 
+ 
 function renderCart(){
     return cart.map(cart => {
 return(
+
    
           renderBuy(cart)
     )
 })
 
 }
+
+
+
+function  handleDeleteCartMedicine(buy_id){ //I added event here and in line 89
+  event.preventDefault();
+  var confirm_delete = confirm('Are you sure you want to Delete ?');
+  if (confirm_delete == true) {
+      api.deleteCartMedicine(buy_id).then(response => {
+          window.location.reload();
+      })
+  }
+}
+
+
+function payment(){
+  if (document.getElementById("payment").style.display =="block"){
+    document.getElementById("payment").style.display="none";} 
+    else{
+    document.getElementById("payment").style.display = "block";
+    }
+ }
 
 
     return(
@@ -79,9 +107,12 @@ return(
         
          <Header />
           <div className="templatemo-flex-row flex-content-row " style={{ marginTop:'100px' }}>
+
+            
               <div className="col-1">				 
             
               <div className="templatemo-content-widget no-padding">
+              
             <div className="panel panel-default table-responsive">
             <table id="myTable" className="table table-striped table-bordered templatemo-user-table"
              cellSpacing="0" width="100%">
@@ -93,12 +124,16 @@ return(
                     <th>Price</th>
                     <th>Quantity</th>
                     <th>Total</th>
+                    <th>Reservation</th>
                     <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
-                {cart.length > 0 ? renderCart() : 
-                <tr><td colSpan="7" style={{ textAlign:'center' }} >no data</td></tr>}
+                
+                {renderCart()}
+
+           
+
                 </tbody>
               </table>
             </div>
@@ -127,7 +162,8 @@ return(
     
                 <div className="row">
                   <div className="col-md-12">
-                    <button className="btn btn-primary btn-lg btn-block" >Proceed To
+                    <button  onClick={() => payment()}
+                    className="btn btn-primary btn-lg btn-block" >Proceed To
                       Checkout</button>
                       {/* onClick="window.location='checkout.html'" */}
                   </div>
@@ -137,7 +173,10 @@ return(
           </div>
         </div>
   
-                 
+        <div id="payment" style={{ display:'none'}}>
+              <Payment />
+
+            </div>     
   
        </div>     
        </div>

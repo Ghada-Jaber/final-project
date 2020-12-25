@@ -17,7 +17,7 @@ export  default function ShowMedicine(props){
     const [dosage, setDosage] = useState('');
     const [unit, setUnit] = useState('');
 
-    const [symtom, setSymtom] = useState([]);
+    const [symptom, setSymptom] = useState([]);
 
     const [pharmacy, setPharmacy] = useState([]);
 
@@ -34,7 +34,7 @@ export  default function ShowMedicine(props){
         setTablet(response.data.tablet);
         setDosage(response.data.dosage);
         setUnit(response.data.dosage_unit);
-        setSymtom(response.data.symtom);
+        setSymptom(response.data.symptom);
       })
 
       api.getMedicinePharmacy(props.match.params.id).then(response => {
@@ -44,12 +44,12 @@ export  default function ShowMedicine(props){
   },[]);
 
 
-  function renderSymtom(){
-    return symtom.map(symtom => {
+  function renderSymptom(){
+    return symptom.map(symptom => {
       return(
-        <i key={symtom.id}>
+        <i key={symptom.id}>
        <i style={{ border:'1px solid #2375b8', padding:'10px', borderRadius:'5px'}} >
-          {symtom.name}
+          {symptom.name}
        </i>
        &nbsp;&nbsp;
        </i>
@@ -105,10 +105,10 @@ export  default function ShowMedicine(props){
   
         </div>
         <div className="col-md-4">
-        <h4 style={{ color:'#2375b8' }}>Symtom</h4>
+        <h4 style={{ color:'#2375b8' }}>Symptom</h4>
             
             <div style={{ overflow:'auto', width:'260px', height:'70px', padding:'10px' }}>
-            {renderSymtom()}
+            {renderSymptom()}
 
             </div>
 <hr/>

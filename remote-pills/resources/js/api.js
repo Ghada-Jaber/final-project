@@ -49,6 +49,11 @@ export default{
     updateMedicineInfo: (medicine, id) =>
     axios.put(`${BASE_URL}/admin/medicine/info/${id}`, medicine, token),
 
+    updatePharmacy: (pharmacy, id) =>
+    axios.put(`${BASE_URL}/admin/pharmacy/${id}`, pharmacy, token),
+
+    
+
     deleteMedicine: (id) =>
     axios.delete(`${BASE_URL}/admin/medicine/${id}`, token),
 
@@ -57,12 +62,19 @@ export default{
 
     getPharmacyMedicine: (id) =>
     axios.get(`${BASE_URL}/admin/pharmacy/${id}/medicine`, token),
+
+
+    addSymptom: (symptom) =>
+    axios.post(`${BASE_URL}/admin/symptom`, symptom, token),
     
     getAllMedicine: ()=>
     axios.get(`${BASE_URL}/pharmacy/medicine/allMedicine`, token),
 
     getUsers: (type)=>
     axios.get(`${BASE_URL}/admin/allUsers/${type}`, token),
+
+    getAllSymptom: () =>
+    axios.get(`${BASE_URL}/admin/getAllSymptom`, token),
 
     getMedicine: () =>
     axios.get(`${BASE_URL}/pharmacy/medicine`, token),
@@ -114,4 +126,25 @@ export default{
 
     getCartMedicine: () =>
     axios.get(`${BASE_URL}/user/cart/getCartMedicine`, token),
+
+
+    deleteCartMedicine: (id) =>
+    axios.delete(`${BASE_URL}/user/cart/deleteCart/${id}`, token),
+
+
+    addPayment: (payment) =>
+    axios.post(`${BASE_URL}/user/addPayment`, payment, token),
+
+    askPrescription: (patient) =>
+    axios.post(`${BASE_URL}/user/askPrescription`, patient, token),
+
+    getPrescription: () =>
+    axios.get(`${BASE_URL}/user/getPrescription`, token),
+
+
+    ShowPrescription: (id)=>
+    axios.get(`${BASE_URL}/user/prescription/${id}`, token),
+
+
+   
 }

@@ -17,8 +17,22 @@ export  default function AddMedicine(){
     const [dosage, setDosage] = useState('');
     const [unit, setUnit] = useState('');
     const [errors, setErrors] = useState([]);
+    const[symptom, setSymptom] = useState([]);
+
+    const[symptomName, setSymtomName] = useState([]);
+
+
+    const[symptomId, setSymptomId]= useState([]);
 
   const history = useHistory();
+
+
+  useEffect(() => {
+    api.getAllSymptom().then(response => {
+        setSymptom(response.data);
+      })
+
+  },[]);
 
 
 
@@ -93,8 +107,11 @@ function handleAddMedicine(event) {
   event.preventDefault();
 
 
+
+
   const fd = new FormData();
-        fd.append('image', image);
+  fd.append('dosage_unit', unit);
+        fd.append('symptom', symptomId);
         fd.append('name', name);
         fd.append('format', format);
         fd.append('description', description);
@@ -107,16 +124,8 @@ function handleAddMedicine(event) {
 
   api.addMedicineInfo(fd , {headers:{'Accept': "application/json",  'Content-Type': "multipart/form-data"}})
       .then(response => {
+        console.log(response.data)
         alert("add success");
-        // setName('');
-        // setImage('');
-        // setFormat('Tablet');
-        // setDescription('');
-        // setIngredient('');
-        // setPrescription(0);
-        // setTablet('');
-        // setDosage('');
-        // setUnit('');
 
         history.push('/manageMedicine')
         window.location.reload();
@@ -127,13 +136,130 @@ function handleAddMedicine(event) {
       })
 }
 
+
+function renderSymptom(){
+  return  symptom.map(symptom => {
     return(
+        <option key={symptom.id} value={symptom.id}
+        // style={{backgroundImage: `url(../images/medicine/${medicine.image})` }}
+        >
+            {symptom.name}
+        </option>
+    )
+})
+}
+
+function filterFunction(event){
+  var search = event.target.value;
+  var filter, option, i;
+   filter = search.toUpperCase();
+   var div = document.getElementById("searchMed");
+   option = div.getElementsByTagName("option");
+   for (i = 0; i < option.length; i++) {
+     var txtValue = option[i].textContent || option[i].innerText;
+     if (txtValue.toUpperCase().indexOf(filter) > -1) {
+       option[i].style.display = "";
+     } else {
+       option[i].style.display = "none";
+     }
+   }
+ }
+
+ function closeForm(){
+  document.getElementById("addmedicine").style.display="none";
+ }
+
+
+ function handleChangeSymptom(){
+  var selected = [];
+  for (var option of document.getElementById('searchMed').options) {
+    if (option.selected) {
+      selected.push(option.value);
+    }
+  }
+  setSymptomId(selected);
+
+  
+ }
+
+ function handleChangeNameSymptom(event){
+   setSymtomName(event.target.value)
+ }
+
+
+ function addSymptom(){
+
+  const symptomadd = {
+    symptomName: symptomName
+  }
+  
+    api.addSymptom(symptomadd).then(response => {
+      alert("add symptom success");
+
+      var x = document.getElementById("searchMed");
+      var option = document.createElement("option");
+      option.value= response.data.id;
+      option.text = response.data.name;
+      x.add(option);
+      
+
+    })
+    .catch(error => {
+      console.log(error)
+      setErrors(error.response.data.errors)
+    })
+ }
+
+    return(
+      <div id="addmedicine"  className="formShow">
               <div className="col-1">	
 
     <div style={{ marginTop:'10px' }} >
         </div>
 
+        
+
+        <div className="col-md-4">
+        Symptom
+        <div className="form-group">
+          <div className="search" style={{ marginRight:'10px' }}>  	      		
+		              	<input type="text" className="search form-control"
+						   placeholder="Serach"  
+               id="myInput" onChange={filterFunction}
+
+               /> 
+               </div>
+               </div> 
+
+               <div className={`form-group ${hasErrorFor('symptomName') ? 'has-error' : ''}`} >
+          <div className="input-group" >       		
+            <input type="text" className="search form-control"
+						   placeholder="Symptom Name"  onChange={handleChangeNameSymptom}
+
+               />  
+		          	</div>
+                {renderErrorFor('symptomName')} 
+                </div>
+             
+               <a className="btn btn-primary" style={{ marginLeft:'10px', marginRight:'10px' }} 
+             onClick={() => addSymptom()} >
+             <i className="fa fa-plus"></i></a>		
+
+              <div className={`form-group ${hasErrorFor('symptom') ? 'has-error' : ''}`} >
+          <div className="input-group" >
+            <div className="input-group-addon">symptom</div>	        		
+            <select onChange={handleChangeSymptom} className="form-control select" size="5" 
+              multiple="multiple"
+              id="searchMed">
+							{ symptom.length >0 ? renderSymptom() : '' }
+              </select>
+		          	</div>
+                {renderErrorFor('symptom')} 
+                </div>
+          </div>
+
     <div className="templatemo-content-widget templatemo-login-widget  white-bg">
+   <a onClick={() => closeForm()} ><i className="fa fa-times"></i></a>
     <div className="scrollform">
     <div className="form-group">
           <div className="input-group" >
@@ -245,7 +371,9 @@ function handleAddMedicine(event) {
 
     
           </div>
+         
         </div>    
+        </div>
 
     )
 

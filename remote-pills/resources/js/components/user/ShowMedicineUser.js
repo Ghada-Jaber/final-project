@@ -24,7 +24,7 @@ export  default function ShowMedicineUser(props){
   const [reservation, setReservation] = useState(0);
 
 
-  const [symtom, setSymtom] = useState([]);
+  const [symptom, setSymptom] = useState([]);
 
   const[detail, setDetail]= useState([]);
 
@@ -56,18 +56,18 @@ export  default function ShowMedicineUser(props){
           // setExp(response.data.detail[0].EXP);
 
 
-          setSymtom(response.data.symtom);
+          setSymptom(response.data.symptom);
       }) .catch(error => {
       })
 
   },[]);
 
-  function renderSymtom(){
-    return symtom.map(symtom => {
+  function renderSymptom(){
+    return symptom.map(symptom => {
       return(
-        <i key={symtom.id}>
+        <i key={symptom.id}>
        <i style={{ border:'1px solid #2375b8', padding:'10px', borderRadius:'5px'}} >
-          {symtom.name}
+          {symptom.name}
        </i>
        &nbsp;&nbsp;
        </i>
@@ -105,50 +105,14 @@ function addToCart(event, pharmacy_id, price){
 
 api.addToCart(props.match.params.id, addtocart)
 .then(response => {
-    
+  alert('add done')
 })
 .catch(error => {
    // setErrors(error.response.data.errors)
 })
 }
 
-function renderDetail(){
-  return detail.map(detail => {
-      return(
-        <tr key={detail.id}>
-        <th scope="row">{detail.pharmacy.name}</th>
-        <td>
-        {detail.price}
-        </td>
-        <td>
-        {detail.MFD}
-        </td>
-        <td>
-        {detail.EXP}
-        </td>
-     
-        <td>
-        <input type="number" style={{ width:'70px'}} className="form-control"
-          onChange={handleQuantityChange}
-        />
-        </td>
-        <td>
-        <input type="checkbox" style={{ display:'block' }}
-          onChange={handleReservationChange}
-        />
-        </td>
-        <td>
-        <a onClick={(event)=> addToCart(event, detail.pharmacy.id, detail.price)}
-                    className="btn btn-primary"
-                        title="Add to cart">
-                        <i className="fa fa-plus fa-fw"></i>
-                     </a>
-        </td>
-      </tr>
 
-        )
-      })
-  }
 
 
 
@@ -206,38 +170,9 @@ Tablet {tablet}
             <h4 style={{ color:'#2375b8' }}>Symtom</h4>
             
             <div style={{ overflow:'auto', width:'260px', height:'70px', padding:'10px' }}>
-            {renderSymtom()}
+            {renderSymptom()}
 
             </div>
-<hr/>
-            <br/>
-            
-            <b style={{ color:'#2375b8' }}><u>Details</u></b>
-              &nbsp;
-              <div className="tab-content">
-              
-                <div className="tab-pane active">
-                  <table className="table custom-table">
-                    <thead>
-                    <tr>
-                      <th>Pharmacy</th>
-                      <th>Price</th>
-                      <th>MFD</th>
-                      <th>EXP</th>
-                      <th>Quantity</th>
-                      <th>Reservation</th>
-                      <th>Add</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                    {renderDetail()}
-                     
-                      
-                    </tbody>
-                  </table>
-                </div>
-            
-              </div>
             </div>
 
         </div>

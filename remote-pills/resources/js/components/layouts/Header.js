@@ -23,6 +23,9 @@ export default function Header(){
     const [greeting, setGreeting] = useState('');
 
 
+    var roles = 'ROLE_NORMALUSER';
+
+
     // const test = require('../../../../storage/app/uploads/userimage/NoImage.png');
     // require.context(directory, useSubdirectories = true, regExp = /^\.\/.*$/, mode = 'sync')
 
@@ -326,20 +329,14 @@ return(
           </nav>
 
           <div id="signin" style={{ display: 'none'}}>
-          <a  onClick={() => displayFormSignIn()} className="closecss">
-        &times;</a>
                 <SignIn/>
               </div>
 
               <div id="signup" style={{ display: 'none'}}>
-              <a  onClick={() => displayFormSignUp()} className="closecss">
-        &times;</a>
-                <SignUp/>
+                <SignUp props={roles}/>
               </div>
 
               <div id="forgetpass" style={{ display: 'none'}}>
-              <a  onClick={() => displayFormForgetPass()} className="closecss">
-        &times;</a>
                 <ForgetPassword/>
               </div>
           

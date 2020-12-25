@@ -5,10 +5,15 @@ import {Link, useHistory} from 'react-router-dom';
 
 export  default function ForgetPassword(){
 
+    function displayFormForgetPass(){
+        window.location.href ='/';
+      }
+
     return(
-        <div className="logincontainer">
+        <div id="forgetpass" className="logincontainer">
         <br/>
 		<div className="templatemo-content-widget templatemo-login-widget  white-bg">
+        <a onClick={() => displayFormForgetPass()} ><i className="fa fa-times"></i></a>
 			
         <form action="<?php echo $_SERVER['PHP_SELF'];?>" className="templatemo-login-form" >
             <div className="form-group">

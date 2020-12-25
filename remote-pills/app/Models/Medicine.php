@@ -60,8 +60,8 @@ class Medicine extends Model
     }
 
 
-    public function symtom(){
-        return $this->belongsToMany(Symtom::class);
+    public function symptom(){
+        return $this->belongsToMany(Symptom::class);
     }
    
 }

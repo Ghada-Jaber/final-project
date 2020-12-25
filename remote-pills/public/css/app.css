@@ -141,9 +141,13 @@ nav li {
 .yellow-bg { background-color: #D8D138; }
 .white-bg {	background-color: white; }
 .orange-bg {
-	background-color: #F17A54;
+	background-color: #D7425C;/* For browsers that do not support gradients */
+	background-image: radial-gradient(#D7425C, #D7425C, #D7425C);
 	color: white;
 }
+
+.white-bg .fa-times { background-color: #d7d7d7; }
+.white-bg .fa-times:hover {	background: #83ccd1; }
 
 .orange-bg .fa-times {	background-color: #F0A790; }
 .orange-bg .fa-times:hover { background-color: #E14311; }
@@ -249,16 +253,8 @@ h3{
 }
 
 
-.formShow{
-	position:fixed;
-	width:100%;
-	height:100%;
-	background-color:rgba(0,0,0,0.8);
-	display:none;
-	z-index:3000;
-	top:0px;
-	left:0px;
-}
+
+
 
 
 
@@ -373,7 +369,7 @@ h3{
 .templatemo-content-widget {
 	border-radius: 10px;
 	padding: 30px;	
-	
+	position: relative;
 	margin: 10px;
  	box-shadow: 0px 0px 1px 1px rgba(161, 159, 159, 0.1);
 }
@@ -487,9 +483,8 @@ h3{
 	position:absolute;
 	top: 10px;
 	left: 10px;
-	font-size: 70px;
-	 color: #3490dc;
 	 z-index: 4000;
+	 background-color:white;
 }
 
 .closecss:hover{
@@ -550,8 +545,7 @@ color: #2A858B !important;
 .checkbox label { padding-left: 0; }
 .font-weight-400 { font-weight: 400; }
 
-/* Style checkboxes and radio buttons
-http://webdesign.tutsplus.com/tutorials/quick-tip-easy-css3-checkboxes-and-radio-buttons--webdesign-8953 */
+
 input[type="checkbox"] {  display:none; }
 input[type="checkbox"] + label span {
     display:inline-block;
@@ -559,11 +553,11 @@ input[type="checkbox"] + label span {
     height:25px;
     margin:-1px 4px 0 0;
     vertical-align:middle;
-    background:url([object Module]) left top no-repeat;
+    background:url(/images/checkbox-radio-sheet.png?2f08c5367be3151d57f26a77039f70a0) left top no-repeat;
     cursor:pointer;
 }
 input[type="checkbox"]:checked + label span {
-    background:url([object Module]) -26px top no-repeat;
+    background:url(/images/checkbox-radio-sheet.png?2f08c5367be3151d57f26a77039f70a0) -26px top no-repeat;
 }
 
 
@@ -575,11 +569,11 @@ input[type="radio"] + label span {
     height:25px;
     margin:-1px 4px 0 0;
     vertical-align:middle;
-    background:url([object Module]) -52px top no-repeat;
+    background:url(/images/checkbox-radio-sheet.png?2f08c5367be3151d57f26a77039f70a0) -52px top no-repeat;
     cursor:pointer;
 }
 input[type="radio"]:checked + label span {
-    background:url([object Module]) -78px top no-repeat;
+    background:url(/images/checkbox-radio-sheet.png?2f08c5367be3151d57f26a77039f70a0) -78px top no-repeat;
 }
 
 /* 6. Manage Users
@@ -831,15 +825,30 @@ select option{
   .logincontainer{
 	background-repeat: no-repeat;
 	background-position:center right;
-	
+	background-image: url(/images/background.png?72fa2112fc830c8d4fdd847bdbfd2f3f);
 	background-color: #abd0e2;
 	position:fixed;
 	width:100%;
-	height: 574px;
+	height: 100%;
 	z-index:3000;
 	top:0px;
 	left:0px;
 }
+
+.formShow{
+	background-repeat: no-repeat;
+	background-position:center right;
+	background-color:rgba(0,0,0,0.8);
+	position:fixed;
+	width:100%;
+	height: 100%;
+	z-index:3000;
+	top:0px;
+	left:0px;
+}
+
+
+
 
 .logincontainer::before {
 	

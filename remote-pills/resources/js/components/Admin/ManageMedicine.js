@@ -15,7 +15,6 @@ export  default function ManageMedicine(){
 
   useEffect(() => {
     api.getAllMedicine().then(response => {
-      console.log(response.data)
       setMedicine(response.data);
     })
  },[]);
@@ -258,9 +257,7 @@ for (i = 1; i < tr.length; i++) {
             </div> 
                                      
           </div>   
-          <div id="addmedicine" className="formShow">
-          <a  onClick={() => addMedicine()} className="closecss">
-          &times;</a>
+          <div id="addmedicine" style={{ display: 'none'}}>
               <AddMedicine />
 
             </div>

@@ -6532,7 +6532,11 @@ function serialize(name, val, options) {
 
   if (null != opt.maxAge) {
     var maxAge = opt.maxAge - 0;
-    if (isNaN(maxAge)) throw new Error('maxAge should be a Number');
+
+    if (isNaN(maxAge) || !isFinite(maxAge)) {
+      throw new TypeError('option maxAge is invalid')
+    }
+
     str += '; Max-Age=' + Math.floor(maxAge);
   }
 
@@ -10578,6 +10582,20 @@ function hoistNonReactStatics(targetComponent, sourceComponent, blacklist) {
 }
 
 module.exports = hoistNonReactStatics;
+
+
+/***/ }),
+
+/***/ "./node_modules/isarray/index.js":
+/*!***************************************!*\
+  !*** ./node_modules/isarray/index.js ***!
+  \***************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = Array.isArray || function (arr) {
+  return Object.prototype.toString.call(arr) == '[object Array]';
+};
 
 
 /***/ }),
@@ -60500,6 +60518,443 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 /***/ }),
 
+/***/ "./node_modules/path-to-regexp/index.js":
+/*!**********************************************!*\
+  !*** ./node_modules/path-to-regexp/index.js ***!
+  \**********************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var isarray = __webpack_require__(/*! isarray */ "./node_modules/isarray/index.js")
+
+/**
+ * Expose `pathToRegexp`.
+ */
+module.exports = pathToRegexp
+module.exports.parse = parse
+module.exports.compile = compile
+module.exports.tokensToFunction = tokensToFunction
+module.exports.tokensToRegExp = tokensToRegExp
+
+/**
+ * The main path matching regexp utility.
+ *
+ * @type {RegExp}
+ */
+var PATH_REGEXP = new RegExp([
+  // Match escaped characters that would otherwise appear in future matches.
+  // This allows the user to escape special characters that won't transform.
+  '(\\\\.)',
+  // Match Express-style parameters and un-named parameters with a prefix
+  // and optional suffixes. Matches appear as:
+  //
+  // "/:test(\\d+)?" => ["/", "test", "\d+", undefined, "?", undefined]
+  // "/route(\\d+)"  => [undefined, undefined, undefined, "\d+", undefined, undefined]
+  // "/*"            => ["/", undefined, undefined, undefined, undefined, "*"]
+  '([\\/.])?(?:(?:\\:(\\w+)(?:\\(((?:\\\\.|[^\\\\()])+)\\))?|\\(((?:\\\\.|[^\\\\()])+)\\))([+*?])?|(\\*))'
+].join('|'), 'g')
+
+/**
+ * Parse a string for the raw tokens.
+ *
+ * @param  {string}  str
+ * @param  {Object=} options
+ * @return {!Array}
+ */
+function parse (str, options) {
+  var tokens = []
+  var key = 0
+  var index = 0
+  var path = ''
+  var defaultDelimiter = options && options.delimiter || '/'
+  var res
+
+  while ((res = PATH_REGEXP.exec(str)) != null) {
+    var m = res[0]
+    var escaped = res[1]
+    var offset = res.index
+    path += str.slice(index, offset)
+    index = offset + m.length
+
+    // Ignore already escaped sequences.
+    if (escaped) {
+      path += escaped[1]
+      continue
+    }
+
+    var next = str[index]
+    var prefix = res[2]
+    var name = res[3]
+    var capture = res[4]
+    var group = res[5]
+    var modifier = res[6]
+    var asterisk = res[7]
+
+    // Push the current path onto the tokens.
+    if (path) {
+      tokens.push(path)
+      path = ''
+    }
+
+    var partial = prefix != null && next != null && next !== prefix
+    var repeat = modifier === '+' || modifier === '*'
+    var optional = modifier === '?' || modifier === '*'
+    var delimiter = res[2] || defaultDelimiter
+    var pattern = capture || group
+
+    tokens.push({
+      name: name || key++,
+      prefix: prefix || '',
+      delimiter: delimiter,
+      optional: optional,
+      repeat: repeat,
+      partial: partial,
+      asterisk: !!asterisk,
+      pattern: pattern ? escapeGroup(pattern) : (asterisk ? '.*' : '[^' + escapeString(delimiter) + ']+?')
+    })
+  }
+
+  // Match any characters still remaining.
+  if (index < str.length) {
+    path += str.substr(index)
+  }
+
+  // If the path exists, push it onto the end.
+  if (path) {
+    tokens.push(path)
+  }
+
+  return tokens
+}
+
+/**
+ * Compile a string to a template function for the path.
+ *
+ * @param  {string}             str
+ * @param  {Object=}            options
+ * @return {!function(Object=, Object=)}
+ */
+function compile (str, options) {
+  return tokensToFunction(parse(str, options), options)
+}
+
+/**
+ * Prettier encoding of URI path segments.
+ *
+ * @param  {string}
+ * @return {string}
+ */
+function encodeURIComponentPretty (str) {
+  return encodeURI(str).replace(/[\/?#]/g, function (c) {
+    return '%' + c.charCodeAt(0).toString(16).toUpperCase()
+  })
+}
+
+/**
+ * Encode the asterisk parameter. Similar to `pretty`, but allows slashes.
+ *
+ * @param  {string}
+ * @return {string}
+ */
+function encodeAsterisk (str) {
+  return encodeURI(str).replace(/[?#]/g, function (c) {
+    return '%' + c.charCodeAt(0).toString(16).toUpperCase()
+  })
+}
+
+/**
+ * Expose a method for transforming tokens into the path function.
+ */
+function tokensToFunction (tokens, options) {
+  // Compile all the tokens into regexps.
+  var matches = new Array(tokens.length)
+
+  // Compile all the patterns before compilation.
+  for (var i = 0; i < tokens.length; i++) {
+    if (typeof tokens[i] === 'object') {
+      matches[i] = new RegExp('^(?:' + tokens[i].pattern + ')$', flags(options))
+    }
+  }
+
+  return function (obj, opts) {
+    var path = ''
+    var data = obj || {}
+    var options = opts || {}
+    var encode = options.pretty ? encodeURIComponentPretty : encodeURIComponent
+
+    for (var i = 0; i < tokens.length; i++) {
+      var token = tokens[i]
+
+      if (typeof token === 'string') {
+        path += token
+
+        continue
+      }
+
+      var value = data[token.name]
+      var segment
+
+      if (value == null) {
+        if (token.optional) {
+          // Prepend partial segment prefixes.
+          if (token.partial) {
+            path += token.prefix
+          }
+
+          continue
+        } else {
+          throw new TypeError('Expected "' + token.name + '" to be defined')
+        }
+      }
+
+      if (isarray(value)) {
+        if (!token.repeat) {
+          throw new TypeError('Expected "' + token.name + '" to not repeat, but received `' + JSON.stringify(value) + '`')
+        }
+
+        if (value.length === 0) {
+          if (token.optional) {
+            continue
+          } else {
+            throw new TypeError('Expected "' + token.name + '" to not be empty')
+          }
+        }
+
+        for (var j = 0; j < value.length; j++) {
+          segment = encode(value[j])
+
+          if (!matches[i].test(segment)) {
+            throw new TypeError('Expected all "' + token.name + '" to match "' + token.pattern + '", but received `' + JSON.stringify(segment) + '`')
+          }
+
+          path += (j === 0 ? token.prefix : token.delimiter) + segment
+        }
+
+        continue
+      }
+
+      segment = token.asterisk ? encodeAsterisk(value) : encode(value)
+
+      if (!matches[i].test(segment)) {
+        throw new TypeError('Expected "' + token.name + '" to match "' + token.pattern + '", but received "' + segment + '"')
+      }
+
+      path += token.prefix + segment
+    }
+
+    return path
+  }
+}
+
+/**
+ * Escape a regular expression string.
+ *
+ * @param  {string} str
+ * @return {string}
+ */
+function escapeString (str) {
+  return str.replace(/([.+*?=^!:${}()[\]|\/\\])/g, '\\$1')
+}
+
+/**
+ * Escape the capturing group by escaping special characters and meaning.
+ *
+ * @param  {string} group
+ * @return {string}
+ */
+function escapeGroup (group) {
+  return group.replace(/([=!:$\/()])/g, '\\$1')
+}
+
+/**
+ * Attach the keys as a property of the regexp.
+ *
+ * @param  {!RegExp} re
+ * @param  {Array}   keys
+ * @return {!RegExp}
+ */
+function attachKeys (re, keys) {
+  re.keys = keys
+  return re
+}
+
+/**
+ * Get the flags for a regexp from the options.
+ *
+ * @param  {Object} options
+ * @return {string}
+ */
+function flags (options) {
+  return options && options.sensitive ? '' : 'i'
+}
+
+/**
+ * Pull out keys from a regexp.
+ *
+ * @param  {!RegExp} path
+ * @param  {!Array}  keys
+ * @return {!RegExp}
+ */
+function regexpToRegexp (path, keys) {
+  // Use a negative lookahead to match only capturing groups.
+  var groups = path.source.match(/\((?!\?)/g)
+
+  if (groups) {
+    for (var i = 0; i < groups.length; i++) {
+      keys.push({
+        name: i,
+        prefix: null,
+        delimiter: null,
+        optional: false,
+        repeat: false,
+        partial: false,
+        asterisk: false,
+        pattern: null
+      })
+    }
+  }
+
+  return attachKeys(path, keys)
+}
+
+/**
+ * Transform an array into a regexp.
+ *
+ * @param  {!Array}  path
+ * @param  {Array}   keys
+ * @param  {!Object} options
+ * @return {!RegExp}
+ */
+function arrayToRegexp (path, keys, options) {
+  var parts = []
+
+  for (var i = 0; i < path.length; i++) {
+    parts.push(pathToRegexp(path[i], keys, options).source)
+  }
+
+  var regexp = new RegExp('(?:' + parts.join('|') + ')', flags(options))
+
+  return attachKeys(regexp, keys)
+}
+
+/**
+ * Create a path regexp from string input.
+ *
+ * @param  {string}  path
+ * @param  {!Array}  keys
+ * @param  {!Object} options
+ * @return {!RegExp}
+ */
+function stringToRegexp (path, keys, options) {
+  return tokensToRegExp(parse(path, options), keys, options)
+}
+
+/**
+ * Expose a function for taking tokens and returning a RegExp.
+ *
+ * @param  {!Array}          tokens
+ * @param  {(Array|Object)=} keys
+ * @param  {Object=}         options
+ * @return {!RegExp}
+ */
+function tokensToRegExp (tokens, keys, options) {
+  if (!isarray(keys)) {
+    options = /** @type {!Object} */ (keys || options)
+    keys = []
+  }
+
+  options = options || {}
+
+  var strict = options.strict
+  var end = options.end !== false
+  var route = ''
+
+  // Iterate over the tokens and create our regexp string.
+  for (var i = 0; i < tokens.length; i++) {
+    var token = tokens[i]
+
+    if (typeof token === 'string') {
+      route += escapeString(token)
+    } else {
+      var prefix = escapeString(token.prefix)
+      var capture = '(?:' + token.pattern + ')'
+
+      keys.push(token)
+
+      if (token.repeat) {
+        capture += '(?:' + prefix + capture + ')*'
+      }
+
+      if (token.optional) {
+        if (!token.partial) {
+          capture = '(?:' + prefix + '(' + capture + '))?'
+        } else {
+          capture = prefix + '(' + capture + ')?'
+        }
+      } else {
+        capture = prefix + '(' + capture + ')'
+      }
+
+      route += capture
+    }
+  }
+
+  var delimiter = escapeString(options.delimiter || '/')
+  var endsWithDelimiter = route.slice(-delimiter.length) === delimiter
+
+  // In non-strict mode we allow a slash at the end of match. If the path to
+  // match already ends with a slash, we remove it for consistency. The slash
+  // is valid at the end of a path match, not in the middle. This is important
+  // in non-ending mode, where "/test/" shouldn't match "/test//route".
+  if (!strict) {
+    route = (endsWithDelimiter ? route.slice(0, -delimiter.length) : route) + '(?:' + delimiter + '(?=$))?'
+  }
+
+  if (end) {
+    route += '$'
+  } else {
+    // In non-ending mode, we need the capturing groups to match as much as
+    // possible by using a positive lookahead to the end or next path segment.
+    route += strict && endsWithDelimiter ? '' : '(?=' + delimiter + '|$)'
+  }
+
+  return attachKeys(new RegExp('^' + route, flags(options)), keys)
+}
+
+/**
+ * Normalize the given path string, returning a regular expression.
+ *
+ * An empty array can be passed in for the keys, which will hold the
+ * placeholder key descriptions. For example, using `/user/:id`, `keys` will
+ * contain `[{ name: 'id', delimiter: '/', optional: false, repeat: false }]`.
+ *
+ * @param  {(string|RegExp|Array)} path
+ * @param  {(Array|Object)=}       keys
+ * @param  {Object=}               options
+ * @return {!RegExp}
+ */
+function pathToRegexp (path, keys, options) {
+  if (!isarray(keys)) {
+    options = /** @type {!Object} */ (keys || options)
+    keys = []
+  }
+
+  options = options || {}
+
+  if (path instanceof RegExp) {
+    return regexpToRegexp(path, /** @type {!Array} */ (keys))
+  }
+
+  if (isarray(path)) {
+    return arrayToRegexp(/** @type {!Array} */ (path), /** @type {!Array} */ (keys), options)
+  }
+
+  return stringToRegexp(/** @type {string} */ (path), /** @type {!Array} */ (keys), options)
+}
+
+
+/***/ }),
+
 /***/ "./node_modules/popper.js/dist/esm/popper.js":
 /*!***************************************************!*\
   !*** ./node_modules/popper.js/dist/esm/popper.js ***!
@@ -93851,7 +94306,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var mini_create_react_context__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! mini-create-react-context */ "./node_modules/mini-create-react-context/dist/esm/index.js");
 /* harmony import */ var tiny_invariant__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! tiny-invariant */ "./node_modules/tiny-invariant/dist/tiny-invariant.esm.js");
 /* harmony import */ var _babel_runtime_helpers_esm_extends__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @babel/runtime/helpers/esm/extends */ "./node_modules/@babel/runtime/helpers/esm/extends.js");
-/* harmony import */ var path_to_regexp__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! path-to-regexp */ "./node_modules/react-router/node_modules/path-to-regexp/index.js");
+/* harmony import */ var path_to_regexp__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! path-to-regexp */ "./node_modules/path-to-regexp/index.js");
 /* harmony import */ var path_to_regexp__WEBPACK_IMPORTED_MODULE_8___default = /*#__PURE__*/__webpack_require__.n(path_to_regexp__WEBPACK_IMPORTED_MODULE_8__);
 /* harmony import */ var react_is__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! react-is */ "./node_modules/react-is/index.js");
 /* harmony import */ var react_is__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(react_is__WEBPACK_IMPORTED_MODULE_9__);
@@ -94628,457 +95083,6 @@ if (true) {
 
 
 //# sourceMappingURL=react-router.js.map
-
-
-/***/ }),
-
-/***/ "./node_modules/react-router/node_modules/isarray/index.js":
-/*!*****************************************************************!*\
-  !*** ./node_modules/react-router/node_modules/isarray/index.js ***!
-  \*****************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports) {
-
-module.exports = Array.isArray || function (arr) {
-  return Object.prototype.toString.call(arr) == '[object Array]';
-};
-
-
-/***/ }),
-
-/***/ "./node_modules/react-router/node_modules/path-to-regexp/index.js":
-/*!************************************************************************!*\
-  !*** ./node_modules/react-router/node_modules/path-to-regexp/index.js ***!
-  \************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-var isarray = __webpack_require__(/*! isarray */ "./node_modules/react-router/node_modules/isarray/index.js")
-
-/**
- * Expose `pathToRegexp`.
- */
-module.exports = pathToRegexp
-module.exports.parse = parse
-module.exports.compile = compile
-module.exports.tokensToFunction = tokensToFunction
-module.exports.tokensToRegExp = tokensToRegExp
-
-/**
- * The main path matching regexp utility.
- *
- * @type {RegExp}
- */
-var PATH_REGEXP = new RegExp([
-  // Match escaped characters that would otherwise appear in future matches.
-  // This allows the user to escape special characters that won't transform.
-  '(\\\\.)',
-  // Match Express-style parameters and un-named parameters with a prefix
-  // and optional suffixes. Matches appear as:
-  //
-  // "/:test(\\d+)?" => ["/", "test", "\d+", undefined, "?", undefined]
-  // "/route(\\d+)"  => [undefined, undefined, undefined, "\d+", undefined, undefined]
-  // "/*"            => ["/", undefined, undefined, undefined, undefined, "*"]
-  '([\\/.])?(?:(?:\\:(\\w+)(?:\\(((?:\\\\.|[^\\\\()])+)\\))?|\\(((?:\\\\.|[^\\\\()])+)\\))([+*?])?|(\\*))'
-].join('|'), 'g')
-
-/**
- * Parse a string for the raw tokens.
- *
- * @param  {string}  str
- * @param  {Object=} options
- * @return {!Array}
- */
-function parse (str, options) {
-  var tokens = []
-  var key = 0
-  var index = 0
-  var path = ''
-  var defaultDelimiter = options && options.delimiter || '/'
-  var res
-
-  while ((res = PATH_REGEXP.exec(str)) != null) {
-    var m = res[0]
-    var escaped = res[1]
-    var offset = res.index
-    path += str.slice(index, offset)
-    index = offset + m.length
-
-    // Ignore already escaped sequences.
-    if (escaped) {
-      path += escaped[1]
-      continue
-    }
-
-    var next = str[index]
-    var prefix = res[2]
-    var name = res[3]
-    var capture = res[4]
-    var group = res[5]
-    var modifier = res[6]
-    var asterisk = res[7]
-
-    // Push the current path onto the tokens.
-    if (path) {
-      tokens.push(path)
-      path = ''
-    }
-
-    var partial = prefix != null && next != null && next !== prefix
-    var repeat = modifier === '+' || modifier === '*'
-    var optional = modifier === '?' || modifier === '*'
-    var delimiter = res[2] || defaultDelimiter
-    var pattern = capture || group
-
-    tokens.push({
-      name: name || key++,
-      prefix: prefix || '',
-      delimiter: delimiter,
-      optional: optional,
-      repeat: repeat,
-      partial: partial,
-      asterisk: !!asterisk,
-      pattern: pattern ? escapeGroup(pattern) : (asterisk ? '.*' : '[^' + escapeString(delimiter) + ']+?')
-    })
-  }
-
-  // Match any characters still remaining.
-  if (index < str.length) {
-    path += str.substr(index)
-  }
-
-  // If the path exists, push it onto the end.
-  if (path) {
-    tokens.push(path)
-  }
-
-  return tokens
-}
-
-/**
- * Compile a string to a template function for the path.
- *
- * @param  {string}             str
- * @param  {Object=}            options
- * @return {!function(Object=, Object=)}
- */
-function compile (str, options) {
-  return tokensToFunction(parse(str, options), options)
-}
-
-/**
- * Prettier encoding of URI path segments.
- *
- * @param  {string}
- * @return {string}
- */
-function encodeURIComponentPretty (str) {
-  return encodeURI(str).replace(/[\/?#]/g, function (c) {
-    return '%' + c.charCodeAt(0).toString(16).toUpperCase()
-  })
-}
-
-/**
- * Encode the asterisk parameter. Similar to `pretty`, but allows slashes.
- *
- * @param  {string}
- * @return {string}
- */
-function encodeAsterisk (str) {
-  return encodeURI(str).replace(/[?#]/g, function (c) {
-    return '%' + c.charCodeAt(0).toString(16).toUpperCase()
-  })
-}
-
-/**
- * Expose a method for transforming tokens into the path function.
- */
-function tokensToFunction (tokens, options) {
-  // Compile all the tokens into regexps.
-  var matches = new Array(tokens.length)
-
-  // Compile all the patterns before compilation.
-  for (var i = 0; i < tokens.length; i++) {
-    if (typeof tokens[i] === 'object') {
-      matches[i] = new RegExp('^(?:' + tokens[i].pattern + ')$', flags(options))
-    }
-  }
-
-  return function (obj, opts) {
-    var path = ''
-    var data = obj || {}
-    var options = opts || {}
-    var encode = options.pretty ? encodeURIComponentPretty : encodeURIComponent
-
-    for (var i = 0; i < tokens.length; i++) {
-      var token = tokens[i]
-
-      if (typeof token === 'string') {
-        path += token
-
-        continue
-      }
-
-      var value = data[token.name]
-      var segment
-
-      if (value == null) {
-        if (token.optional) {
-          // Prepend partial segment prefixes.
-          if (token.partial) {
-            path += token.prefix
-          }
-
-          continue
-        } else {
-          throw new TypeError('Expected "' + token.name + '" to be defined')
-        }
-      }
-
-      if (isarray(value)) {
-        if (!token.repeat) {
-          throw new TypeError('Expected "' + token.name + '" to not repeat, but received `' + JSON.stringify(value) + '`')
-        }
-
-        if (value.length === 0) {
-          if (token.optional) {
-            continue
-          } else {
-            throw new TypeError('Expected "' + token.name + '" to not be empty')
-          }
-        }
-
-        for (var j = 0; j < value.length; j++) {
-          segment = encode(value[j])
-
-          if (!matches[i].test(segment)) {
-            throw new TypeError('Expected all "' + token.name + '" to match "' + token.pattern + '", but received `' + JSON.stringify(segment) + '`')
-          }
-
-          path += (j === 0 ? token.prefix : token.delimiter) + segment
-        }
-
-        continue
-      }
-
-      segment = token.asterisk ? encodeAsterisk(value) : encode(value)
-
-      if (!matches[i].test(segment)) {
-        throw new TypeError('Expected "' + token.name + '" to match "' + token.pattern + '", but received "' + segment + '"')
-      }
-
-      path += token.prefix + segment
-    }
-
-    return path
-  }
-}
-
-/**
- * Escape a regular expression string.
- *
- * @param  {string} str
- * @return {string}
- */
-function escapeString (str) {
-  return str.replace(/([.+*?=^!:${}()[\]|\/\\])/g, '\\$1')
-}
-
-/**
- * Escape the capturing group by escaping special characters and meaning.
- *
- * @param  {string} group
- * @return {string}
- */
-function escapeGroup (group) {
-  return group.replace(/([=!:$\/()])/g, '\\$1')
-}
-
-/**
- * Attach the keys as a property of the regexp.
- *
- * @param  {!RegExp} re
- * @param  {Array}   keys
- * @return {!RegExp}
- */
-function attachKeys (re, keys) {
-  re.keys = keys
-  return re
-}
-
-/**
- * Get the flags for a regexp from the options.
- *
- * @param  {Object} options
- * @return {string}
- */
-function flags (options) {
-  return options && options.sensitive ? '' : 'i'
-}
-
-/**
- * Pull out keys from a regexp.
- *
- * @param  {!RegExp} path
- * @param  {!Array}  keys
- * @return {!RegExp}
- */
-function regexpToRegexp (path, keys) {
-  // Use a negative lookahead to match only capturing groups.
-  var groups = path.source.match(/\((?!\?)/g)
-
-  if (groups) {
-    for (var i = 0; i < groups.length; i++) {
-      keys.push({
-        name: i,
-        prefix: null,
-        delimiter: null,
-        optional: false,
-        repeat: false,
-        partial: false,
-        asterisk: false,
-        pattern: null
-      })
-    }
-  }
-
-  return attachKeys(path, keys)
-}
-
-/**
- * Transform an array into a regexp.
- *
- * @param  {!Array}  path
- * @param  {Array}   keys
- * @param  {!Object} options
- * @return {!RegExp}
- */
-function arrayToRegexp (path, keys, options) {
-  var parts = []
-
-  for (var i = 0; i < path.length; i++) {
-    parts.push(pathToRegexp(path[i], keys, options).source)
-  }
-
-  var regexp = new RegExp('(?:' + parts.join('|') + ')', flags(options))
-
-  return attachKeys(regexp, keys)
-}
-
-/**
- * Create a path regexp from string input.
- *
- * @param  {string}  path
- * @param  {!Array}  keys
- * @param  {!Object} options
- * @return {!RegExp}
- */
-function stringToRegexp (path, keys, options) {
-  return tokensToRegExp(parse(path, options), keys, options)
-}
-
-/**
- * Expose a function for taking tokens and returning a RegExp.
- *
- * @param  {!Array}          tokens
- * @param  {(Array|Object)=} keys
- * @param  {Object=}         options
- * @return {!RegExp}
- */
-function tokensToRegExp (tokens, keys, options) {
-  if (!isarray(keys)) {
-    options = /** @type {!Object} */ (keys || options)
-    keys = []
-  }
-
-  options = options || {}
-
-  var strict = options.strict
-  var end = options.end !== false
-  var route = ''
-
-  // Iterate over the tokens and create our regexp string.
-  for (var i = 0; i < tokens.length; i++) {
-    var token = tokens[i]
-
-    if (typeof token === 'string') {
-      route += escapeString(token)
-    } else {
-      var prefix = escapeString(token.prefix)
-      var capture = '(?:' + token.pattern + ')'
-
-      keys.push(token)
-
-      if (token.repeat) {
-        capture += '(?:' + prefix + capture + ')*'
-      }
-
-      if (token.optional) {
-        if (!token.partial) {
-          capture = '(?:' + prefix + '(' + capture + '))?'
-        } else {
-          capture = prefix + '(' + capture + ')?'
-        }
-      } else {
-        capture = prefix + '(' + capture + ')'
-      }
-
-      route += capture
-    }
-  }
-
-  var delimiter = escapeString(options.delimiter || '/')
-  var endsWithDelimiter = route.slice(-delimiter.length) === delimiter
-
-  // In non-strict mode we allow a slash at the end of match. If the path to
-  // match already ends with a slash, we remove it for consistency. The slash
-  // is valid at the end of a path match, not in the middle. This is important
-  // in non-ending mode, where "/test/" shouldn't match "/test//route".
-  if (!strict) {
-    route = (endsWithDelimiter ? route.slice(0, -delimiter.length) : route) + '(?:' + delimiter + '(?=$))?'
-  }
-
-  if (end) {
-    route += '$'
-  } else {
-    // In non-ending mode, we need the capturing groups to match as much as
-    // possible by using a positive lookahead to the end or next path segment.
-    route += strict && endsWithDelimiter ? '' : '(?=' + delimiter + '|$)'
-  }
-
-  return attachKeys(new RegExp('^' + route, flags(options)), keys)
-}
-
-/**
- * Normalize the given path string, returning a regular expression.
- *
- * An empty array can be passed in for the keys, which will hold the
- * placeholder key descriptions. For example, using `/user/:id`, `keys` will
- * contain `[{ name: 'id', delimiter: '/', optional: false, repeat: false }]`.
- *
- * @param  {(string|RegExp|Array)} path
- * @param  {(Array|Object)=}       keys
- * @param  {Object=}               options
- * @return {!RegExp}
- */
-function pathToRegexp (path, keys, options) {
-  if (!isarray(keys)) {
-    options = /** @type {!Object} */ (keys || options)
-    keys = []
-  }
-
-  options = options || {}
-
-  if (path instanceof RegExp) {
-    return regexpToRegexp(path, /** @type {!Array} */ (keys))
-  }
-
-  if (isarray(path)) {
-    return arrayToRegexp(/** @type {!Array} */ (path), /** @type {!Array} */ (keys), options)
-  }
-
-  return stringToRegexp(/** @type {string} */ (path), /** @type {!Array} */ (keys), options)
-}
 
 
 /***/ }),
@@ -98749,12 +98753,10 @@ module.exports = function(module) {
 /*!***********************************!*\
   !*** ./resources/images/logo.png ***!
   \***********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports) {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("/images/logo.png?1725da016986025742b96e540decc272");
+module.exports = "/images/logo.png?43302b08cc3ca498ef4b97047f3a292d";
 
 /***/ }),
 
@@ -98867,6 +98869,9 @@ var token = {
   updateMedicineInfo: function updateMedicineInfo(medicine, id) {
     return axios__WEBPACK_IMPORTED_MODULE_0___default.a.put("".concat(BASE_URL, "/admin/medicine/info/").concat(id), medicine, token);
   },
+  updatePharmacy: function updatePharmacy(pharmacy, id) {
+    return axios__WEBPACK_IMPORTED_MODULE_0___default.a.put("".concat(BASE_URL, "/admin/pharmacy/").concat(id), pharmacy, token);
+  },
   deleteMedicine: function deleteMedicine(id) {
     return axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("".concat(BASE_URL, "/admin/medicine/").concat(id), token);
   },
@@ -98876,11 +98881,17 @@ var token = {
   getPharmacyMedicine: function getPharmacyMedicine(id) {
     return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(BASE_URL, "/admin/pharmacy/").concat(id, "/medicine"), token);
   },
+  addSymptom: function addSymptom(symptom) {
+    return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("".concat(BASE_URL, "/admin/symptom"), symptom, token);
+  },
   getAllMedicine: function getAllMedicine() {
     return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(BASE_URL, "/pharmacy/medicine/allMedicine"), token);
   },
   getUsers: function getUsers(type) {
     return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(BASE_URL, "/admin/allUsers/").concat(type), token);
+  },
+  getAllSymptom: function getAllSymptom() {
+    return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(BASE_URL, "/admin/getAllSymptom"), token);
   },
   getMedicine: function getMedicine() {
     return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(BASE_URL, "/pharmacy/medicine"), token);
@@ -98926,6 +98937,16 @@ var token = {
   return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("".concat(BASE_URL, "/user/medicine/addCartMedicine/").concat(id), addtocart, token);
 }), _defineProperty(_checkLogin$register$, "getCartMedicine", function getCartMedicine() {
   return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(BASE_URL, "/user/cart/getCartMedicine"), token);
+}), _defineProperty(_checkLogin$register$, "deleteCartMedicine", function deleteCartMedicine(id) {
+  return axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("".concat(BASE_URL, "/user/cart/deleteCart/").concat(id), token);
+}), _defineProperty(_checkLogin$register$, "addPayment", function addPayment(payment) {
+  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("".concat(BASE_URL, "/user/addPayment"), payment, token);
+}), _defineProperty(_checkLogin$register$, "askPrescription", function askPrescription(patient) {
+  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("".concat(BASE_URL, "/user/askPrescription"), patient, token);
+}), _defineProperty(_checkLogin$register$, "getPrescription", function getPrescription() {
+  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(BASE_URL, "/user/getPrescription"), token);
+}), _defineProperty(_checkLogin$register$, "ShowPrescription", function ShowPrescription(id) {
+  return axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(BASE_URL, "/user/prescription/").concat(id), token);
 }), _checkLogin$register$);
 
 /***/ }),
@@ -99017,6 +99038,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _layouts_Header__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layouts/Header */ "./resources/js/components/layouts/Header.js");
 /* harmony import */ var _layouts_Footer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../layouts/Footer */ "./resources/js/components/layouts/Footer.js");
 /* harmony import */ var _Back__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../Back */ "./resources/js/components/Back.js");
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e2) { throw _e2; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e3) { didErr = true; err = _e3; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -99086,7 +99109,27 @@ function AddMedicine() {
       errors = _useState20[0],
       setErrors = _useState20[1];
 
+  var _useState21 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
+      _useState22 = _slicedToArray(_useState21, 2),
+      symptom = _useState22[0],
+      setSymptom = _useState22[1];
+
+  var _useState23 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
+      _useState24 = _slicedToArray(_useState23, 2),
+      symptomName = _useState24[0],
+      setSymtomName = _useState24[1];
+
+  var _useState25 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
+      _useState26 = _slicedToArray(_useState25, 2),
+      symptomId = _useState26[0],
+      setSymptomId = _useState26[1];
+
   var history = Object(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["useHistory"])();
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    _api__WEBPACK_IMPORTED_MODULE_2__["default"].getAllSymptom().then(function (response) {
+      setSymptom(response.data);
+    });
+  }, []);
 
   function hasErrorFor(field) {
     return !!errors[field];
@@ -99145,7 +99188,8 @@ function AddMedicine() {
   function handleAddMedicine(event) {
     event.preventDefault();
     var fd = new FormData();
-    fd.append('image', image);
+    fd.append('dosage_unit', unit);
+    fd.append('symptom', symptomId);
     fd.append('name', name);
     fd.append('format', format);
     fd.append('description', description);
@@ -99160,16 +99204,8 @@ function AddMedicine() {
         'Content-Type': "multipart/form-data"
       }
     }).then(function (response) {
-      alert("add success"); // setName('');
-      // setImage('');
-      // setFormat('Tablet');
-      // setDescription('');
-      // setIngredient('');
-      // setPrescription(0);
-      // setTablet('');
-      // setDosage('');
-      // setUnit('');
-
+      console.log(response.data);
+      alert("add success");
       history.push('/manageMedicine');
       window.location.reload();
     })["catch"](function (error) {
@@ -99178,15 +99214,147 @@ function AddMedicine() {
     });
   }
 
+  function renderSymptom() {
+    return symptom.map(function (symptom) {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
+        key: symptom.id,
+        value: symptom.id // style={{backgroundImage: `url(../images/medicine/${medicine.image})` }}
+
+      }, symptom.name);
+    });
+  }
+
+  function filterFunction(event) {
+    var search = event.target.value;
+    var filter, option, i;
+    filter = search.toUpperCase();
+    var div = document.getElementById("searchMed");
+    option = div.getElementsByTagName("option");
+
+    for (i = 0; i < option.length; i++) {
+      var txtValue = option[i].textContent || option[i].innerText;
+
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        option[i].style.display = "";
+      } else {
+        option[i].style.display = "none";
+      }
+    }
+  }
+
+  function closeForm() {
+    document.getElementById("addmedicine").style.display = "none";
+  }
+
+  function handleChangeSymptom() {
+    var selected = [];
+
+    var _iterator = _createForOfIteratorHelper(document.getElementById('searchMed').options),
+        _step;
+
+    try {
+      for (_iterator.s(); !(_step = _iterator.n()).done;) {
+        var option = _step.value;
+
+        if (option.selected) {
+          selected.push(option.value);
+        }
+      }
+    } catch (err) {
+      _iterator.e(err);
+    } finally {
+      _iterator.f();
+    }
+
+    setSymptomId(selected);
+  }
+
+  function handleChangeNameSymptom(event) {
+    setSymtomName(event.target.value);
+  }
+
+  function addSymptom() {
+    var symptomadd = {
+      symptomName: symptomName
+    };
+    _api__WEBPACK_IMPORTED_MODULE_2__["default"].addSymptom(symptomadd).then(function (response) {
+      alert("add symptom success");
+      var x = document.getElementById("searchMed");
+      var option = document.createElement("option");
+      option.value = response.data.id;
+      option.text = response.data.name;
+      x.add(option);
+    })["catch"](function (error) {
+      console.log(error);
+      setErrors(error.response.data.errors);
+    });
+  }
+
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    id: "addmedicine",
+    className: "formShow"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "col-1"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     style: {
       marginTop: '10px'
     }
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "templatemo-content-widget templatemo-login-widget  white-bg"
+    className: "col-md-4"
+  }, "Symptom", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "form-group"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "search",
+    style: {
+      marginRight: '10px'
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "text",
+    className: "search form-control",
+    placeholder: "Serach",
+    id: "myInput",
+    onChange: filterFunction
+  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "form-group ".concat(hasErrorFor('symptomName') ? 'has-error' : '')
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "input-group"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "text",
+    className: "search form-control",
+    placeholder: "Symptom Name",
+    onChange: handleChangeNameSymptom
+  })), renderErrorFor('symptomName')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+    className: "btn btn-primary",
+    style: {
+      marginLeft: '10px',
+      marginRight: '10px'
+    },
+    onClick: function onClick() {
+      return addSymptom();
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+    className: "fa fa-plus"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "form-group ".concat(hasErrorFor('symptom') ? 'has-error' : '')
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "input-group"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "input-group-addon"
+  }, "symptom"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", {
+    onChange: handleChangeSymptom,
+    className: "form-control select",
+    size: "5",
+    multiple: "multiple",
+    id: "searchMed"
+  }, symptom.length > 0 ? renderSymptom() : '')), renderErrorFor('symptom'))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "templatemo-content-widget templatemo-login-widget  white-bg"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+    onClick: function onClick() {
+      return closeForm();
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+    className: "fa fa-times"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "scrollform"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "form-group"
@@ -99299,7 +99467,7 @@ function AddMedicine() {
     onClick: function onClick(event) {
       return handleAddMedicine(event);
     }
-  }, "Add "))));
+  }, "Add ")))));
 }
 
 /***/ }),
@@ -99509,14 +99677,15 @@ function EditMedicine(props) {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "col-1"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Back__WEBPACK_IMPORTED_MODULE_5__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "col-md-5 mr-auto"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "border text-center"
+    className: "col-md-4"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-    src: "./images/medicine/".concat(image),
+    src: image,
     alt: "Image",
-    className: "img-fluid p-5"
-  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    style: {
+      width: '100%',
+      height: '300px'
+    }
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "templatemo-content-widget templatemo-login-widget  white-bg"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "form-group ".concat(hasErrorFor('name') ? 'has-error' : '')
@@ -99671,58 +99840,22 @@ function EditPharmacy(props) {
       image = _useState4[0],
       setImage = _useState4[1];
 
-  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])('Tablet'),
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
       _useState6 = _slicedToArray(_useState5, 2),
-      format = _useState6[0],
-      setFormat = _useState6[1];
+      email = _useState6[0],
+      setEmail = _useState6[1];
 
-  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
+  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
       _useState8 = _slicedToArray(_useState7, 2),
-      description = _useState8[0],
-      setDescription = _useState8[1];
-
-  var _useState9 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
-      _useState10 = _slicedToArray(_useState9, 2),
-      ingredient = _useState10[0],
-      setIngredient = _useState10[1];
-
-  var _useState11 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(),
-      _useState12 = _slicedToArray(_useState11, 2),
-      prescription = _useState12[0],
-      setPrescription = _useState12[1];
-
-  var _useState13 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
-      _useState14 = _slicedToArray(_useState13, 2),
-      tablet = _useState14[0],
-      setTablet = _useState14[1];
-
-  var _useState15 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
-      _useState16 = _slicedToArray(_useState15, 2),
-      dosage = _useState16[0],
-      setDosage = _useState16[1];
-
-  var _useState17 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
-      _useState18 = _slicedToArray(_useState17, 2),
-      unit = _useState18[0],
-      setUnit = _useState18[1];
-
-  var _useState19 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
-      _useState20 = _slicedToArray(_useState19, 2),
-      errors = _useState20[0],
-      setErrors = _useState20[1];
+      errors = _useState8[0],
+      setErrors = _useState8[1];
 
   var history = Object(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["useHistory"])();
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
-    _api__WEBPACK_IMPORTED_MODULE_2__["default"].getInfoMedicine(props.match.params.id).then(function (response) {
+    _api__WEBPACK_IMPORTED_MODULE_2__["default"].getInfoPharmacy(props.match.params.id).then(function (response) {
       setImage(response.data.image);
       setName(response.data.name);
-      setFormat(response.data.format);
-      setDescription(response.data.description);
-      setIngredient(response.data.ingredient);
-      setPrescription(response.data.prescription);
-      setTablet(response.data.tablet);
-      setDosage(response.data.dosage);
-      setUnit(response.data.dosage_unit);
+      setEmail(response.data.email);
     });
   }, []);
 
@@ -99780,27 +99913,13 @@ function EditPharmacy(props) {
     event.preventDefault();
     var fd = new FormData();
     fd.append('name', name);
-    fd.append('format', format);
-    fd.append('description', description);
-    fd.append('ingredient', ingredient);
-    fd.append('prescription', prescription);
-    fd.append('tablet', tablet);
-    fd.append('dosage', dosage);
-    fd.append('dosage_unit', unit);
     var medicine = {
-      name: name,
-      format: format,
-      description: description,
-      ingredient: ingredient,
-      prescription: prescription,
-      tablet: tablet,
-      dosage: dosage,
-      dosage_unit: unit
+      name: name
     };
-    _api__WEBPACK_IMPORTED_MODULE_2__["default"].updateMedicineInfo(medicine, props.match.params.id) //, {headers:{'Accept': "application/x-www-form-urlencoded"}}
+    _api__WEBPACK_IMPORTED_MODULE_2__["default"].updatePharmacy(medicine, props.match.params.id) //, {headers:{'Accept': "application/x-www-form-urlencoded"}}
     .then(function (response) {
       alert("update success");
-      history.push('/manageMedicine');
+      history.push('/managePharmacy');
       window.location.reload();
     })["catch"](function (error) {
       console.log(error); //  setErrors(error.response.data.errors)
@@ -99819,16 +99938,15 @@ function EditPharmacy(props) {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "col-1"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Back__WEBPACK_IMPORTED_MODULE_5__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "col-md-5 mr-auto"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "border text-center"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-    src: "./images/medicine/".concat(image),
-    alt: "Image",
-    className: "img-fluid p-5"
-  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "templatemo-content-widget templatemo-login-widget  white-bg"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+    src: image,
+    alt: "Image",
+    style: {
+      width: '50px',
+      height: '50px'
+    }
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "form-group ".concat(hasErrorFor('name') ? 'has-error' : '')
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "input-group"
@@ -99840,89 +99958,12 @@ function EditPharmacy(props) {
     value: name,
     onChange: handleNameChange
   })), renderErrorFor('name')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "form-group ".concat(hasErrorFor('format') ? 'has-error' : '')
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "input-group"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "input-group-addon"
-  }, "format"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("select", {
-    className: "form-control",
-    value: format,
-    onChange: handleFormatChange
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
-    value: "Tablet"
-  }, "Tablet"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
-    value: "Liquid"
-  }, "Liquid"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("option", {
-    value: "Cream"
-  }, "Cream"))), renderErrorFor('format')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "form-group ".concat(hasErrorFor('description') ? 'has-error' : '')
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "input-group"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "input-group-addon"
-  }, "description"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("textarea", {
-    type: "text",
-    className: "form-control",
-    value: description,
-    onChange: handleDescriptionChange
-  })), renderErrorFor('description')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "form-group ".concat(hasErrorFor('ingredient') ? 'has-error' : '')
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "input-group"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "input-group-addon"
-  }, "ingredient"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("textarea", {
-    type: "text",
-    className: "form-control",
-    value: ingredient,
-    onChange: handleIngredientChange
-  })), renderErrorFor('ingredient')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "form-group ".concat(hasErrorFor('tablet') ? 'has-error' : '')
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "input-group"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "input-group-addon"
-  }, "tablet"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-    type: "number",
-    className: "form-control",
-    value: tablet,
-    onChange: handleTabletChange
-  })), renderErrorFor('tablet')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "form-group ".concat(hasErrorFor('dosage') ? 'has-error' : '')
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "input-group"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "input-group-addon"
-  }, "dosage"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-    type: "number",
-    className: "form-control",
-    value: dosage,
-    onChange: handleDosageChange
-  })), renderErrorFor('dosage')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "form-group ".concat(hasErrorFor('dosage_unit') ? 'has-error' : '')
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "input-group"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "input-group-addon"
-  }, "dosage unit"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-    type: "text",
-    className: "form-control",
-    value: unit,
-    onChange: handleUnitChange
-  })), renderErrorFor('dosage_unit')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "form-group"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "checkbox squaredTwo"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-    type: "checkbox",
-    id: "c3",
-    name: "cc3",
-    defaultChecked: prescription,
-    onChange: handlePrescriptionChange
-  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
-    htmlFor: "c3"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null), "need prescription"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "input-group"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+    className: "fa fa-envelope-o"
+  }), " \xA0", email)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "form-group"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
     type: "submit",
@@ -99998,6 +100039,7 @@ function ManageDoctor() {
       medicine = _useState4[0],
       setMedicine = _useState4[1];
 
+  var role = 'ROLE_DOCTOR';
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
     _api__WEBPACK_IMPORTED_MODULE_2__["default"].getUsers('ROLE_DOCTOR').then(function (response) {
       console.log(response.data);
@@ -100125,7 +100167,7 @@ function ManageDoctor() {
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", {
         key: medicine.id
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, medicine.id), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        src: "../../../../storage/app/".concat(medicine.image),
+        src: medicine.image,
         width: "100px",
         height: "100px"
       })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, medicine.name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, medicine.street.name, ", ", medicine.street.city.name, ", ", medicine.street.city.country.name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, medicine.email), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, medicine.birthday), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -100237,7 +100279,7 @@ function ManageDoctor() {
     className: "white-text templatemo-sort-by"
   }, "# ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
     className: "caret"
-  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Pharmacy image"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Doctor image"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
     onClick: function onClick() {
       return sortTable(2);
     },
@@ -100272,13 +100314,12 @@ function ManageDoctor() {
     }
   }, "no data")))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     id: "addmedicine",
-    className: "formShow"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-    onClick: function onClick() {
-      return addMedicine();
-    },
-    className: "closecss"
-  }, "\xD7"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_auth_SignUp__WEBPACK_IMPORTED_MODULE_5__["default"], null)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layouts_Footer__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
+    style: {
+      display: 'none'
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_auth_SignUp__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    props: role
+  })))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layouts_Footer__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
 }
 
 /***/ }),
@@ -100337,7 +100378,6 @@ function ManageMedicine() {
 
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
     _api__WEBPACK_IMPORTED_MODULE_2__["default"].getAllMedicine().then(function (response) {
-      console.log(response.data);
       setMedicine(response.data);
     });
   }, []);
@@ -100651,13 +100691,10 @@ function ManageMedicine() {
     }
   }, "no data")))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     id: "addmedicine",
-    className: "formShow"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-    onClick: function onClick() {
-      return addMedicine();
-    },
-    className: "closecss"
-  }, "\xD7"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_AddMedicine__WEBPACK_IMPORTED_MODULE_5__["default"], null)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layouts_Footer__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
+    style: {
+      display: 'none'
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_AddMedicine__WEBPACK_IMPORTED_MODULE_5__["default"], null)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layouts_Footer__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
 }
 
 /***/ }),
@@ -100679,10 +100716,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _layouts_Header__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layouts/Header */ "./resources/js/components/layouts/Header.js");
 /* harmony import */ var _layouts_Footer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../layouts/Footer */ "./resources/js/components/layouts/Footer.js");
 /* harmony import */ var _auth_SignUp__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../auth/SignUp */ "./resources/js/components/auth/SignUp.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
-/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_6__);
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_7__);
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -100701,8 +100734,6 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-
-
 function ManagePharmacy() {
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
       _useState2 = _slicedToArray(_useState, 2),
@@ -100714,6 +100745,7 @@ function ManagePharmacy() {
       medicine = _useState4[0],
       setMedicine = _useState4[1];
 
+  var role = 'ROLE_PHARMACY';
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
     _api__WEBPACK_IMPORTED_MODULE_2__["default"].getUsers('ROLE_PHARMACY').then(function (response) {
       console.log(response.data);
@@ -100841,7 +100873,7 @@ function ManagePharmacy() {
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", {
         key: medicine.id
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, medicine.id), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        src: "../../../../storage/app/".concat(medicine.image),
+        src: medicine.image,
         width: "100px",
         height: "100px"
       })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, medicine.name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, medicine.street.name, ", ", medicine.street.city.name, ", ", medicine.street.city.country.name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, medicine.email), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, medicine.birthday), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -100988,13 +101020,14 @@ function ManagePharmacy() {
     }
   }, "no data")))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     id: "addmedicine",
-    className: "formShow"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-    onClick: function onClick() {
-      return addMedicine();
-    },
+    style: {
+      display: 'none'
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", {
     className: "closecss"
-  }, "\xD7"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_auth_SignUp__WEBPACK_IMPORTED_MODULE_5__["default"], null)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layouts_Footer__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
+  }, "The field date in add pharmacy is when", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), " the pharmacy did open"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_auth_SignUp__WEBPACK_IMPORTED_MODULE_5__["default"], {
+    props: role
+  })))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layouts_Footer__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
 }
 
 /***/ }),
@@ -101178,7 +101211,7 @@ function ManageUser() {
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", {
         key: medicine.id
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, medicine.id), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-        src: "../../../../storage/app/".concat(medicine.image),
+        src: medicine.image,
         width: "100px",
         height: "100px"
       })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, medicine.name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, medicine.street.name, ", ", medicine.street.city.name, ", ", medicine.street.city.country.name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, medicine.email), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, medicine.birthday), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -101234,20 +101267,10 @@ function ManageUser() {
       display: 'flex',
       "float": 'left'
     }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-    className: "btn btn-primary",
-    style: {
-      marginLeft: '10px',
-      marginRight: '10px'
-    },
-    onClick: function onClick() {
-      return addMedicine();
-    }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-    className: "fa fa-plus"
-  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "search",
     style: {
+      marginLeft: '10px',
       marginRight: '10px'
     }
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
@@ -101290,7 +101313,7 @@ function ManageUser() {
     className: "white-text templatemo-sort-by"
   }, "# ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
     className: "caret"
-  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Pharmacy image"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "User image"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
     onClick: function onClick() {
       return sortTable(2);
     },
@@ -101323,15 +101346,7 @@ function ManageUser() {
     style: {
       textAlign: 'center'
     }
-  }, "no data")))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    id: "addmedicine",
-    className: "formShow"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-    onClick: function onClick() {
-      return addMedicine();
-    },
-    className: "closecss"
-  }, "\xD7"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_auth_SignUp__WEBPACK_IMPORTED_MODULE_5__["default"], null)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layouts_Footer__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
+  }, "no data")))))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layouts_Footer__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
 }
 
 /***/ }),
@@ -101430,8 +101445,8 @@ function ShowMedicine(props) {
 
   var _useState19 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
       _useState20 = _slicedToArray(_useState19, 2),
-      symtom = _useState20[0],
-      setSymtom = _useState20[1];
+      symptom = _useState20[0],
+      setSymptom = _useState20[1];
 
   var _useState21 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
       _useState22 = _slicedToArray(_useState21, 2),
@@ -101450,24 +101465,24 @@ function ShowMedicine(props) {
       setTablet(response.data.tablet);
       setDosage(response.data.dosage);
       setUnit(response.data.dosage_unit);
-      setSymtom(response.data.symtom);
+      setSymptom(response.data.symptom);
     });
     _api__WEBPACK_IMPORTED_MODULE_2__["default"].getMedicinePharmacy(props.match.params.id).then(function (response) {
       setPharmacy(response.data);
     });
   }, []);
 
-  function renderSymtom() {
-    return symtom.map(function (symtom) {
+  function renderSymptom() {
+    return symptom.map(function (symptom) {
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-        key: symtom.id
+        key: symptom.id
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
         style: {
           border: '1px solid #2375b8',
           padding: '10px',
           borderRadius: '5px'
         }
-      }, symtom.name), "\xA0\xA0");
+      }, symptom.name), "\xA0\xA0");
     });
   }
 
@@ -101513,14 +101528,14 @@ function ShowMedicine(props) {
     style: {
       color: '#2375b8'
     }
-  }, "Symtom"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }, "Symptom"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     style: {
       overflow: 'auto',
       width: '260px',
       height: '70px',
       padding: '10px'
     }
-  }, renderSymtom()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("hr", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "Pharmacy have medicine ", name, " / Number: ", pharmacy.length), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }, renderSymptom()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("hr", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "Pharmacy have medicine ", name, " / Number: ", pharmacy.length), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "scrollform"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "templatemo-content-widget blue-bg"
@@ -101598,22 +101613,19 @@ function ShowPharmacy(props) {
   var history = Object(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["useHistory"])();
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
     _api__WEBPACK_IMPORTED_MODULE_2__["default"].getInfoPharmacy(props.match.params.id).then(function (response) {
-      // console.log()
       setImage(response.data.image);
       setName(response.data.name);
       setEmail(response.data.email);
-      setOpened(response.data.birthay);
-    });
-    _api__WEBPACK_IMPORTED_MODULE_2__["default"].getPharmacyMedicine(props.match.params.id).then(function (response) {
-      setMedicine(response.data);
+      setOpened(response.data.birthday);
+      setMedicine(response.data.medicine);
     });
   }, []);
 
   function renderPharmacy() {
-    return pharmacy.map(function (pharmacy) {
+    return medicine.map(function (medicine) {
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("li", {
-        key: pharmacy.id
-      }, pharmacy.name);
+        key: medicine.id
+      }, medicine.name);
     });
   }
 
@@ -101633,16 +101645,14 @@ function ShowPharmacy(props) {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "row"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "col-md-4 mr-auto"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "border text-center"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-    src: "./images/medicine/".concat(image),
-    alt: "Image",
-    className: "img-fluid p-5"
-  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "col-md-4"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+    src: image,
+    alt: "Image",
+    width: "50px",
+    height: "50px",
+    className: "img-fluid p-5"
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", {
     className: "text-black"
   }, name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "email"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, email), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "Address"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "Opened"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", null, open)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "col-md-4"
@@ -101650,7 +101660,7 @@ function ShowPharmacy(props) {
     className: "scrollform"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "templatemo-content-widget blue-bg"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ol", null)))))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layouts_Footer__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("ol", null, medicine.length > 0 ? renderPharmacy() : 'No medicine exist yet')))))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layouts_Footer__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
 }
 
 /***/ }),
@@ -101703,15 +101713,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _user_Test__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./user/Test */ "./resources/js/components/user/Test.js");
 /* harmony import */ var _user_ShowMedicineUser__WEBPACK_IMPORTED_MODULE_20__ = __webpack_require__(/*! ./user/ShowMedicineUser */ "./resources/js/components/user/ShowMedicineUser.js");
 /* harmony import */ var _user_Cart__WEBPACK_IMPORTED_MODULE_21__ = __webpack_require__(/*! ./user/Cart */ "./resources/js/components/user/Cart.js");
-/* harmony import */ var _pharmacy_ListMedicine__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./pharmacy/ListMedicine */ "./resources/js/components/pharmacy/ListMedicine.js");
-/* harmony import */ var _pharmacy_AddMedicine__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./pharmacy/AddMedicine */ "./resources/js/components/pharmacy/AddMedicine.js");
-/* harmony import */ var _pharmacy_ShowMedicine__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./pharmacy/ShowMedicine */ "./resources/js/components/pharmacy/ShowMedicine.js");
-/* harmony import */ var _Profile__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./Profile */ "./resources/js/components/Profile.js");
-/* harmony import */ var _Chat__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./Chat */ "./resources/js/components/Chat.js");
-/* harmony import */ var _auth_SignIn__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ./auth/SignIn */ "./resources/js/components/auth/SignIn.js");
-/* harmony import */ var _auth_SignUp__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ./auth/SignUp */ "./resources/js/components/auth/SignUp.js");
-/* harmony import */ var _auth_ForgetPassword__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ./auth/ForgetPassword */ "./resources/js/components/auth/ForgetPassword.js");
-/* harmony import */ var _api__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ../api */ "./resources/js/api.js");
+/* harmony import */ var _user_Doctor__WEBPACK_IMPORTED_MODULE_22__ = __webpack_require__(/*! ./user/Doctor */ "./resources/js/components/user/Doctor.js");
+/* harmony import */ var _user_ShowPrescription__WEBPACK_IMPORTED_MODULE_23__ = __webpack_require__(/*! ./user/ShowPrescription */ "./resources/js/components/user/ShowPrescription.js");
+/* harmony import */ var _pharmacy_ListMedicine__WEBPACK_IMPORTED_MODULE_24__ = __webpack_require__(/*! ./pharmacy/ListMedicine */ "./resources/js/components/pharmacy/ListMedicine.js");
+/* harmony import */ var _pharmacy_AddMedicine__WEBPACK_IMPORTED_MODULE_25__ = __webpack_require__(/*! ./pharmacy/AddMedicine */ "./resources/js/components/pharmacy/AddMedicine.js");
+/* harmony import */ var _pharmacy_ShowMedicine__WEBPACK_IMPORTED_MODULE_26__ = __webpack_require__(/*! ./pharmacy/ShowMedicine */ "./resources/js/components/pharmacy/ShowMedicine.js");
+/* harmony import */ var _Profile__WEBPACK_IMPORTED_MODULE_27__ = __webpack_require__(/*! ./Profile */ "./resources/js/components/Profile.js");
+/* harmony import */ var _Chat__WEBPACK_IMPORTED_MODULE_28__ = __webpack_require__(/*! ./Chat */ "./resources/js/components/Chat.js");
+/* harmony import */ var _auth_SignIn__WEBPACK_IMPORTED_MODULE_29__ = __webpack_require__(/*! ./auth/SignIn */ "./resources/js/components/auth/SignIn.js");
+/* harmony import */ var _auth_SignUp__WEBPACK_IMPORTED_MODULE_30__ = __webpack_require__(/*! ./auth/SignUp */ "./resources/js/components/auth/SignUp.js");
+/* harmony import */ var _auth_ForgetPassword__WEBPACK_IMPORTED_MODULE_31__ = __webpack_require__(/*! ./auth/ForgetPassword */ "./resources/js/components/auth/ForgetPassword.js");
+/* harmony import */ var _api__WEBPACK_IMPORTED_MODULE_32__ = __webpack_require__(/*! ../api */ "./resources/js/api.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -101727,6 +101739,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
  //import Login from './Login';
+
+
 
 
 
@@ -101773,7 +101787,7 @@ function App() {
   }, []);
 
   function details() {
-    _api__WEBPACK_IMPORTED_MODULE_30__["default"].details().then(function (response) {
+    _api__WEBPACK_IMPORTED_MODULE_32__["default"].details().then(function (response) {
       setDetail(response.data);
       setRole(response.data.roles[0]);
     })["catch"](function (error) {//  history.push('/');
@@ -101840,15 +101854,15 @@ function App() {
     return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Switch"], null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       exact: true,
       path: "/medicine",
-      component: _pharmacy_ListMedicine__WEBPACK_IMPORTED_MODULE_22__["default"]
+      component: _pharmacy_ListMedicine__WEBPACK_IMPORTED_MODULE_24__["default"]
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       exact: true,
       path: "/medicine/add",
-      component: _pharmacy_AddMedicine__WEBPACK_IMPORTED_MODULE_23__["default"]
+      component: _pharmacy_AddMedicine__WEBPACK_IMPORTED_MODULE_25__["default"]
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       exact: true,
       path: "/medicine/show/:id",
-      component: _pharmacy_ShowMedicine__WEBPACK_IMPORTED_MODULE_24__["default"]
+      component: _pharmacy_ShowMedicine__WEBPACK_IMPORTED_MODULE_26__["default"]
     }));
   }
 
@@ -101863,13 +101877,21 @@ function App() {
       component: _user_ShowMedicineUser__WEBPACK_IMPORTED_MODULE_20__["default"]
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       exact: true,
+      path: "/doctor",
+      component: _user_Doctor__WEBPACK_IMPORTED_MODULE_22__["default"]
+    }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
+      exact: true,
+      path: "/doctor/prescription/:id",
+      component: _user_ShowPrescription__WEBPACK_IMPORTED_MODULE_23__["default"]
+    }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
+      exact: true,
       path: "/buy"
     }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_user_Buy__WEBPACK_IMPORTED_MODULE_16__["default"], {
       props: detail
     })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       exact: true,
       path: "/profile"
-    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Profile__WEBPACK_IMPORTED_MODULE_25__["default"], {
+    }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Profile__WEBPACK_IMPORTED_MODULE_27__["default"], {
       props: detail
     })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       exact: true,
@@ -101894,19 +101916,19 @@ function App() {
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       exact: true,
       path: "/signin",
-      component: _auth_SignIn__WEBPACK_IMPORTED_MODULE_27__["default"]
+      component: _auth_SignIn__WEBPACK_IMPORTED_MODULE_29__["default"]
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       exact: true,
       path: "/signup",
-      component: _auth_SignUp__WEBPACK_IMPORTED_MODULE_28__["default"]
+      component: _auth_SignUp__WEBPACK_IMPORTED_MODULE_30__["default"]
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       exact: true,
       path: "/forpass",
-      component: _auth_ForgetPassword__WEBPACK_IMPORTED_MODULE_29__["default"]
+      component: _auth_ForgetPassword__WEBPACK_IMPORTED_MODULE_31__["default"]
     }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
       exact: true,
       path: "/chat",
-      component: _Chat__WEBPACK_IMPORTED_MODULE_26__["default"]
+      component: _Chat__WEBPACK_IMPORTED_MODULE_28__["default"]
     }));
   }
 
@@ -102517,11 +102539,22 @@ __webpack_require__.r(__webpack_exports__);
 // import CookieService from '../Service/CookieService';
 
 function ForgetPassword() {
+  function displayFormForgetPass() {
+    window.location.href = '/';
+  }
+
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    id: "forgetpass",
     className: "logincontainer"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "templatemo-content-widget templatemo-login-widget  white-bg"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+    onClick: function onClick() {
+      return displayFormForgetPass();
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+    className: "fa fa-times"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
     action: "<?php echo $_SERVER['PHP_SELF'];?>",
     className: "templatemo-login-form"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -102594,6 +102627,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _api__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../api */ "./resources/js/api.js");
 /* harmony import */ var _Service_CookieService__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../Service/CookieService */ "./resources/js/Service/CookieService.js");
 /* harmony import */ var _images_logo_png__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../../images/logo.png */ "./resources/images/logo.png");
+/* harmony import */ var _images_logo_png__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_images_logo_png__WEBPACK_IMPORTED_MODULE_4__);
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -102692,14 +102726,22 @@ function SignIn() {
     });
   }
 
+  function displayFormSignIn() {
+    document.getElementById("signin").style.display = "none";
+  }
+
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "logincontainer",
-    style: {
-      backgroundImage: 'url(../images/background.png)'
-    }
+    id: "signin",
+    className: "logincontainer"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "templatemo-content-widget templatemo-login-widget white-bg"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+    onClick: function onClick() {
+      return displayFormSignIn();
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+    className: "fa fa-times"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("form", {
     className: "templatemo-login-form",
     onSubmit: handleLogin
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -102793,7 +102835,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
 
 
-function SignUp() {
+function SignUp(props) {
   var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
       _useState2 = _slicedToArray(_useState, 2),
       country = _useState2[0],
@@ -103004,7 +103046,8 @@ function SignUp() {
     fd.append('password', password);
     fd.append('confirm_password', confirm_password);
     fd.append('birthday', birthday);
-    fd.append('street_id', streetId); //console.log(name+" "+email+" "+password+" "+confirm_password+" "+birthday+" "+streetId+" "+img);
+    fd.append('street_id', streetId);
+    fd.append('role', props.props); //console.log(name+" "+email+" "+password+" "+confirm_password+" "+birthday+" "+streetId+" "+img);
 
     _api__WEBPACK_IMPORTED_MODULE_2__["default"].register(fd, {
       headers: {
@@ -103012,14 +103055,24 @@ function SignUp() {
         'Content-Type': "multipart/form-data"
       }
     }).then(function (response) {
-      console.log(response.data);
-      var options = {
-        Path: "/",
-        Expires: response.data.expires,
-        Secure: true
-      };
-      _Service_CookieService__WEBPACK_IMPORTED_MODULE_3__["default"].set('access_token', response.data.access, options);
-      history.push('/home');
+      if (props.props == 'ROLE_NORMALUSER') {
+        var options = {
+          Path: "/",
+          Expires: response.data.expires,
+          Secure: true
+        };
+        _Service_CookieService__WEBPACK_IMPORTED_MODULE_3__["default"].set('access_token', response.data.access, options);
+        history.push('/home');
+      }
+
+      if (props.props == 'ROLE_PHARMACY') {
+        history.push('/managePharmacy');
+      }
+
+      if (props.props == 'ROLE_DOCTOR') {
+        history.push('/manageDoctor');
+      }
+
       window.location.reload();
       console.log('ehre');
     })["catch"](function (error) {
@@ -103028,14 +103081,23 @@ function SignUp() {
     });
   }
 
+  function displayFormSignUp() {
+    document.getElementById("signup").style.display = "none";
+    window.location.reload();
+  }
+
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "logincontainer",
-    style: {
-      backgroundImage: 'url(../images/background.png)'
-    }
+    id: "signup",
+    className: "logincontainer"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "templatemo-content-widget templatemo-login-widget  white-bg"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+    onClick: function onClick() {
+      return displayFormSignUp();
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+    className: "fa fa-times"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "scrollform"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "form-group ".concat(hasErrorFor('name') ? 'has-error' : '')
@@ -103236,6 +103298,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _api__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../../api */ "./resources/js/api.js");
 /* harmony import */ var _Service_CookieService__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../../Service/CookieService */ "./resources/js/Service/CookieService.js");
 /* harmony import */ var _images_logo_png__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../../../images/logo.png */ "./resources/images/logo.png");
+/* harmony import */ var _images_logo_png__WEBPACK_IMPORTED_MODULE_7___default = /*#__PURE__*/__webpack_require__.n(_images_logo_png__WEBPACK_IMPORTED_MODULE_7__);
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
@@ -103292,9 +103355,10 @@ function Header() {
   var _useState9 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
       _useState10 = _slicedToArray(_useState9, 2),
       greeting = _useState10[0],
-      setGreeting = _useState10[1]; // const test = require('../../../../storage/app/uploads/userimage/NoImage.png');
-  // require.context(directory, useSubdirectories = true, regExp = /^\.\/.*$/, mode = 'sync')
+      setGreeting = _useState10[1];
 
+  var roles = 'ROLE_NORMALUSER'; // const test = require('../../../../storage/app/uploads/userimage/NoImage.png');
+  // require.context(directory, useSubdirectories = true, regExp = /^\.\/.*$/, mode = 'sync')
 
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
     // console.log(window.location.origin)
@@ -103642,7 +103706,7 @@ function Header() {
   }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
     className: "icon-bar"
   })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
-    src: _images_logo_png__WEBPACK_IMPORTED_MODULE_7__["default"],
+    src: _images_logo_png__WEBPACK_IMPORTED_MODULE_7___default.a,
     width: "50",
     height: "50",
     alt: "",
@@ -103664,32 +103728,19 @@ function Header() {
     style: {
       display: 'none'
     }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-    onClick: function onClick() {
-      return displayFormSignIn();
-    },
-    className: "closecss"
-  }, "\xD7"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_auth_SignIn__WEBPACK_IMPORTED_MODULE_2__["default"], null)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_auth_SignIn__WEBPACK_IMPORTED_MODULE_2__["default"], null)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     id: "signup",
     style: {
       display: 'none'
     }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-    onClick: function onClick() {
-      return displayFormSignUp();
-    },
-    className: "closecss"
-  }, "\xD7"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_auth_SignUp__WEBPACK_IMPORTED_MODULE_3__["default"], null)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_auth_SignUp__WEBPACK_IMPORTED_MODULE_3__["default"], {
+    props: roles
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     id: "forgetpass",
     style: {
       display: 'none'
     }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-    onClick: function onClick() {
-      return displayFormForgetPass();
-    },
-    className: "closecss"
-  }, "\xD7"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_auth_ForgetPassword__WEBPACK_IMPORTED_MODULE_4__["default"], null)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_auth_ForgetPassword__WEBPACK_IMPORTED_MODULE_4__["default"], null)), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     style: {
       marginTop: '120px'
     }
@@ -104350,8 +104401,8 @@ function ShowMedicine(props) {
 
   var _useState29 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
       _useState30 = _slicedToArray(_useState29, 2),
-      symtom = _useState30[0],
-      setSymtom = _useState30[1];
+      symptom = _useState30[0],
+      setSymptom = _useState30[1];
 
   var _useState31 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
       _useState32 = _slicedToArray(_useState31, 2),
@@ -104375,21 +104426,21 @@ function ShowMedicine(props) {
       setPrice(response.data.detail[0].price);
       setMfd(response.data.detail[0].MFD);
       setExp(response.data.detail[0].EXP);
-      setSymtom(response.data.symtom);
+      setSymptom(response.data.symptom);
     })["catch"](function (error) {});
   }, []);
 
-  function renderSymtom() {
-    return symtom.map(function (symtom) {
+  function renderSymptom() {
+    return symptom.map(function (symptom) {
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-        key: symtom.id
+        key: symptom.id
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
         style: {
           border: '1px solid #2375b8',
           padding: '10px',
           borderRadius: '5px'
         }
-      }, symtom.name), "\xA0\xA0");
+      }, symptom.name), "\xA0\xA0");
     });
   }
 
@@ -104518,7 +104569,7 @@ function ShowMedicine(props) {
       height: '70px',
       padding: '10px'
     }
-  }, renderSymtom()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("hr", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", {
+  }, renderSymptom()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("hr", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", {
     style: {
       color: '#2375b8'
     }
@@ -104666,6 +104717,21 @@ function Buy(props) {
       streetId = _useState10[0],
       setStreetId = _useState10[1];
 
+  var _useState11 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
+      _useState12 = _slicedToArray(_useState11, 2),
+      quantity = _useState12[0],
+      setQuantity = _useState12[1];
+
+  var _useState13 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(0),
+      _useState14 = _slicedToArray(_useState13, 2),
+      reservation = _useState14[0],
+      setReservation = _useState14[1];
+
+  var _useState15 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
+      _useState16 = _slicedToArray(_useState15, 2),
+      description = _useState16[0],
+      setDescription = _useState16[1];
+
   var history = Object(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["useHistory"])();
   Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
     _api__WEBPACK_IMPORTED_MODULE_3__["default"].getCity(props.props.street.city.country.id).then(function (res) {
@@ -104685,6 +104751,14 @@ function Buy(props) {
   }, []); //  useEffect(() => {
   // console.log(currentPage)
   // },[currentPage]);
+
+  function handleReservationChange(event) {
+    if (event.target.checked) {
+      setReservation(1);
+    } else {
+      setReservation(0);
+    }
+  }
 
   function handlePageClick(data) {
     var page = data.selected >= 0 ? data.selected + 1 : 0;
@@ -104758,21 +104832,56 @@ function Buy(props) {
     }
   }
 
+  function handleQuantityChange(event) {
+    setQuantity(event.target.value);
+  }
+
+  function askPrescription(event, name) {
+    event.preventDefault();
+    var patient = {
+      name: name,
+      description: description
+    };
+    _api__WEBPACK_IMPORTED_MODULE_3__["default"].askPrescription(patient).then(function (response) {
+      alert('ask done');
+    })["catch"](function (error) {// setErrors(error.response.data.errors)
+    });
+  }
+
+  function addToCart(event, medicine_id, pharmacy_id, price) {
+    event.preventDefault();
+    var addtocart = {
+      pharmacy_id: pharmacy_id,
+      quantity: quantity,
+      price: price,
+      reservation: reservation
+    };
+    _api__WEBPACK_IMPORTED_MODULE_3__["default"].addToCart(medicine_id, addtocart).then(function (response) {
+      alert('add done');
+    })["catch"](function (error) {// setErrors(error.response.data.errors)
+    });
+  }
+
+  function handleDescriptionChange(event) {
+    setDescription(event.target.value);
+  }
+
   function renderMedicine() {
     return medicine.map(function (pharmacy) {
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        key: pharmacy.id,
+        className: "templatemo-content-widget no-padding white-bg col-sm-6 col-lg-4 text-center item mb-4\n        colorhover ".concat(pharmacy.prescription == 1 ? 'orange-bg' : '')
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
         href: "/user/medicine/show/" + pharmacy.id,
         key: pharmacy.id
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        className: "colorhover templatemo-content-widget no-padding white-bg col-sm-6 col-lg-4 text-center item mb-4"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
         src: "".concat(pharmacy.image),
         width: "350px",
         height: "200px",
         alt: "Image"
       }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", {
         className: "text-dark"
-      }, pharmacy.name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }, pharmacy.name)), pharmacy.prescription == 0 ? /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: "table-responsive",
         style: {
           overflow: 'auto',
@@ -104780,11 +104889,44 @@ function Buy(props) {
         }
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
         className: "table"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Pharmacy")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Price")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, pharmacy[0].map(function (namepharmacy) {
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Pharmacy")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Price")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Quantity")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Reservation")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Add")))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, pharmacy[0].map(function (namepharmacy) {
         return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", {
           key: namepharmacy.id
-        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, " ", namepharmacy.name, " "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, "price"));
-      }))))));
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, " ", namepharmacy.name, " "), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, namepharmacy.price), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+          type: "number",
+          style: {
+            width: '70px'
+          },
+          className: "form-control",
+          onChange: handleQuantityChange
+        })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+          type: "checkbox",
+          style: {
+            display: 'block'
+          },
+          onChange: handleReservationChange
+        })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+          onClick: function onClick(event) {
+            return addToCart(event, pharmacy.id, namepharmacy.id, namepharmacy.price);
+          },
+          className: "btn btn-primary",
+          title: "Add to cart"
+        }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+          className: "fa fa-plus fa-fw"
+        }))));
+      })))) : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        style: {
+          padding: '5px'
+        }
+      }, "Description:", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("textarea", {
+        onChange: handleDescriptionChange,
+        className: "form-control"
+      }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), "need prescription \xA0", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        onClick: function onClick(event) {
+          return askPrescription(event, pharmacy.name);
+        },
+        className: "btn btn-primary"
+      }, "Ask Prescription"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null)));
     });
   }
 
@@ -104942,6 +105084,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _api__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../api */ "./resources/js/api.js");
 /* harmony import */ var _layouts_Header__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./../layouts/Header */ "./resources/js/components/layouts/Header.js");
 /* harmony import */ var _layouts_Footer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./../layouts/Footer */ "./resources/js/components/layouts/Footer.js");
+/* harmony import */ var _Payment__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Payment */ "./resources/js/components/user/Payment.js");
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -104953,6 +105096,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
 
 
 
@@ -104974,15 +105118,19 @@ function Cart() {
   var total = 0;
 
   function renderBuy(carts) {
-    return carts.buy.map(function (buy) {
+    return carts.cart.map(function (buy) {
       total = total + buy.price * buy.quantity;
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", {
-        key: buy.id
+        key: buy.id,
+        className: "".concat(buy.reservation == 1 ? 'orange-bg' : '')
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, carts.pharmacy.name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
         src: buy.medicine.image,
         width: "100px",
         height: "100px"
-      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, buy.medicine.name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, buy.price), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, buy.quantity), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, buy.price * buy.quantity), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, buy.medicine.name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, buy.price), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, buy.quantity), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, buy.price * buy.quantity), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, buy.reservation == 1 ? 'yes' : 'no'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        onClick: function onClick() {
+          return handleDeleteCartMedicine(buy.id);
+        },
         className: "btn btn-default",
         title: "Delete"
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
@@ -104995,6 +105143,26 @@ function Cart() {
     return cart.map(function (cart) {
       return renderBuy(cart);
     });
+  }
+
+  function handleDeleteCartMedicine(buy_id) {
+    //I added event here and in line 89
+    event.preventDefault();
+    var confirm_delete = confirm('Are you sure you want to Delete ?');
+
+    if (confirm_delete == true) {
+      _api__WEBPACK_IMPORTED_MODULE_2__["default"].deleteCartMedicine(buy_id).then(function (response) {
+        window.location.reload();
+      });
+    }
+  }
+
+  function payment() {
+    if (document.getElementById("payment").style.display == "block") {
+      document.getElementById("payment").style.display = "none";
+    } else {
+      document.getElementById("payment").style.display = "block";
+    }
   }
 
   return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
@@ -105017,12 +105185,7 @@ function Cart() {
     className: "table table-striped table-bordered templatemo-user-table",
     cellSpacing: "0",
     width: "100%"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Pharmacy"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Image"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Medicine"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Price"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Quantity"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Total"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Action"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, cart.length > 0 ? renderCart() : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
-    colSpan: "7",
-    style: {
-      textAlign: 'center'
-    }
-  }, "no data")))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Pharmacy"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Image"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Medicine"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Price"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Quantity"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Total"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Reservation"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Action"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, renderCart())))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "row"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "col-md-6 pl-5"
@@ -105051,8 +105214,276 @@ function Cart() {
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
     className: "col-md-12"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    onClick: function onClick() {
+      return payment();
+    },
     className: "btn btn-primary btn-lg btn-block"
-  }, "Proceed To Checkout"))))))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layouts_Footer__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
+  }, "Proceed To Checkout"))))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    id: "payment",
+    style: {
+      display: 'none'
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Payment__WEBPACK_IMPORTED_MODULE_5__["default"], null)))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layouts_Footer__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
+}
+
+/***/ }),
+
+/***/ "./resources/js/components/user/Doctor.js":
+/*!************************************************!*\
+  !*** ./resources/js/components/user/Doctor.js ***!
+  \************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Doctor; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+/* harmony import */ var _api__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../api */ "./resources/js/api.js");
+/* harmony import */ var _layouts_Header__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../layouts/Header */ "./resources/js/components/layouts/Header.js");
+/* harmony import */ var _layouts_Footer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../layouts/Footer */ "./resources/js/components/layouts/Footer.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_6__);
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
+
+
+
+ // import ReactPaginate from 'react-paginate';
+// import Progress from 'react-progress-2';
+// import 'react-progress-2/main.css';
+
+function Doctor() {
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
+      _useState2 = _slicedToArray(_useState, 2),
+      prescription = _useState2[0],
+      setPresciption = _useState2[1];
+
+  var history = Object(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["useHistory"])();
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    _api__WEBPACK_IMPORTED_MODULE_3__["default"].getPrescription().then(function (response) {
+      console.log(response.data);
+      setPresciption(response.data);
+    });
+  }, []); //  useEffect(() => {
+  // console.log(currentPage)
+  // },[currentPage]);
+
+  function handleReservationChange(event) {
+    if (event.target.checked) {
+      setReservation(1);
+    } else {
+      setReservation(0);
+    }
+  }
+
+  function handlePageClick(data) {
+    var page = data.selected >= 0 ? data.selected + 1 : 0;
+    setCurrentPage(2);
+    fetchMedicine();
+  }
+
+  function fetchMedicine(id) {
+    // const newUrl =
+    //   window.location.protocol +
+    //   '//' +
+    //   window.location.host +
+    //   window.location.pathname +
+    //   '?page=' +
+    //   currentPage;
+    // window.history.pushState({ path: newUrl }, '', newUrl);
+    // const response = axios.post(newUrl);
+    // Progress.show();
+    _api__WEBPACK_IMPORTED_MODULE_3__["default"].getAllMedicineAvailable(id).then(function (response) {
+      console.log(response.data);
+      setMedicine(response.data); // setMedicine(response.data.data);
+      // setCurrentPage(response.data.current_page);
+      // setPageCount(response.data.last_page);
+      // window.scrollTo(0, 0);
+      // // Progress.hide();
+    })["catch"](function (error) {
+      // Progress.hide();
+      console.log(error); //history.push('/');
+    });
+  }
+
+  function getQueryStringValue(key) {
+    var value = decodeURIComponent(window.location.search.replace(new RegExp('^(?:.*[&\\?]' + encodeURIComponent(key).replace(/[\.\+\*]/g, '\\$&') + '(?:\\=([^&]*))?)?.*$', 'i'), '$1'));
+    return value ? value : null;
+  }
+
+  function handleReferenceChange(event) {
+    var reference = event.target.value;
+    alert(reference);
+
+    if (reference == 'getNameOrderAsc') {
+      _api__WEBPACK_IMPORTED_MODULE_3__["default"].getOrderMedicineByNameAsc().then(function (response) {
+        setMedicine(response.data);
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+
+    if (reference == 'getNameOrderDesc') {
+      _api__WEBPACK_IMPORTED_MODULE_3__["default"].getOrderMedicineByNameDesc().then(function (response) {
+        setMedicine(response.data);
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+
+    if (reference == 'getPriceOrderAsc') {
+      _api__WEBPACK_IMPORTED_MODULE_3__["default"].getOrderMedicineByPriceAsc().then(function (response) {
+        setMedicine(response.data);
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+
+    if (reference == 'getPriceOrderDesc') {
+      _api__WEBPACK_IMPORTED_MODULE_3__["default"].getOrderMedicineByPriceDesc().then(function (response) {
+        setMedicine(response.data);
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    }
+  }
+
+  function handleQuantityChange(event) {
+    setQuantity(event.target.value);
+  }
+
+  function askPrescription(event, name) {
+    event.preventDefault();
+    var patient = {
+      name: name,
+      description: description
+    };
+    _api__WEBPACK_IMPORTED_MODULE_3__["default"].askPrescription(patient).then(function (response) {
+      alert('ask done');
+    })["catch"](function (error) {// setErrors(error.response.data.errors)
+    });
+  }
+
+  function addToCart(event, medicine_id, pharmacy_id, price) {
+    event.preventDefault();
+    var addtocart = {
+      pharmacy_id: pharmacy_id,
+      quantity: quantity,
+      price: price,
+      reservation: reservation
+    };
+    _api__WEBPACK_IMPORTED_MODULE_3__["default"].addToCart(medicine_id, addtocart).then(function (response) {
+      alert('add done');
+    })["catch"](function (error) {// setErrors(error.response.data.errors)
+    });
+  }
+
+  function handleDescriptionChange(event) {
+    setDescription(event.target.value);
+  }
+
+  function renderPrescription() {
+    return prescription.map(function (prescription) {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        href: "doctor/prescription/".concat(prescription.id),
+        key: prescription.id
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        className: "templatemo-content-widget no-padding white-bg col-sm-6  col-lg-4 text-center item mb-4 colorhover"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, prescription.doctor_id != null ? prescription.doctor.name : 'no doctor yet'), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("p", {
+        style: {
+          overflowY: 'auto',
+          width: '100%',
+          height: '100px',
+          whiteSpace: 'pre-line'
+        }
+      }, prescription.description)));
+    });
+  }
+
+  function handleSearchChange(event) {
+    var searchByName = event.target.value;
+    var search = {
+      name: searchByName
+    };
+    _api__WEBPACK_IMPORTED_MODULE_3__["default"].getMedicineByName({
+      search: search
+    }).then(function (response) {
+      setMedicine(response.data);
+    })["catch"](function (error) {
+      console.log(error);
+    });
+  }
+
+  function filterFunction(event) {
+    var search = event.target.value;
+    var filter, option, i;
+    filter = search.toUpperCase();
+    var div = document.getElementById("showSearch");
+    option = div.getElementsByTagName("div");
+
+    for (i = 0; i < option.length; i++) {
+      var txtValue = option[i].textContent || option[i].innerText;
+
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        option[i].style.display = "";
+      } else {
+        option[i].style.display = "none";
+      }
+    }
+  }
+
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "templatemo-flex-row"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "templatemo-content col-1 light-gray-bg"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layouts_Header__WEBPACK_IMPORTED_MODULE_4__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "templatemo-flex-row flex-content-row "
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "col-1"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "container"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "row",
+    style: {
+      display: 'flex'
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "search",
+    style: {
+      marginRight: '10px'
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "text",
+    className: "form-control",
+    placeholder: "Serach",
+    onChange: filterFunction
+  }))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    style: {
+      marginTop: '10px'
+    }
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "row"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    id: "showSearch"
+  }, renderPrescription()))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layouts_Footer__WEBPACK_IMPORTED_MODULE_5__["default"], null)));
 }
 
 /***/ }),
@@ -105246,6 +105677,303 @@ function IndexUser() {
 
 /***/ }),
 
+/***/ "./resources/js/components/user/Payment.js":
+/*!*************************************************!*\
+  !*** ./resources/js/components/user/Payment.js ***!
+  \*************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Payment; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+/* harmony import */ var _api__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../api */ "./resources/js/api.js");
+/* harmony import */ var _layouts_Header__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layouts/Header */ "./resources/js/components/layouts/Header.js");
+/* harmony import */ var _layouts_Footer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../layouts/Footer */ "./resources/js/components/layouts/Footer.js");
+/* harmony import */ var _Back__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../Back */ "./resources/js/components/Back.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
+
+
+
+function Payment() {
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
+      _useState2 = _slicedToArray(_useState, 2),
+      cart = _useState2[0],
+      setCart = _useState2[1];
+
+  var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])('on delivery'),
+      _useState4 = _slicedToArray(_useState3, 2),
+      type = _useState4[0],
+      setType = _useState4[1];
+
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
+      _useState6 = _slicedToArray(_useState5, 2),
+      number = _useState6[0],
+      setNumber = _useState6[1];
+
+  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
+      _useState8 = _slicedToArray(_useState7, 2),
+      name = _useState8[0],
+      setName = _useState8[1];
+
+  var _useState9 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
+      _useState10 = _slicedToArray(_useState9, 2),
+      expiry = _useState10[0],
+      setExpiry = _useState10[1];
+
+  var _useState11 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])(''),
+      _useState12 = _slicedToArray(_useState11, 2),
+      cvv = _useState12[0],
+      setCvv = _useState12[1];
+
+  var _useState13 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
+      _useState14 = _slicedToArray(_useState13, 2),
+      errors = _useState14[0],
+      setErrors = _useState14[1];
+
+  var history = Object(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["useHistory"])();
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    _api__WEBPACK_IMPORTED_MODULE_2__["default"].getCartMedicine().then(function (response) {
+      console.log(response.data);
+      setCart(response.data);
+    });
+  }, []);
+
+  function hasErrorFor(field) {
+    return !!errors[field];
+  }
+
+  function renderErrorFor(field) {
+    if (hasErrorFor(field)) {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        style: {
+          color: '#D7425C'
+        }
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("strong", null, errors[field][0]));
+    }
+  }
+
+  var total = 0;
+  var buyId = [];
+
+  function handleDeleteCartMedicine(buy_id) {
+    //I added event here and in line 89
+    event.preventDefault();
+    var confirm_delete = confirm('Are you sure you want to Delete ?');
+
+    if (confirm_delete == true) {
+      _api__WEBPACK_IMPORTED_MODULE_2__["default"].deleteCartMedicine(buy_id).then(function (response) {
+        window.location.reload();
+      });
+    }
+  }
+
+  function renderBuy(carts) {
+    return carts.cart.map(function (buy) {
+      total = total + buy.price * buy.quantity;
+      buyId.push(buy.id);
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        key: buy.id
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", null, "  ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Medicine:"), " ", buy.medicine.name, " "), " ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, "Pharmacy:"), " ", carts.pharmacy.name, " ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, " Quantity:"), " ", buy.quantity, " ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, " Price:"), " ", buy.price, " ", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", null, " Total:"), "  ", buy.price * buy.quantity, "\xA0", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        onClick: function onClick() {
+          return handleDeleteCartMedicine(buy.id);
+        },
+        className: "btn btn-default",
+        title: "Delete"
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        className: "fa fa-trash fa-fw"
+      })));
+    });
+  }
+
+  function renderCart() {
+    return cart.map(function (cart) {
+      return renderBuy(cart);
+    });
+  }
+
+  function handleChangeType(event) {
+    setType(event.target.value);
+  }
+
+  function handleChangeNumber(event) {
+    setNumber(event.target.value);
+  }
+
+  function handleChangeName(event) {
+    setName(event.target.value);
+  }
+
+  function handleChangeExpiry(event) {
+    setExpiry(event.target.value);
+  }
+
+  function handleChangeCvv(event) {
+    setCvv(event.target.value);
+  }
+
+  function handleAddPayment(event) {
+    event.preventDefault();
+    var payment = {
+      buy: buyId,
+      type: type,
+      price: total,
+      creditCardNumber: number,
+      nameOnCard: name,
+      expiryDate: expiry,
+      cvvCode: cvv
+    };
+    _api__WEBPACK_IMPORTED_MODULE_2__["default"].addPayment(payment).then(function (response) {
+      console.log(response.data);
+      window.location.reload();
+    })["catch"](function (error) {
+      console.log(error);
+      setErrors(error.response.data.errors);
+    });
+  }
+
+  function closeForm() {
+    document.getElementById('close').style.display = 'none';
+  }
+
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "formShow",
+    id: "close"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "col-1 "
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "container "
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "row white-bg"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+    onClick: function onClick() {
+      return closeForm();
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+    className: "fa fa-times"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "col-md-6 "
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h2", {
+    className: "text-black"
+  }, "1. Payment Method"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "form-group"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "radio",
+    onChange: handleChangeType,
+    value: "on delivery",
+    name: "radio",
+    id: "r5",
+    defaultChecked: true
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+    "for": "r5"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null), "On Delivery")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "form-group"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "radio",
+    onChange: handleChangeType,
+    value: "credit card",
+    name: "radio",
+    id: "r6",
+    defaultChecked: false
+  }), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("label", {
+    "for": "r6"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", null), "Credit card"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("img", {
+    src: "./images/cards.png"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "form-group ".concat(hasErrorFor('nameOnCard') ? 'has-error' : '')
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "input-group"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "input-group-addon"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+    className: "fa fa-user fa-fw"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "text",
+    className: "form-control",
+    placeholder: " Full Name",
+    value: name,
+    onChange: handleChangeName
+  })), renderErrorFor('nameOnCard')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "form-group ".concat(hasErrorFor('creditCardNumber') ? 'has-error' : '')
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "input-group"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "input-group-addon"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+    className: "fa fa-credit-card fa-fw"
+  })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "number",
+    className: "form-control",
+    placeholder: " Card Number",
+    value: number,
+    onChange: handleChangeNumber
+  })), renderErrorFor('creditCardNumber')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "form-group ".concat(hasErrorFor('expiryDate') ? 'has-error' : '')
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "input-group"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "input-group-addon"
+  }, "Exp Date"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "month",
+    className: "form-control",
+    value: expiry,
+    onChange: handleChangeExpiry
+  })), renderErrorFor('expiryDate')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "form-group ".concat(hasErrorFor('cvvCode') ? 'has-error' : '')
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "input-group"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "input-group-addon"
+  }, "CVC"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+    type: "number",
+    className: "form-control",
+    maxLength: "3",
+    value: cvv,
+    onChange: handleChangeCvv
+  })), renderErrorFor('cvvCode')), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+    onClick: function onClick(event) {
+      return handleAddPayment(event);
+    },
+    className: "btn btn-primary"
+  }, "Buy")), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "col-md-6"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", {
+    style: {
+      color: '#2375b8'
+    }
+  }, "Card Summary"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    style: {
+      overflow: 'auto',
+      width: '300px',
+      height: '400px',
+      padding: '10px'
+    }
+  }, renderCart()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("hr", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", {
+    style: {
+      color: '#2375b8'
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("u", null, "Total")), "\xA0", total)))));
+}
+
+/***/ }),
+
 /***/ "./resources/js/components/user/ShowMap.js":
 /*!*************************************************!*\
   !*** ./resources/js/components/user/ShowMap.js ***!
@@ -105419,8 +106147,8 @@ function ShowMedicineUser(props) {
 
   var _useState27 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
       _useState28 = _slicedToArray(_useState27, 2),
-      symtom = _useState28[0],
-      setSymtom = _useState28[1];
+      symptom = _useState28[0],
+      setSymptom = _useState28[1];
 
   var _useState29 = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
       _useState30 = _slicedToArray(_useState29, 2),
@@ -105450,21 +106178,21 @@ function ShowMedicineUser(props) {
       // setMfd(response.data.detail[0].MFD);
       // setExp(response.data.detail[0].EXP);
 
-      setSymtom(response.data.symtom);
+      setSymptom(response.data.symptom);
     })["catch"](function (error) {});
   }, []);
 
-  function renderSymtom() {
-    return symtom.map(function (symtom) {
+  function renderSymptom() {
+    return symptom.map(function (symptom) {
       return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-        key: symtom.id
+        key: symptom.id
       }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
         style: {
           border: '1px solid #2375b8',
           padding: '10px',
           borderRadius: '5px'
         }
-      }, symtom.name), "\xA0\xA0");
+      }, symptom.name), "\xA0\xA0");
     });
   }
 
@@ -105490,38 +106218,9 @@ function ShowMedicineUser(props) {
       price: price,
       reservation: reservation
     };
-    _api__WEBPACK_IMPORTED_MODULE_2__["default"].addToCart(props.match.params.id, addtocart).then(function (response) {})["catch"](function (error) {// setErrors(error.response.data.errors)
-    });
-  }
-
-  function renderDetail() {
-    return detail.map(function (detail) {
-      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", {
-        key: detail.id
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", {
-        scope: "row"
-      }, detail.pharmacy.name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, detail.price), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, detail.MFD), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, detail.EXP), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        type: "number",
-        style: {
-          width: '70px'
-        },
-        className: "form-control",
-        onChange: handleQuantityChange
-      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
-        type: "checkbox",
-        style: {
-          display: 'block'
-        },
-        onChange: handleReservationChange
-      })), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-        onClick: function onClick(event) {
-          return addToCart(event, detail.pharmacy.id, detail.price);
-        },
-        className: "btn btn-primary",
-        title: "Add to cart"
-      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
-        className: "fa fa-plus fa-fw"
-      }))));
+    _api__WEBPACK_IMPORTED_MODULE_2__["default"].addToCart(props.match.params.id, addtocart).then(function (response) {
+      alert('add done');
+    })["catch"](function (error) {// setErrors(error.response.data.errors)
     });
   }
 
@@ -105604,17 +106303,93 @@ function ShowMedicineUser(props) {
       height: '70px',
       padding: '10px'
     }
-  }, renderSymtom()), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("hr", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("br", null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("b", {
-    style: {
-      color: '#2375b8'
-    }
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("u", null, "Details")), "\xA0", /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "tab-content"
+  }, renderSymptom())))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layouts_Footer__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
+}
+
+/***/ }),
+
+/***/ "./resources/js/components/user/ShowPrescription.js":
+/*!**********************************************************!*\
+  !*** ./resources/js/components/user/ShowPrescription.js ***!
+  \**********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return ShowPrescription; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/esm/react-router-dom.js");
+/* harmony import */ var _api__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../api */ "./resources/js/api.js");
+/* harmony import */ var _layouts_Header__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../layouts/Header */ "./resources/js/components/layouts/Header.js");
+/* harmony import */ var _layouts_Footer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../layouts/Footer */ "./resources/js/components/layouts/Footer.js");
+/* harmony import */ var _Back__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../Back */ "./resources/js/components/Back.js");
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { if (typeof Symbol === "undefined" || !(Symbol.iterator in Object(arr))) return; var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+
+
+
+
+
+
+function ShowPrescription(props) {
+  var _useState = Object(react__WEBPACK_IMPORTED_MODULE_0__["useState"])([]),
+      _useState2 = _slicedToArray(_useState, 2),
+      prescription = _useState2[0],
+      setPresciption = _useState2[1];
+
+  var history = Object(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["useHistory"])();
+  Object(react__WEBPACK_IMPORTED_MODULE_0__["useEffect"])(function () {
+    _api__WEBPACK_IMPORTED_MODULE_2__["default"].ShowPrescription(props.match.params.id).then(function (response) {
+      console.log(response.data);
+      setPresciption(response.data);
+    })["catch"](function (error) {});
+  }, []);
+
+  function renderPrescription() {
+    return prescription.map(function (prescription) {
+      return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", {
+        key: prescription.id
+      }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, prescription.medicine.name), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", null, prescription.quantity));
+    });
+  }
+
+  return /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "templatemo-flex-row"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-    className: "tab-pane active"
+    className: "templatemo-content col-1 light-gray-bg"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layouts_Header__WEBPACK_IMPORTED_MODULE_3__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "templatemo-flex-row flex-content-row ",
+    style: {
+      marginTop: '100px'
+    }
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "col-1"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Back__WEBPACK_IMPORTED_MODULE_5__["default"], null), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "templatemo-content-widget no-padding"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "panel panel-default table-responsive"
   }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("table", {
-    className: "table custom-table"
-  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Pharmacy"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Price"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "MFD"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "EXP"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Quantity"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Reservation"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Add"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, renderDetail()))))))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layouts_Footer__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
+    id: "myTable",
+    className: "table table-striped table-bordered templatemo-user-table",
+    cellSpacing: "0",
+    width: "100%"
+  }, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("caption", null, "Prescription"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("thead", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "Medicine Name"), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("th", null, "quantity"))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tbody", null, prescription.length > 0 ? renderPrescription() : /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("tr", null, /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("td", {
+    style: {
+      textAlign: 'center'
+    }
+  }, "no data")))))))), /*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_layouts_Footer__WEBPACK_IMPORTED_MODULE_4__["default"], null)));
 }
 
 /***/ }),

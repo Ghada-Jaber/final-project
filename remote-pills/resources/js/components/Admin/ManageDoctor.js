@@ -13,6 +13,8 @@ export  default function ManageDoctor(){
   const [id, setId] = useState('');
   const [medicine, setMedicine] = useState([]);
 
+  var role = 'ROLE_DOCTOR';
+
   useEffect(() => {
     api.getUsers('ROLE_DOCTOR').then(response => {
       console.log(response.data)
@@ -129,7 +131,7 @@ for (i = 1; i < tr.length; i++) {
                     <td>{medicine.id}</td>
                     <td>
                     
-                    <img src={`../../../../storage/app/${medicine.image}`} width="100px" height="100px"/></td>
+                    <img src={medicine.image} width="100px" height="100px"/></td>
                     <td>{medicine.name}</td>
                     <td>{medicine.street.name}, {medicine.street.city.name}, {medicine.street.city.country.name}
                     </td>
@@ -211,7 +213,7 @@ for (i = 1; i < tr.length; i++) {
                     className="white-text templatemo-sort-by"># <span className="caret"></span></a>
                     </th>
                     <th>
-                    Pharmacy image</th>
+                    Doctor image</th>
                     <th><a onClick={() => sortTable(2)} 
                      className="white-text templatemo-sort-by">
                     Name <span className="caret"></span></a></th>
@@ -237,10 +239,8 @@ for (i = 1; i < tr.length; i++) {
             </div> 
                                      
           </div>   
-          <div id="addmedicine" className="formShow">
-          <a  onClick={() => addMedicine()} className="closecss">
-          &times;</a>
-              <SignUp />
+          <div id="addmedicine" style={{ display:'none'}}>
+              <SignUp props={role}/>
 
             </div>
 

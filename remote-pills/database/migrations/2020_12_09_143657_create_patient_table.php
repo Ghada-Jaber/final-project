@@ -16,9 +16,9 @@ class CreatePatientTable extends Migration
         Schema::create('patient', function (Blueprint $table) {
             $table->id();
             $table->foreignId('patient_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('doctor_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('doctor_id')->nullable()->constrained('users')->onDelete('cascade');
 
-
+            $table->text('description');
             $table->unique(['patient_id', 'doctor_id']);
             $table->timestamps();
         });

@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 
 use App\Models\User;
 use App\Models\Medicine;
+use App\Models\MedicineSymptom;
+use App\Models\Symptom;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -73,20 +76,21 @@ class AdminController extends Controller
             'tablet' => 'required|integer',
             'dosage' => 'required|numeric',
             'dosage_unit' => 'required|string',
+            'symptom' => 'required',
         ]);
 
         //return response()->json(['al' =>'dd'], 201);
         if($request->hasFile('image')){
-        $image = $request['image']->store('uploads/medicine');
+        $image = $request['image']->store('public/uploads/medicine');
 
     }else{
-        $image = "uploads/medicine/NoImage.png";
+        $image = "public/uploads/medicine/NoImage.png";
     }
-        
+    $url = Storage::url($image); 
 
         $medicine = Medicine::create([
             'name' => $request['name'],
-            'image' => $image,
+            'image' => $url,
             'format' => $request['format'],
             'description' => $request['description'],
             'ingredient' => $request['ingredient'],
@@ -96,20 +100,36 @@ class AdminController extends Controller
             'dosage_unit' => $request['dosage_unit'],
           ]);
 
+
+          $symptom = $request['symptom'];
+
+          $symptom =  explode(",", $symptom );
+ 
+        
+
+          foreach($symptom as $id){
+            MedicineSymptom::create([
+            'medicine_id' => $medicine->id,
+            'symptom_id' => $id
+          ]);
+          }
+
         
 
         return response()->json($medicine, 201);
     }
 
     public function getInfoMedicine(Medicine $medicine){
-        $medicine->symtom = $medicine->symtom->flatten();
+        $medicine->symptom = $medicine->symptom->flatten();
         return response()->json($medicine, 201);
     }
 
 
-    public function getInfoPharmacy(User $pharmacy){
+    public function getInfoPharmacy(User $user){
+
+        $user->medicine;
         
-        return response()->json($pharmacy, 201);
+        return response()->json($user, 201);
     }
 
 
@@ -147,9 +167,47 @@ class AdminController extends Controller
     }
 
 
+    public function updatePharmacy(Request $request, User $user){
+        $request->validate([
+            'name' => 'required|string|max:255'
+        ]);
+        
+
+        $user->update([
+            'name' => $request['name'],
+          ]);
+
+
+          return response()->json($user, 201);
+
+    }
+
+
     public function destroy(Medicine $medicine)
     {
         $medicine->delete();
         return response()->json($medicine, 201);
+    }
+
+
+    public function getAllSymptom(){
+        $symptom = Symptom::get();
+
+        return response()->json($symptom, 201);
+    }
+
+    public function addSymptom(Request $request){
+
+        $request->validate([
+            'symptomName' => 'required|string',
+        ]);
+
+
+        $symptom = Symptom::create([
+            'name' => $request['symptomName'],
+          ]);
+
+        return response()->json($symptom, 201);
+
     }
 }
