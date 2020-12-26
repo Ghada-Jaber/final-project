@@ -36,7 +36,7 @@ class Customer extends Model
             }
 
     public function buy(){
-        return $this->hasMany(Buy::class);
+        return $this->hasMany(Buy::class,'customer_id');
     }
 
 

@@ -135,12 +135,12 @@ function handleReferenceChange(event){
 function renderMedicine(){
   return medicine.map(medicine => {
       return(
-        <a href={"/medicine/show/"+medicine.id} key={medicine.id}> 
+        <a href={"/medicine/show/"+medicine.medicine.id} key={medicine.id}> 
         <div className="colorhover templatemo-content-widget no-padding white-bg col-sm-6 col-lg-4 text-center item mb-4" >
         <br/>
-        <img src={medicine.image} width="350px" height="200px" alt="Image"/>
+        <img src={medicine.medicine.image} width="350px" height="200px" alt="Image"/>
        
-        <h3 className="text-dark">{medicine.name}</h3>
+        <h3 className="text-dark">{medicine.medicine.name}</h3>
         <p className="price">
         <i className="fa fa-money fa-fw"></i> {medicine.price}
         

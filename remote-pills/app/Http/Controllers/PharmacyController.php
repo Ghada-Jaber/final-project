@@ -22,22 +22,17 @@ class PharmacyController extends Controller
     public function getMedicine(){
 
         $pharmacy = Auth::user();
-        $medicine = $pharmacy->medicine;
+        $detail = $pharmacy->detail;
 
-        $i=0;
-         foreach($medicine as $detailMedicine){
+        foreach($detail as $medicine){
+            $medicine->medicine;
+        }
 
-            $detail = $detailMedicine->detail;
-            foreach($detail as $price){
-                $medicine[$i]->price = $price->price;
-            }
-             $i++;
-         }
 
         //  $data = $this->paginate($medicine);
         // return response()->json($data,200);
 
-        return response()->json($medicine,200);
+        return response()->json($detail,200);
     }
 
     public function addMedicine(Request $request){
@@ -204,6 +199,28 @@ class PharmacyController extends Controller
 
 
           return response()->json($detail,200);
+    }
+
+
+    public function getPharmacyOrder(){
+        $pharmacy = Auth::user();
+
+         $customers = $pharmacy->pharmacy;
+
+        foreach($pharmacy->pharmacy as $customer){
+
+            $customers->customer = $customer->customer;
+           
+            $customers->buy = $customer->buy;
+                foreach($customer->buy as $payment){
+                    $customer->buy->medicine = $payment->medicine;
+                    $customer->buy->payment = $payment->payment;
+                }
+        }
+
+        
+
+        return response()->json($customers,200);
     }
     
 }

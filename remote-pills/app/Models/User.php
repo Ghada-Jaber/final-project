@@ -131,7 +131,7 @@ class User extends Authenticatable
 
 
     public function pharmacy(){
-        return $this->hasMany(Customer::class);
+        return $this->hasMany(Customer::class, 'pharmacy_id');
     }
 
 

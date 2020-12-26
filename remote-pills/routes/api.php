@@ -93,8 +93,9 @@ Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_PHA
 
     Route::get('/pharmacy/medicine/{medicine}', [PharmacyController::class, 'showMedicine']); 
 
-
     Route::put('/pharmacy/medicine/{detail}', [PharmacyController::class, 'updateMedicine']); 
+
+    Route::get('/pharmacy/order', [PharmacyController::class, 'getPharmacyOrder']); 
 
     
 

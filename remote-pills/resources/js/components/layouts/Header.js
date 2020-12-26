@@ -146,7 +146,7 @@ return(
   <li className= {`${(page =='/medicine') ? 'active' : '' }`}>
   <a href="/medicine"><i className="fa fa-medkit fa-fw"></i>Medicine</a></li>
   <li className= {`${(page =='/customer') ? 'active' : '' }`}>
-  <a href="/medicine"><i className="fa fa-medkit fa-fw"></i>Customer</a></li>
+  <a href="/customer"><i className="fa fa-medkit fa-fw"></i>Customer</a></li>
   </ul>
 )
 }

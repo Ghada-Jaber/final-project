@@ -116,6 +116,9 @@ export default{
     updateMedicineDetail: (detail, id) =>
     axios.put(`${BASE_URL}/pharmacy/medicine/${id}`, detail, token),
 
+    getPharmacyOrder: () =>
+    axios.get(`${BASE_URL}/pharmacy/order`, token),
+
 
     getAllMedicineAvailable: (id) =>
     axios.get(`${BASE_URL}/user/allMedicine/${id}`, token),

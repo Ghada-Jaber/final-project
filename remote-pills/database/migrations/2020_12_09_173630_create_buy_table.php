@@ -20,6 +20,7 @@ class CreateBuyTable extends Migration
             $table->integer('quantity');
             $table->double('price');
             $table->foreignId('payment_id')->nullable()->constrained('payment')->onDelete('cascade');
+            $table->boolean('delivred')->default(0);
             $table->timestamps();
             $table->unique(['customer_id', 'medicine_id', 'created_at']);
         });

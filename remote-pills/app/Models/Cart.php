@@ -29,7 +29,8 @@ class Cart extends Model
                   'medicine_id',
                   'quantity',
                   'price',
-                  'reservation'
+                  'reservation',
+                  'confirmation'
               ];
 
 

@@ -20,6 +20,7 @@ class CreateCartTable extends Migration
             $table->integer('quantity');
             $table->double('price');
             $table->boolean('reservation');
+            $table->boolean('confirmation')->default(0);
             $table->timestamps();
             $table->unique(['customer_id', 'medicine_id', 'created_at']);
         });
