@@ -12,7 +12,7 @@ import logo from '../../../images/logo.png';
 // import classNames from 'classnames/bind';
 // const cx = classNames.bind(styles);
 //<div className={ cx('widget-item-container') }>
-export default function Header(){
+export default function Header(props){
 
   const cookie = CookieService.get('access_token');
   const [page, setCurrentPage] = useState('');
@@ -46,7 +46,9 @@ export default function Header(){
     {
       setGreeting("Good Evening"); 
     }
+    
     details();
+
  },[]);
 
 
@@ -55,9 +57,16 @@ export default function Header(){
       setName(response.data.name)
       setImage(response.data.image)
       setRole(response.data.roles[0])
+  
+
       
   }).catch(error => {
-     history.push('/');
+    if(error.response.status == 401) {
+      history.push('/')
+  }
+
+ 
+
   })
 }
 

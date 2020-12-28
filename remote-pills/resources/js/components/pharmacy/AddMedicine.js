@@ -5,7 +5,7 @@ import Header from '../layouts/Header';
 import Footer from '../layouts/Footer';
 import Back from '../Back';
 
-export  default function ShowMedicine(props){
+export  default function AddMedicine(props){
     const [medicine, setMedicine] = useState([]);
 
     const [id, setMedicineId] = useState('');

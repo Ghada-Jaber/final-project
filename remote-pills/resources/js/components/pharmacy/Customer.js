@@ -99,38 +99,18 @@ function getQueryStringValue(key) {
   return value ? value : null;
 }
 
-function handleReferenceChange(event){
-  var reference = event.target.value;
-  if(reference == 'getNameOrderAsc'){
-    api.getOrderMedicineByNameAsc().then(response => {
-      setMedicine(response.data);
-  }) .catch(error => {
-    console.log(error)
-  })
+function handleSelectChange(event){
+  var select = event.target.value;
+  if(select == 'Ordered'){
+    setDelivred(0);
   }
 
-  if(reference == 'getNameOrderDesc'){
-    api.getOrderMedicineByNameDesc().then(response => {
-      setMedicine(response.data);
-  }) .catch(error => {
-    console.log(error)
-  })
+  if(select == 'Delivred'){
+    setDelivred(1);
   }
 
-  if(reference == 'getPriceOrderAsc'){
-    api.getOrderMedicineByPriceAsc().then(response => {
-      setMedicine(response.data);
-  }) .catch(error => {
-    console.log(error)
-  })
-  }
-
-  if(reference == 'getPriceOrderDesc'){
-    api.getOrderMedicineByPriceDesc().then(response => {
-      setMedicine(response.data);
-  }) .catch(error => {
-    console.log(error)
-  })
+  if(select == 'Reserved'){
+    setDelivred(2);
   }
 
 }
@@ -139,8 +119,8 @@ function handleReferenceChange(event){
 function renderOrder(){
   return order.map(order => {
       return(
-        <a href={"/medicine/show/"+order.id} key={order.id}> 
-        <div className="colorhover templatemo-content-widget no-padding white-bg col-sm-6 col-lg-4 text-center item mb-4" >
+        <>
+        <div className="templatemo-content-widget no-padding white-bg col-sm-6 col-lg-4 text-center item mb-4" >
         <br/>
        
         <h3 className="text-dark">{order.customer.name}</h3>
@@ -151,36 +131,63 @@ function renderOrder(){
                       <td><b>medicine name</b></td>
                       <td><b>Price</b></td>
                       <td><b>Quantity</b></td>
-                      <td><b>Reservation</b></td>
-                      <td><b>Payment</b></td>
+                      <td><b>Action</b></td>
                       </tr>
                     </thead>
                   <tbody>
                   {order.buy.map(namepharmacy=>{
              return(
-                 < >
-                 {delivred == namepharmacy.delivred ? 
-                    <tr >
+              <tr key={namepharmacy.id}>
+                 {delivred == namepharmacy.delivred  ? 
+                 
+                  <> 
                <td> {namepharmacy.medicine.name} </td><td>{namepharmacy.price}</td>
                <td>
-               <input type="number" style={{ width:'70px'}} className="form-control"
-        />
+               {namepharmacy.quantity}
                </td>
                <td>
-               <input type="checkbox" style={{ display:'block' }}
-        />
+               {namepharmacy.delivred== 0 ? 
+                <a 
+                    className="btn btn-primary"
+                        title="deliver">
+                        <i className="fa fa-share fa-fw"></i>
+                     </a>: ''}
+               <a 
+                    className="btn btn-primary"
+                        title="show Payment">
+                        <i className="fa fa-info fa-fw"></i>
+                     </a>
+               </td>
+               </>
+               : <></>} 
+               </tr>
+              
+             )
+          })}
+
+          {order.cart.map(namepharmacy=>{
+             return(
+              <tr key={namepharmacy.id}>
+                 {delivred == 2 ? 
+                  <>
+                 {namepharmacy.reservation == 1  ? 
+                  <>
+               <td> {namepharmacy.medicine.name} </td><td>{namepharmacy.price}</td>
+               <td>
+               {namepharmacy.quantity}
                </td>
                <td>
                <a 
                     className="btn btn-primary"
-                        title="Add to cart">
-                        <i className="fa fa-info fa-fw"></i>
+                        title="confirm">
+                        confirm
                      </a>
                </td>
-               </tr>
-               : ''}
-               
                </>
+                 : <></>}
+                 </>
+               : <></>} 
+               </tr>
              )
           })}
                                    
@@ -188,7 +195,7 @@ function renderOrder(){
                 </table>
               </div> 
       </div>
-      </a>
+      </>
         )
       })
   }
@@ -244,11 +251,11 @@ function renderOrder(){
                />   
                </div>
                <select className="form-control" style={{ width: '200px'}}
-            // onChange={handleReferenceChange}
+            onChange={handleSelectChange}
             >
-              <option value="getNameOrderAsc">Ordered</option>
-              <option value="getNameOrderDesc">Reserved</option>
-              <option value="getNameOrderDesc">Delivred</option>
+              <option value="Ordered">Ordered</option>
+              <option value="Reserved">Reserved</option>
+              <option value="Delivred">Delivred</option>
             </select>
             </div>
 

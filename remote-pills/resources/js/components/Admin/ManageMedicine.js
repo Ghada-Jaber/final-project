@@ -15,7 +15,8 @@ export  default function ManageMedicine(){
 
   useEffect(() => {
     api.getAllMedicine().then(response => {
-      setMedicine(response.data);
+      console.log(response.data)
+      setMedicine(response.data.data);
     })
  },[]);
 

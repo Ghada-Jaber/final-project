@@ -233,17 +233,19 @@ function filterFunction(event){
 
                <div className={`form-group ${hasErrorFor('symptomName') ? 'has-error' : ''}`} >
           <div className="input-group" >       		
-            <input type="text" className="search form-control"
+            <input type="text" className="form-control"
 						   placeholder="Symptom Name"  onChange={handleChangeNameSymptom}
 
-               />  
+               /> 
+               	<div className="input-group-addon">  <a   
+             onClick={() => addSymptom()} >
+             <i className="fa fa-plus"></i>
+             </a>	</div>	   
 		          	</div>
                 {renderErrorFor('symptomName')} 
                 </div>
              
-               <a className="btn btn-primary" style={{ marginLeft:'10px', marginRight:'10px' }} 
-             onClick={() => addSymptom()} >
-             <i className="fa fa-plus"></i></a>		
+             	
 
               <div className={`form-group ${hasErrorFor('symptom') ? 'has-error' : ''}`} >
           <div className="input-group" >

@@ -165,14 +165,14 @@ function handleAddPayment(event){
 				        <input type="radio" onChange={handleChangeType}
                         value="on delivery"
                          name="radio" id="r5" defaultChecked={true} />
-						<label for="r5" ><span></span>On Delivery</label>			    
+						<label htmlFor="r5" ><span></span>On Delivery</label>			    
 				</div>
 
                   <div className="form-group">
 				        <input type="radio" onChange={handleChangeType}
                         value="credit card"
                          name="radio" id="r6" defaultChecked={false} />
-						<label for="r6" ><span></span>Credit card</label>
+						<label htmlFor="r6" ><span></span>Credit card</label>
                         <img src="./images/cards.png" />			    
 				</div>
 

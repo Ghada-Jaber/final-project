@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 class PharmacyController extends Controller
 {
     public function getAllMedicine(){
-        $medicine = Medicine::get();
+        $medicine = Medicine::latest()->simplePaginate(2);
         return response()->json($medicine,200);
     }
 
@@ -209,12 +209,20 @@ class PharmacyController extends Controller
 
         foreach($pharmacy->pharmacy as $customer){
 
-            $customers->customer = $customer->customer;
+           $customers->customer = $customer->customer;
+
+           $customers->cart = $customer->cart;
            
             $customers->buy = $customer->buy;
+
                 foreach($customer->buy as $payment){
                     $customer->buy->medicine = $payment->medicine;
                     $customer->buy->payment = $payment->payment;
+                }
+
+
+                foreach($customer->cart as $cart){
+                    $customer->cart->medicine = $cart->medicine;
                 }
         }
 
@@ -222,5 +230,8 @@ class PharmacyController extends Controller
 
         return response()->json($customers,200);
     }
+
+
+    
     
 }
