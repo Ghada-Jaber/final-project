@@ -16,6 +16,13 @@ const token = {
 
 export default{
 
+    firebaseLogin: (firebaseToken) =>
+    axios.post(`${BASE_URL}/login`, {
+        'Accept': 'application/json',
+        'Content-type': 'application/json',
+        'Authorization': 'Bearer ' + firebaseToken
+    }),
+
     checkLogin: (login) =>
     axios.post(`${BASE_URL}/login`,login),
 

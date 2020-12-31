@@ -6,7 +6,7 @@ export default function Footer(){
             <footer className="text-right">
 
 
-            <p>Copyright &copy; 2084 Remote Pills | Designed by <a href="https://www.linkedin.com/in/ghada-jaber" target="_parent">Ghada Jaber</a></p>
+            <p>Copyright &copy; 2084 Remote Pills | Designed by <a href="https://www.linkedin.com/in/ghada-jaber/" target="_blank">Ghada Jaber</a></p>
                      
                      
                       </footer>  

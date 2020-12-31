@@ -267,7 +267,7 @@ return(
      <ul className="nav navbar-nav" >
                       <li className= {`${(page =='/home' || page =='/') ? 'active' : '' }`}>
                       <a href="/home" ><i className="fa fa-home fa-fw"></i>Home</a></li>
-                       <li className="dropdown">
+                       {/* <li className="dropdown">
                     <a className="dropdown-toggle" data-toggle="dropdown" href="#"><i className="fa fa-bar-chart fa-fw"></i>About<span className="caret"></span></a>
                     <ul className="dropdown-menu">
                     <li><a href="details.php">Details</a></li>
@@ -278,9 +278,9 @@ return(
                        
                      
                     </ul>
-                  </li>
+                  </li> */}
                    
-                      <li><a href="service"><i className="fa fa-server fa-fw"></i>Service</a></li>
+                      {/* <li><a href="service"><i className="fa fa-server fa-fw"></i>Service</a></li>
                        <li className="dropdown">
                     <a className="dropdown-toggle" data-toggle="dropdown" href="#"><i className="fa fa-sliders fa-fw"></i>Blog<span className="caret"></span></a>
                     <ul className="dropdown-menu">
@@ -288,8 +288,8 @@ return(
                     <li><a href="client">Client</a></li>
                     </ul>
                   </li>
-                      
-                      <li><a href="contact"><i className="fa fa-book fa-fw"></i>Contact</a></li>
+                       */}
+                      {/* <li><a href="contact"><i className="fa fa-book fa-fw"></i>Contact</a></li> */}
                  
                       
                 </ul>

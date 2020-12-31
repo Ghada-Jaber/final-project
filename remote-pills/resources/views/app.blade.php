@@ -11,6 +11,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="{{asset('css/app.css')}}" rel="stylesheet">
     <link href="{{asset('css/bootstrap.min.css')}}" rel="stylesheet">
+
+
+    <!-- <script src="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.js"></script> -->
+<link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.6.1/firebase-ui-auth.css" />
   
     <link rel="stylesheet" 
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">   

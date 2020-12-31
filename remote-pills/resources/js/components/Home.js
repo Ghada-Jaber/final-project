@@ -68,7 +68,7 @@ export  default function Home(){
   </div>
 </div>	 
               
-              <div className="panel panel-default templatemo-content-widget  no-padding templatemo-overflow-hidden">
+              {/* <div className="panel panel-default templatemo-content-widget  no-padding templatemo-overflow-hidden">
                <div className="panel-heading templatemo-position-relative">
 				 <div className="media">
                   <div className="media-left">
@@ -84,7 +84,7 @@ export  default function Home(){
                   </div>        
                 </div>                 
                   </div>          
-              </div>
+              </div> */}
   
                  
   
