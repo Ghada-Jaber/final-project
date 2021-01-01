@@ -221,8 +221,8 @@ function handleDescriptionChange(event){
 function renderMedicine(){
   return medicine.map(pharmacy => {
       return(
-        
-        <div key={pharmacy.id}
+        <section key={pharmacy.id}>
+        <div 
         className={`templatemo-content-widget no-padding white-bg col-sm-6 col-lg-4 text-center item mb-4
         colorhover ${pharmacy.prescription == 1 ? 'orange-bg' : ''}`} >
         <br/>
@@ -271,16 +271,27 @@ function renderMedicine(){
                   </tbody>
                 </table>
               </div> : 
-              <div style={{ padding:'5px'}}>
-              Description:<textarea  onChange={handleDescriptionChange}
-               className="form-control"></textarea><br/>
-               need prescription &nbsp;
-               <button onClick={(event) => askPrescription(event, pharmacy.name)}
-               className="btn btn-primary">Ask Prescription</button>
-              <br/><br/></div>}
+           
+
+              <div  className="form-group" style={{ padding: '5px'}}>
+	        		<div className="input-group">
+		        		<div className="input-group-addon">
+                <button onClick={(event) => askPrescription(event, pharmacy.name)}
+               className="btn btn-danger">Ask Prescription</button></div>	        		
+                <textarea  onChange={handleDescriptionChange}
+              placeholder="write your description this medicine need prescription"
+               className="form-control"></textarea>
+                                   
+		          	</div>
+                <br/>	  
+	        	</div>
+
+              
+              }
       
          
       </div>
+      </section>
     
         )
       })
@@ -349,7 +360,7 @@ function handleStreetChange(event){
     var filter, option, i;
      filter = search.toUpperCase();
      var div = document.getElementById("showSearch");
-     option = div.getElementsByTagName("div");
+     option = div.getElementsByTagName("section");
      for (i = 0; i < option.length; i++) {
        var txtValue = option[i].textContent || option[i].innerText;
        if (txtValue.toUpperCase().indexOf(filter) > -1) {

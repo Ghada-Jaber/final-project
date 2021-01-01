@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Storage;
 
 use Firebase\Auth\Token\Exception\InvalidToken;
 
+
+use Lcobucci\JWT\Token\Plain;
+
 class AuthenticationController extends Controller
 {
 
@@ -46,9 +49,9 @@ class AuthenticationController extends Controller
         $uid = $verifiedIdToken->getClaim('sub');
 
         // Retrieve the user model linked with the Firebase UID
-        $user = User::where('firebaseUID',$uid)->first();
+        $user = User::where('FirebaseUID',$uid)->first();
 
-        $tokenResult = $user->createToken('Personal Access Token');
+        $tokenResult = $user->createToken('personal token');
         
         // Store the created token
         $token = $tokenResult->token;

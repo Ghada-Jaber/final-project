@@ -63,8 +63,9 @@ export  default function ListMedicine(){
     // const response = axios.post(newUrl);
   // Progress.show();
     api.getMedicine().then(response => {
-      setMedicine(response.data);
       console.log(response.data)
+      setMedicine(response.data);
+     
       // setMedicine(response.data.data);
       // setCurrentPage(response.data.current_page);
       // setPageCount(response.data.last_page);
@@ -99,6 +100,7 @@ function handleReferenceChange(event){
   var reference = event.target.value;
   if(reference == 'getNameOrderAsc'){
     api.getOrderMedicineByNameAsc().then(response => {
+      console.log(response.data)
       setMedicine(response.data);
   }) .catch(error => {
     console.log(error)

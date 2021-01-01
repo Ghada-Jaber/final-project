@@ -1,5 +1,6 @@
 import React, {Component, useState, useEffect} from 'react';
 import firebase from "firebase/app";
+import {Link, useHistory} from 'react-router-dom';
 
 // Add the Firebase services that you want to use
 import "firebase/auth";
@@ -7,6 +8,10 @@ import "firebase/firestore";
 
 import "firebaseui";
 import config from './config';
+import CookieService from '../../Service/CookieService';
+
+
+//import * as admin from 'firebase-admin';
 
 
 import api from '../../api';
@@ -14,6 +19,7 @@ import api from '../../api';
 
 
 export default function Login(){
+  const history = useHistory();
 
   const request = {
     "Firebasetoken": "your-firebase-auth-credential-token"
@@ -48,21 +54,49 @@ if (ui.isPendingRedirect()) {
 
   firebase.auth().onAuthStateChanged(user => {
 
-    user.getIdToken().then(function(accessToken) {
-      // api.firebaseLogin(accessToken);
-    })   
+    // user.getIdToken().then(function(accessToken) {
+      
+    // })   
     
+  });
+
+
+  firebase.auth().signOut().then(function() {
+    // Sign-out successful.
+  }, function(error) {
+    // An error happened.
   });
 
   var uiConfig = {
     callbacks: {
       signInSuccessWithAuthResult: function(authResult, redirectUrl) {
-        authResult.user.getIdToken().then(function(accessToken) {
-            console.log(accessToken)
-         // api.firebaseLogin(accessToken);
-          
-        })
-        
+        console.log(authResult)
+          // authResult.user.getIdToken().then(function(accessToken) {
+
+          //   const firebaseToken = {
+          //     Firebasetoken : accessToken
+          //   }
+          //   if(authResult.additionalUserInfo.isNewUser == true){
+          //     api.firebaseRegister(firebaseToken).then(response => {
+          //     }
+             
+          //   );
+
+          //   }else{
+          //   api.firebaseLogin(firebaseToken).then(response => {
+          //     const options = {Path: "/",Expires: response.data.expires_at, Secure: true};
+          //     CookieService.set('access_token', response.data.access_token, options);
+  
+          //     history.push('/')
+          //     window.location.reload();
+          //   }
+           
+          // );
+          //   }
+            
+          // })
+      
+        // don't redirect automatically
         return false;
         
       },
@@ -86,14 +120,18 @@ if (ui.isPendingRedirect()) {
   };
 
   ui.start('#firebaseui-auth-container', uiConfig);
-
+ 
 
   return(
-      <>
-        <h1>Welcome to My Awesome App</h1>
+    <div  id="signin" className="logincontainer">
+     <br/>
+        <div className="templatemo-content-widget templatemo-login-widget white-bg">
+        <a onClick={() => displayFormSignIn()} ><i className="fa fa-times"></i></a>
         <div id="firebaseui-auth-container"></div>
         <div id="loader">Loading...</div>
-      </>
+        
+        </div>
+      </div>
   )
     
 }

@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 class PharmacyController extends Controller
 {
     public function getAllMedicine(){
-        $medicine = Medicine::latest()->simplePaginate(2);
+        $medicine = Medicine::latest()->simplePaginate();
         return response()->json($medicine,200);
     }
 
@@ -28,9 +28,7 @@ class PharmacyController extends Controller
             $medicine->medicine;
         }
 
-
-        //  $data = $this->paginate($medicine);
-        // return response()->json($data,200);
+        
 
         return response()->json($detail,200);
     }
@@ -98,82 +96,64 @@ class PharmacyController extends Controller
 
 
     public function getOrderMedicineByNameAsc(){
-        
         $pharmacy = Auth::user();
-        $medicine = $pharmacy->medicine->sortByDesc('name')->flatten();//lezem tkun sort by
+        $detail = $pharmacy->detail;
 
-        $i=0;
-         foreach($medicine as $detailMedicine){
+        foreach($detail as $medicine){
+            $medicine->medicine;
+        }
 
-            $detail = $detailMedicine->detail;
-            foreach($detail as $price){
-                $medicine[$i]->price = $price->price;
-            }
-             $i++;
-         }
 
-        return response()->json($medicine,200);
+        $detail =  $detail->sortBy('name')->flatten();
+
+        return response()->json($detail,200);
     }
 
 
     public function getOrderMedicineByNameDesc(){
         
         $pharmacy = Auth::user();
-        $medicine = $pharmacy->medicine->sortBy('name')->flatten();
+        $detail = $pharmacy->detail;
 
-        $i=0;
-         foreach($medicine as $detailMedicine){
+        foreach($detail as $medicine){
+            $detail->medicine = $medicine->medicine;
+        }
 
-            $detail = $detailMedicine->detail;
-            foreach($detail as $price){
-                $medicine[$i]->price = $price->price;
-            }
-             $i++;
-         }
+        $detail->medicine = $detail->medicine->orderBy('name','asc')->get();
 
-        return response()->json($medicine,200);
+        return response()->json($detail,200);
     }
 
 
 
     public function getOrderMedicineByPriceAsc(){
-        
         $pharmacy = Auth::user();
-        $medicine = $pharmacy->medicine;
+        $detail = $pharmacy->detail;
 
-        $i=0;
-         foreach($medicine as $detailMedicine){
+        foreach($detail as $medicine){
+            $medicine->medicine;
+        }
 
-            $detail = $detailMedicine->detail;
-            foreach($detail as $price){
-                $medicine[$i]->price = $price->price;
-            }
-             $i++;
-         }
 
-         $medicine = $medicine->sortBy('price')->flatten();
+        $detail =  $detail->sortBy('price')->flatten();
 
-        return response()->json($medicine,200);
+        return response()->json($detail,200);
     }
 
 
     public function getOrderMedicineByPriceDesc(){
         
         $pharmacy = Auth::user();
-        $medicine = $pharmacy->medicine;
+        $detail = $pharmacy->detail;
+
+        foreach($detail as $medicine){
+            $medicine->medicine;
+        }
 
 
-        $i=0;
-         foreach($medicine as $detailMedicine){
+        $detail =  $detail->sortByDesc('price')->flatten();
 
-            $detail = $detailMedicine->detail;
-            foreach($detail as $price){
-                $medicine[$i]->price = $price->price;
-            }
-             $i++;
-         }
-
-         $medicine = $medicine->sortByDesc('price')->flatten();
+        return response()->json($detail,200);
          
 
         return response()->json($medicine,200);

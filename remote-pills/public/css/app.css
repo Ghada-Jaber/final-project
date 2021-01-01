@@ -271,6 +271,10 @@ h3{
 	padding-left:25px;
 }
 
+.btn-danger{
+	background-color: #D7425C !important;
+}
+
 .search:after {
 	color:white;
 	font-family: 'FontAwesome' !important;
