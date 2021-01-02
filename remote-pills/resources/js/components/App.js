@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserRouter, Redirect, Route, Switch, useHistory} from 'react-router-dom';
-//import Login from './Login';
+
 import Home from './Home';
 
 import ManageDoctor from './Admin/ManageDoctor';
@@ -40,7 +40,7 @@ import Profile from './Profile';
 import Chat from './Chat';
 
 
-import Login from './firebase/Login';
+// import notification from './notification';
 
 // import SignIn from './auth/SignIn';
 // import SignUp from './auth/SignUp';
@@ -53,8 +53,18 @@ function App(){
     const [role, setRole] = useState('');
 
     useEffect(() => {
+  
+    
+   
+
         details();
      },[]);
+
+
+     
+
+
+    
 
     function details(){
         api.details().then(response => {
@@ -153,7 +163,7 @@ function App(){
 
 
           <Route exact path='/chat' component={Chat} />
-          <Route exact path='/login' component={Login} />
+          {/* <Route exact path='/notification' component={notification} /> */}
 
 
           <Route exact path='/profile'>

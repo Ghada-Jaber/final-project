@@ -6,6 +6,17 @@ import ForgetPassword from '../auth/ForgetPassword';
 import api from '../../api';
 import CookieService from '../../Service/CookieService';
 import logo from '../../../images/logo.png';
+
+
+
+
+import $ from 'jquery';
+
+
+import firebase from 'firebase';
+import config from '../firebase/config';
+
+
 // import no from '../../../../storage/app/uploads/userimage/NoImage.png';
 // import styles from './../../../css/templatemo-style.css';
 // import s2 from './../../../css/font-awesome.min.css';
@@ -13,7 +24,6 @@ import logo from '../../../images/logo.png';
 // const cx = classNames.bind(styles);
 //<div className={ cx('widget-item-container') }>
 export default function Header(props){
-
   const cookie = CookieService.get('access_token');
   const [page, setCurrentPage] = useState('');
   const history = useHistory();
@@ -46,10 +56,79 @@ export default function Header(props){
     {
       setGreeting("Good Evening"); 
     }
+
+    const script = document.createElement("script");
+    script.src = "https://www.gstatic.com/firebasejs/7.14.6/firebase-app.js";
+    script.async = true;
+
+    const boot = document.createElement("script");
+    boot.src = "https://www.gstatic.com/firebasejs/7.14.6/firebase-messaging.js";
+
+    document.body.appendChild(script);
+    document.body.appendChild(boot);
+
+    if (!firebase.apps.length) {
+      firebase.initializeApp(config);
+  }else {
+    firebase.app(); // if already initialized
+  }
+    const messaging = firebase.messaging();
+    messaging.usePublicVapidKey("BGvosei8DMRjMBui54X_u43QtHf4k11Ia30F-O9coBaBX2NSgw5cug0DrAP695hLfArJwPpQ6gMRpGLuR8DT6ME");
+    messaging.requestPermission()
+    .then(function(){
+       
+        return messaging.getToken();
+    })
+    .then(token =>{
+      storeNotification(token);
+    });
+
+    messaging.onMessage((payload) => {
+      console.log('Message received. ', payload);
+      play(payload.notification);
+      var notify_input = document.getElementById('notification_count');
+       var notify_count = parseInt(notify_input.innerHTML);
+       notify_count = notify_count +1;
+       notify_input.innerHTML = notify_count;
+       var noteTitle = payload.notification.title;
+       var noteData = JSON.parse(payload.data.fcmapp);
+        var ul = document.getElementById("notification_list");
+        var li = `
+        <a uid="${noteData.id}" 
+        href="jaavascript:;" class="dropdown-item text-white">
+        <span>${noteData.message}</span> 
+        <sub>${noteData.created_at}</sub>
+        </a>
+        `;
+       $("#notification_list").prepend(li);
+      });
     
     details();
 
  },[]);
+
+ function play(n) {
+  options = {
+  'body' : n.body,
+  'icon' : n.icon,
+  'silent' : 'false',
+  'sound' : 'inflicted.ogg'
+  }
+  var notification = new Notification(n.title, options);
+  }
+
+  function storeNotification(token){
+    const data ={
+      fcm_token: token,
+      
+      _token:'{{csrf_token()}}'
+   }
+   api.sendNotification(data).then(response => {
+      console.log(response.data)
+    }).catch(error =>{
+        console.log(error)
+    })
+   }
 
 
  function details(){
@@ -73,7 +152,14 @@ export default function Header(props){
 
 function handleLogout() {
   api.logout().then((response) => {
-      CookieService.remove('access_token')
+      CookieService.remove('access_token');
+      firebase.auth().signOut()
+        .then(function() {
+            // Sign-out successful.
+        }, function(error) {
+               // An error happened. 
+        });
+
       history.push('/');
       window.location.reload();
   });
@@ -236,24 +322,23 @@ function auth(){
 
 <a   href="/chat"
   className="icons-btn" style={{ position: 'relative', marginRight: '20px', marginTop: '10px' }}>
-                        <span className="fa fa-comments fa-fw"></span>
-                        <span className="number">2</span>
+                        <i className="fa fa-comments fa-fw"></i><sup className="badge badge-success notification-count">2</sup>
                     </a>
 </li>
     <li className="nav-item dropdown">
 
 
                     <a id="navbarDropdown" className="nav-link dropdown-toggle"
-                    role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+                    role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
                     className="icons-btn" style={{ position: 'relative', marginRight: '20px', marginTop: '10px' }}>
-                        <span className="fa fa-bell fa-fw"></span>
-                        <span className="number">2</span>
+                        <i className="fa fa-bell fa-fw"></i>
+                        <sup className="badge badge-primary notification-count" id="notification_count">0</sup>
                     </a>
-                    <div className="dropdown-menu dropdown-menu-right"
-                     style={{ fontSize:'17px',paddingLeft:'5px' }}
-                     aria-labelledby="navbarDropdown">
-                         <a className="dropdown-item" >
-                         Notification</a><br/>
+                    <div className="dropdown-menu dropdown-menu-right bg-dark"  aria-labelledby="navbarDropdown"
+                     style={{ fontSize:'17px',paddingLeft:'5px',  overflowY: 'auto', minHeight:'200px' }}
+                     aria-labelledby="navbarDropdown"  id="notification_list">
+
+    <br/>
                     </div>
                 </li>
     </ul>

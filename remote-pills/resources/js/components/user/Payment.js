@@ -21,7 +21,6 @@ export  default function Payment(){
 
     useEffect(() => {
      api.getCartMedicine().then(response => {
-       console.log(response.data)
       setCart(response.data)
     
   })

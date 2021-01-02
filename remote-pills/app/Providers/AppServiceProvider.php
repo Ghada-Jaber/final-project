@@ -7,6 +7,9 @@ use Illuminate\Support\ServiceProvider;
 use \App\Role\RoleChecker;
 use \App\Http\Middleware\CheckUserRole;
 
+use App\Models\Buy;
+use App\Observers\BuyObserver;
+
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -31,6 +34,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        Buy::observe(BuyObserver::class);
     }
 }

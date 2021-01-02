@@ -4,6 +4,16 @@ import api from '../../api';
 import CookieService from '../../Service/CookieService';
 import logo from '../../../images/logo.png';
 
+
+import firebase from "firebase/app";
+
+// Add the Firebase services that you want to use
+import "firebase/auth";
+import "firebase/firestore";
+
+import "firebaseui";
+import config from '../firebase/config';
+
 export  default function SignIn(){
 	const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -16,10 +26,10 @@ export  default function SignIn(){
     }
 
     function renderErrorFor (field) {
-        if (hasErrorFor(field)) {
+        if (hasErrorFor('message')) {
             return (
                 <span style={{ color: '#D7425C' }}>
-                    <strong>{errors[field][0]}</strong>
+                    <strong>{field}</strong>
                 </span>
             )
         }
@@ -43,30 +53,67 @@ export  default function SignIn(){
 
     function handleLogin (event) {
         event.preventDefault();
-        const login = {
-            email: email,
-            password: password,
-            remember_token: remember
+     
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(config);
+        }else {
+        firebase.app(); // if already initialized
         }
-        api.checkLogin(login)
-            .then(response => {
 
-                console.log(response);
+        firebase.auth().signInWithEmailAndPassword(email, password)
+        .then((auth) => {
+            auth.user.getIdToken().then(function(accessToken) {
+            if(auth.additionalUserInfo.isNewUser == false){
 
-                const options = {Path: "/",Expires: response.data.expires, Secure: true};
-                CookieService.set('access_token', response.data.access, options);
-
-                history.push('/')
-                window.location.reload();
-            })
-            .catch(error => {
-                console.log(error.response.data.errors);
-                if(email=='' || password==''){
-                setErrors(error.response.data.errors)
-                }else{
-                    alert('incorrect username or password');
+                  const login = {
+                    Firebasetoken : accessToken,
+                    email: email,
+                    password: password,
+                    remember_token: remember
                 }
-            })
+            api.firebaseLogin(login).then(response => {
+                const options = {Path: "/",Expires: response.data.expires_at, Secure: true};
+                CookieService.set('access_token', response.data.access_token, options);
+    
+                history.push('/')
+               
+                window.location.reload();
+              }
+            );
+
+            }     
+          })
+        }).catch((error) => {
+            if(email =='' || password==''){
+                setErrors(error)
+            }else{
+                alert('incorrect username or password');
+            }
+            
+            //console.log(error.message)
+            
+        })
+
+        // api.checkLogin(login)
+        //     .then(response => {
+
+        //         console.log(response);
+
+        //         const options = {Path: "/",Expires: response.data.expires, Secure: true};
+        //         CookieService.set('access_token', response.data.access, options);
+
+        //         history.push('/')
+        //         window.location.reload();
+        //     })
+        //     .catch(error => {
+        //         console.log(error.response.data.errors);
+        //         if(email=='' || password==''){
+        //         setErrors(error.response.data.errors)
+        //         }else{
+        //             alert('incorrect username or password');
+        //         }
+        //     })
     }
 
     function displayFormSignIn(){
@@ -82,7 +129,7 @@ export  default function SignIn(){
 	
 	        <form  className="templatemo-login-form" onSubmit={handleLogin}>
             
-	        	<div  className={`form-group ${hasErrorFor('email') ? 'has-error' : ''}`} >
+	        	<div  className={`form-group ${hasErrorFor('message') ? 'has-error' : ''}`} >
 	        		<div className="input-group">
 		        		<div className="input-group-addon"><i className="fa fa-user fa-fw"></i></div>	        		
 		              	<input type="email" className="form-control" 
@@ -90,16 +137,16 @@ export  default function SignIn(){
 						   value={email} onChange={handleEmailChange} />
                                    
 		          	</div>	
-                      {renderErrorFor('email')}     
+                      {renderErrorFor('email field is required')}     
 	        	</div>
-	        	<div className={`form-group ${hasErrorFor('password') ? 'has-error' : ''}`} >
+	        	<div className={`form-group ${hasErrorFor('message') ? 'has-error' : ''}`} >
 	        		<div className="input-group">
 		        		<div className="input-group-addon"><i className="fa fa-key fa-fw"></i></div>	        		
 		              	<input type="password" className="form-control" name="password"
 						   placeholder="Passwrod" value={password}
                                 onChange={handlePasswordChange} />   
 		          	</div>	
-                      {renderErrorFor('password')}      
+                      {renderErrorFor('password field is required')}      
 	        	</div>	          	
 				<div className="form-group">
 				    <div className="checkbox squaredTwo">

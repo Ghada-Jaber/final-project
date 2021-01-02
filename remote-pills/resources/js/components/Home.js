@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react';
 import {Link, useHistory} from 'react-router-dom';
 import api from '../api';
-import CookieService from '../Service/CookieService';
 import Header from './layouts/Header';
 import Footer from './layouts/Footer';
+
 
 export  default function Home(){
 
@@ -26,6 +26,9 @@ export  default function Home(){
 
 
  },[]);
+
+
+
    
 
     return(
@@ -66,7 +69,8 @@ export  default function Home(){
       <span className="sr-only">Next</span>
     </a>
   </div>
-</div>	 
+</div>	
+
               
               {/* <div className="panel panel-default templatemo-content-widget  no-padding templatemo-overflow-hidden">
                <div className="panel-heading templatemo-position-relative">

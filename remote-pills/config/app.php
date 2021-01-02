@@ -162,6 +162,8 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Kreait\Laravel\Firebase\ServiceProvider::class,
+
+        App\Providers\ViewServiceProvider::class,
         /*
          * Package Service Providers...
          */

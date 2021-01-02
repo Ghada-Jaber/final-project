@@ -154,5 +154,6 @@ export default{
     axios.get(`${BASE_URL}/user/prescription/${id}`, token),
 
 
-   
+    sendNotification: (data)=>
+    axios.post(`${BASE_URL}/save_fcm_token`, data, token),
 }

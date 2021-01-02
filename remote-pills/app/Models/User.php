@@ -23,7 +23,9 @@ class User extends Authenticatable
         'password',
         'image',
         'birthday',
-        'street_id'
+        'street_id',
+        'FirebaseUID',
+        'fcm_token'
     ];
 
     /**

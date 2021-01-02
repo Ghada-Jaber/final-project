@@ -4,6 +4,16 @@ import api from './../../api';
 import CookieService from '../../Service/CookieService';
 
 
+import firebase from "firebase/app";
+
+// Add the Firebase services that you want to use
+import "firebase/auth";
+import "firebase/firestore";
+
+import "firebaseui";
+import config from '../firebase/config';
+
+
 export  default function SignUp(props){
 
 	const [country, setCountry] = useState([]);
@@ -176,40 +186,98 @@ export  default function SignUp(props){
 	
 
 	function handleCreateNewUser (event) {
-        event.preventDefault();
-        const fd = new FormData();
-        fd.append('image', img);
-        fd.append('name', name);
-        fd.append('email', email);
-        fd.append('password', password);
-		fd.append('confirm_password', confirm_password);
-		fd.append('birthday', birthday);
-		fd.append('street_id', streetId);
-		fd.append('role', props.props);
+		event.preventDefault();
+
+
+		if (!firebase.apps.length) {
+            firebase.initializeApp(config);
+        }else {
+        firebase.app(); // if already initialized
+        }
 		
-		//console.log(name+" "+email+" "+password+" "+confirm_password+" "+birthday+" "+streetId+" "+img);
+		firebase.auth().createUserWithEmailAndPassword(email, password)
+		.then((auth) => {
 
-        api.register(fd, {headers:{'Accept': "application/json",  'Content-Type': "multipart/form-data"}})
-            .then(response => {
-				if(props.props=='ROLE_NORMALUSER'){
-                const options = {Path: "/",Expires: response.data.expires, Secure: true};
-                CookieService.set('access_token', response.data.access, options);
-				history.push('/home');
-				}
-				if(props.props=='ROLE_PHARMACY'){
-					history.push('/managePharmacy');
-				}
+			auth.user.getIdToken().then(function(accessToken) {
 
-				if(props.props=='ROLE_DOCTOR'){
-					history.push('/manageDoctor');
-				}
+					if(auth.additionalUserInfo.isNewUser == true){
+					const fd = new FormData();
+					fd.append('Firebasetoken', accessToken);
+					fd.append('image', img);
+					fd.append('name', name);
+					fd.append('email', email);
+					fd.append('password', password);
+					fd.append('confirm_password', confirm_password);
+					fd.append('birthday', birthday);
+					fd.append('street_id', streetId);
+					fd.append('role', props.props);
 
-				window.location.reload();
-				console.log('ehre')
-            }) .catch(error => {
-				console.log(error)
-                setErrors(error.response.data.errors);
-            })
+
+					api.register(fd, {headers:{'Accept': "application/json",  'Content-Type': "multipart/form-data"}})
+					.then(response => {
+						if(props.props=='ROLE_NORMALUSER'){
+						const options = {Path: "/",Expires: response.data.expires, Secure: true};
+						CookieService.set('access_token', response.data.access, options);
+						history.push('/home');
+						}
+						if(props.props=='ROLE_PHARMACY'){
+							history.push('/managePharmacy');
+						}
+
+						if(props.props=='ROLE_DOCTOR'){
+							history.push('/manageDoctor');
+						}
+
+						window.location.reload();
+					}) .catch(error => {
+						console.log(error)
+						setErrors(error.response.data.errors);
+					})
+
+					}
+				  
+			})
+		})
+		.catch((error) => {
+			var errorCode = error.code;
+			var errorMessage = error.message;
+			// ..
+		});
+
+
+        // const fd = new FormData();
+        // fd.append('image', img);
+        // fd.append('name', name);
+        // fd.append('email', email);
+        // fd.append('password', password);
+		// fd.append('confirm_password', confirm_password);
+		// fd.append('birthday', birthday);
+		// fd.append('street_id', streetId);
+		// fd.append('role', props.props);
+		
+		// //console.log(name+" "+email+" "+password+" "+confirm_password+" "+birthday+" "+streetId+" "+img);
+
+        // api.register(fd, {headers:{'Accept': "application/json",  'Content-Type': "multipart/form-data"}})
+        //     .then(response => {
+		// 		if(props.props=='ROLE_NORMALUSER'){
+        //         const options = {Path: "/",Expires: response.data.expires, Secure: true};
+        //         CookieService.set('access_token', response.data.access, options);
+		// 		history.push('/home');
+		// 		}
+		// 		if(props.props=='ROLE_PHARMACY'){
+		// 			history.push('/managePharmacy');
+		// 		}
+
+		// 		if(props.props=='ROLE_DOCTOR'){
+		// 			history.push('/manageDoctor');
+		// 		}
+
+		// 		window.location.reload();
+		// 		console.log('ehre')
+        //     }) .catch(error => {
+		// 		console.log(error)
+        //         setErrors(error.response.data.errors);
+        //     })
 	}
 	
 

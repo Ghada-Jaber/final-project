@@ -10,7 +10,6 @@ export  default function Cart(){
 
   useEffect(() => {
    api.getCartMedicine().then(response => {
-     console.log(response.data)
     setCart(response.data)
   
 })

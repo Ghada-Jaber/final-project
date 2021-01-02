@@ -100,7 +100,6 @@ function handleReservationChange(event){
     // const response = axios.post(newUrl);
   // Progress.show();
     api.getAllMedicineAvailable(id).then(response => {
-      console.log(response.data)
       setMedicine(response.data);
       
       // setMedicine(response.data.data);
@@ -342,7 +341,6 @@ function handleCityChange(event){
     
           setStreetId(response.data[0].id)
           setStreet(response.data)
-          console.log(response.data[0].id)
           fetchMedicine(response.data[0].id);
       }) .catch(error => {
           setStreet([])
