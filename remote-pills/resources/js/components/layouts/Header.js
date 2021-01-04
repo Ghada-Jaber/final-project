@@ -33,7 +33,13 @@ export default function Header(props){
     const [greeting, setGreeting] = useState('');
 
 
+    const [uid, setUID] = useState('');
+
+
     var roles = 'ROLE_NORMALUSER';
+
+
+  
 
 
     // const test = require('../../../../storage/app/uploads/userimage/NoImage.png');
@@ -67,43 +73,10 @@ export default function Header(props){
     document.body.appendChild(script);
     document.body.appendChild(boot);
 
-    if (!firebase.apps.length) {
-      firebase.initializeApp(config);
-  }else {
-    firebase.app(); // if already initialized
-  }
-    const messaging = firebase.messaging();
-    messaging.usePublicVapidKey("BGvosei8DMRjMBui54X_u43QtHf4k11Ia30F-O9coBaBX2NSgw5cug0DrAP695hLfArJwPpQ6gMRpGLuR8DT6ME");
-    messaging.requestPermission()
-    .then(function(){
-       
-        return messaging.getToken();
-    })
-    .then(token =>{
-      storeNotification(token);
-    });
-
-    messaging.onMessage((payload) => {
-      console.log('Message received. ', payload);
-      play(payload.notification);
-      var notify_input = document.getElementById('notification_count');
-       var notify_count = parseInt(notify_input.innerHTML);
-       notify_count = notify_count +1;
-       notify_input.innerHTML = notify_count;
-       var noteTitle = payload.notification.title;
-       var noteData = JSON.parse(payload.data.fcmapp);
-        var ul = document.getElementById("notification_list");
-        var li = `
-        <a uid="${noteData.id}" 
-        href="jaavascript:;" class="dropdown-item text-white">
-        <span>${noteData.message}</span> 
-        <sub>${noteData.created_at}</sub>
-        </a>
-        `;
-       $("#notification_list").prepend(li);
-      });
     
     details();
+
+
 
  },[]);
 
@@ -130,15 +103,53 @@ export default function Header(props){
     })
    }
 
+   
 
+   const db = firebase.firestore();
  function details(){
   api.details().then(response => {
       setName(response.data.name)
       setImage(response.data.image)
       setRole(response.data.roles[0])
-  
+      setUID(response.data.FirebaseUID)
 
-      
+
+      if (!firebase.apps.length) {
+        firebase.initializeApp(config);
+    }else {
+      firebase.app(); // if already initialized
+    }
+      const messaging = firebase.messaging();
+      messaging.usePublicVapidKey("BGvosei8DMRjMBui54X_u43QtHf4k11Ia30F-O9coBaBX2NSgw5cug0DrAP695hLfArJwPpQ6gMRpGLuR8DT6ME");
+      messaging.requestPermission()
+      .then(function(){
+         
+          return messaging.getToken();
+      })
+      .then(token =>{
+       
+                db.settings({
+                  timestampsInSnapshots: true
+                });
+                const userRef = db.collection('notifications').doc(token);
+                userRef.set({
+                  userToken: token,
+                  userID: response.data.FirebaseUID,
+                });
+                
+
+          
+
+                  const query = db.collection('notifications').where('userID', '==', response.data.FirebaseUID).get();
+                  query.then(snapshot => {
+                      snapshot.docs.forEach(doc => {
+                          console.log(doc.data());
+                      })
+                  })
+             
+
+                
+      }); 
   }).catch(error => {
     if(error.response.status == 401) {
       history.push('/')
@@ -147,12 +158,19 @@ export default function Header(props){
  
 
   })
+
+
+
 }
+
+
+
+
 
 
 function handleLogout() {
   api.logout().then((response) => {
-      CookieService.remove('access_token');
+      CookieService.remove('access_token', {path: '/'});
       firebase.auth().signOut()
         .then(function() {
             // Sign-out successful.
@@ -336,7 +354,9 @@ function auth(){
                     </a>
                     <div className="dropdown-menu dropdown-menu-right bg-dark"  aria-labelledby="navbarDropdown"
                      style={{ fontSize:'17px',paddingLeft:'5px',  overflowY: 'auto', minHeight:'200px' }}
-                     aria-labelledby="navbarDropdown"  id="notification_list">
+                     aria-labelledby="navbarDropdown"  >
+                     
+
 
     <br/>
                     </div>

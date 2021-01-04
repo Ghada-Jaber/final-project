@@ -40,6 +40,10 @@ import Profile from './Profile';
 import Chat from './Chat';
 
 
+
+import firebaseChat from './firebase/firebaseChat';
+
+
 // import notification from './notification';
 
 // import SignIn from './auth/SignIn';
@@ -68,6 +72,7 @@ function App(){
 
     function details(){
         api.details().then(response => {
+        
             setDetail(response.data);
             setRole(response.data.roles[0]);
 
@@ -163,6 +168,9 @@ function App(){
 
 
           <Route exact path='/chat' component={Chat} />
+
+
+          <Route exact path='/firebaseChat' component={firebaseChat} />
           {/* <Route exact path='/notification' component={notification} /> */}
 
 
