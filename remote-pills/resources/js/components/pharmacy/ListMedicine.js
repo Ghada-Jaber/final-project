@@ -5,17 +5,10 @@ import api from '../../api';
 import Header from '../layouts/Header';
 import Footer from '../layouts/Footer';
 import ReactDOM from 'react-dom';
-// import ReactPaginate from 'react-paginate';
-// import Progress from 'react-progress-2';
-// import 'react-progress-2/main.css';
 
 export  default function ListMedicine(){
 
   const [medicine, setMedicine] = useState([]);
-
-  // const [pageCount, setPageCount] = useState(1);
-
-  // const [currentPage, setCurrentPage] = useState();
 
       
   const history = useHistory();
@@ -28,14 +21,6 @@ export  default function ListMedicine(){
  
     
  },[]);
-
-
-//  useEffect(() => {
-
-// console.log(currentPage)
-  
-// },[currentPage]);
-
 
 
 
@@ -51,50 +36,16 @@ export  default function ListMedicine(){
  
 
  function fetchMedicine(){
-    // const newUrl =
-    //   window.location.protocol +
-    //   '//' +
-    //   window.location.host +
-    //   window.location.pathname +
-    //   '?page=' +
-    //   currentPage;
-    // window.history.pushState({ path: newUrl }, '', newUrl);
-
-    // const response = axios.post(newUrl);
-  // Progress.show();
     api.getMedicine().then(response => {
       console.log(response.data)
       setMedicine(response.data);
-     
-      // setMedicine(response.data.data);
-      // setCurrentPage(response.data.current_page);
-      // setPageCount(response.data.last_page);
-      
-      // window.scrollTo(0, 0);
-      // // Progress.hide();
   }) .catch(error => {
-    // Progress.hide();
     console.log(error)
-    //history.push('/');
   })
 
 }
 
 
-function getQueryStringValue(key) {
-  const value = decodeURIComponent(
-    window.location.search.replace(
-      new RegExp(
-        '^(?:.*[&\\?]' +
-          encodeURIComponent(key).replace(/[\.\+\*]/g, '\\$&') +
-          '(?:\\=([^&]*))?)?.*$',
-        'i'
-      ),
-      '$1'
-    )
-  );
-  return value ? value : null;
-}
 
 function handleReferenceChange(event){
   var reference = event.target.value;
@@ -138,7 +89,7 @@ function renderMedicine(){
   return medicine.map(medicine => {
       return(
         <a href={"/medicine/show/"+medicine.medicine.id} key={medicine.id}> 
-        <div className="colorhover templatemo-content-widget no-padding white-bg col-sm-6 col-lg-4 text-center item mb-4" >
+        <div className="colorhover test templatemo-content-widget no-padding white-bg col-sm-6 col-lg-4 text-center item mb-4" >
         <br/>
         <img src={medicine.medicine.image} width="350px" height="200px" alt="Image"/>
        

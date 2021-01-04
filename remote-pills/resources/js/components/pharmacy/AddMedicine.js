@@ -19,9 +19,11 @@ export  default function AddMedicine(props){
   const history = useHistory();
 
   useEffect(() => {
-    api.getAllMedicine().then(response => {
-        setMedicineId(response.data[0].id)
-        setMedicine(response.data);
+    var url= 'http://127.0.0.1:8000/api/pharmacy/medicine/allMedicine';
+    api.getAllMedicine(url).then(response => {
+      console.log(response.data.data)
+        setMedicineId(response.data.data[0].id)
+        setMedicine(response.data.data);
       })
 
   },[]);

@@ -79,16 +79,6 @@ function handleProfileChange (event) {
          <Header />
           <div className="templatemo-flex-row flex-content-row " style={{ marginTop:'100px' }}>
               <div className="col-1">				 
-              <div className="bg-light py-3">
-      <div className="container">
-        <div className="row">
-          <div className="col-md-12 mb-0">
-          <a href="/home">Home</a> 
-          <span className="mx-2 mb-0">/</span> 
-          <strong className="text-black">Store</strong></div>
-        </div>
-      </div>
-    </div>
     <div className="templatemo-flex-row flex-content-row">
     <div className="templatemo-content-widget  no-padding templatemo-overflow-hidden"
     style={{ width:'50%'}}>

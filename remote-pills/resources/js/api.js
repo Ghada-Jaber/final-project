@@ -70,8 +70,8 @@ export default{
     addSymptom: (symptom) =>
     axios.post(`${BASE_URL}/admin/symptom`, symptom, token),
     
-    getAllMedicine: ()=>
-    axios.get(`${BASE_URL}/pharmacy/medicine/allMedicine`, token),
+    getAllMedicine: (url)=>
+    axios.get(`${url}`, token),
 
     getUsers: (type)=>
     axios.get(`${BASE_URL}/admin/allUsers/${type}`, token),

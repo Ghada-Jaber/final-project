@@ -5,18 +5,24 @@ import Header from '../layouts/Header';
 import Footer from '../layouts/Footer';
 import AddMedicine from './AddMedicine';
 
-import $ from 'jquery';
-import { add } from 'lodash';
 
 
 export  default function ManageMedicine(){
   const [id, setId] = useState('');
   const [medicine, setMedicine] = useState([]);
 
+  
+
+
+  const[pages, setPages] = useState([]);
+
   useEffect(() => {
-    api.getAllMedicine().then(response => {
+    var url= 'http://127.0.0.1:8000/api/pharmacy/medicine/allMedicine';
+    api.getAllMedicine(url).then(response => {
       console.log(response.data)
       setMedicine(response.data.data);
+
+      setPages(response.data);
     })
  },[]);
 
@@ -120,7 +126,13 @@ for (i = 1; i < tr.length; i++) {
     }
 }
 
-  
+  function nextPage(url){
+    api.getAllMedicine(url).then(response => {
+      setMedicine(response.data.data);
+
+      setPages(response.data);
+    })
+  }
 
    function renderMedicine(){
     return medicine.map(medicine => {
@@ -174,6 +186,15 @@ for (i = 1; i < tr.length; i++) {
           )
         })
     }
+  
+ 
+
+
+
+
+
+
+
 
   
     return(
@@ -200,19 +221,28 @@ for (i = 1; i < tr.length; i++) {
 		              	<input type="text" className="form-control"
 						   placeholder="Search" 
                            onChange={filterFunction} 
-               />  
+               /> 
+                 
                </div>
                </div> 
+
+             
+             
                <div className="pagination-wrap" style={{ float:'right'}}>
             <ul className="pagination">
-              <li><a href="#">1</a></li>
-              <li><a href="#">2</a></li>
-              <li className="active"><a href="#">3 <span className="sr-only">(current)</span></a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">5</a></li>
-              <li>
-                <a href="#" aria-label="Next">
-                  <span aria-hidden="true"><i className="fa fa-play"></i></span>
+            <li className="wrapperdisabled">
+                <a 
+                onClick={() => nextPage(pages.prev_page_url)} 
+                className={pages.current_page == 1 ? 'disabled' : ''} aria-label="Next">
+                  <span aria-hidden="true"><i className="fa fa-backward"></i></span>
+                </a>
+              </li>
+              <li className="active"><a href="#">{pages.current_page}</a></li>
+              <li className="wrapperdisabled">
+                <a 
+                onClick={() => nextPage(pages.next_page_url)} 
+                className={pages.current_page == pages.last_page ? 'disabled' : ''} aria-label="Next">
+                  <span aria-hidden="true"><i className="fa fa-forward"></i></span>
                 </a>
               </li>
             </ul>

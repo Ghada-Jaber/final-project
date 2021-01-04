@@ -8,14 +8,35 @@ import CookieService from '../../Service/CookieService';
 import logo from '../../../images/logo.png';
 
 
+import { messaging } from "../firebase/init-fcm";
 
-
-import $ from 'jquery';
 
 
 import firebase from 'firebase';
 import config from '../firebase/config';
 
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(config);
+}else {
+firebase.app(); // if already initialized
+}
+
+if ("serviceWorker" in navigator) {
+navigator.serviceWorker
+  .register("./firebase-messaging-sw.js")
+  .then(function(registration) {
+    console.log("Registration successful, scope is:", registration.scope);
+  })
+  .catch(function(err) {
+    console.log("Service worker registration failed, error:", err);
+  });
+}
+
+const db = firebase.firestore();
+db.settings({
+ timestampsInSnapshots: true
+});
 
 // import no from '../../../../storage/app/uploads/userimage/NoImage.png';
 // import styles from './../../../css/templatemo-style.css';
@@ -105,7 +126,7 @@ export default function Header(props){
 
    
 
-   const db = firebase.firestore();
+
  function details(){
   api.details().then(response => {
       setName(response.data.name)
@@ -113,49 +134,36 @@ export default function Header(props){
       setRole(response.data.roles[0])
       setUID(response.data.FirebaseUID)
 
-
-      if (!firebase.apps.length) {
-        firebase.initializeApp(config);
-    }else {
-      firebase.app(); // if already initialized
-    }
-      const messaging = firebase.messaging();
-      messaging.usePublicVapidKey("BGvosei8DMRjMBui54X_u43QtHf4k11Ia30F-O9coBaBX2NSgw5cug0DrAP695hLfArJwPpQ6gMRpGLuR8DT6ME");
+      
       messaging.requestPermission()
       .then(function(){
-         
           return messaging.getToken();
       })
       .then(token =>{
-       
-                db.settings({
-                  timestampsInSnapshots: true
-                });
-                const userRef = db.collection('notifications').doc(token);
+                const userRef = db.collection('fcm_token').doc(token);
                 userRef.set({
                   userToken: token,
                   userID: response.data.FirebaseUID,
                 });
-                
+                         
+      }) .catch(err  => {
+      console.log("Unable to get permission to notify.", err);
+    }); 
 
-          
-
-                  const query = db.collection('notifications').where('userID', '==', response.data.FirebaseUID).get();
-                  query.then(snapshot => {
-                      snapshot.docs.forEach(doc => {
-                          console.log(doc.data());
-                      })
-                  })
-             
-
-                
-      }); 
+      navigator.serviceWorker.addEventListener("message", (message) => console.log(message));
   }).catch(error => {
     if(error.response.status == 401) {
       history.push('/')
   }
 
- 
+ messaging.send(message)
+ .then((response) => {
+   // Response is a message ID string.
+   console.log('Successfully sent message:', response);
+ })
+ .catch((error) => {
+   console.log('Error sending message:', error);
+ });
 
   })
 
@@ -302,6 +310,7 @@ function auth(){
   <ul className="nav navbar-nav navbar-right">
 
       <div className="panel-group" id="accordion">
+      
 			  <div className="panel panel-default  offset-0" style={{ padding: '5px'}} >
 
         {/* <img src={require(test)} width="50px" height="50px" className="img"/> &nbsp;          */}
@@ -312,6 +321,7 @@ function auth(){
 {/* <img src={require('../../../../storage/app/' + image)} width="50px" height="50px" className="img"/> &nbsp; */}
 {/* class="media-object img-circle templatemo-img-bordered" */}
 {greeting}
+
         <li className="nav-item dropdown">
                     <a id="navbarDropdown" className="nav-link dropdown-toggle"
                     role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -422,14 +432,12 @@ return(
                   <span className="icon-bar"></span>
                   <span className="icon-bar"></span>                        
                 </button>
-                    <h1>
+                    <h2>
                       <img src={logo} width="50" height="50" alt="" style={{ marginRight:'5px' }}/>
                       <b>
                         <font color="#2375b8">remote pills</font>
                       </b>
-                    </h1>
-                    <font color="white" style={{ position:'absolute' }} >with us you are always comfortable</font>
-                    <br/>
+                    </h2>
               </div>
               <div className="collapse navbar-collapse" id="myNavbar">
                
