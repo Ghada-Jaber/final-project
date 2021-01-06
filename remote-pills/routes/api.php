@@ -98,9 +98,8 @@ Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_PHA
 
     Route::get('/pharmacy/order', [PharmacyController::class, 'getPharmacyOrder']); 
 
-    
 
-    
+    Route::put('/pharmacy/customer/{customer}', [PharmacyController::class, 'showCustomer']);    
 
 });
 
@@ -131,21 +130,16 @@ Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_NOR
 
 
     Route::get('/user/prescription/{patient}', [UserController::class, 'showPrescription']);
-
-
-
-
-    
-    
-
-
-    
+  
 
 });
 
 
 Route::group(['middleware' => 'auth:api'], function () {
    
+    Route::get('/all/users', [UserController::class, 'getAllUsers']); 
+
+
     Route::put('/user/profile', [AuthenticationController::class, 'setProfile']);
 
   

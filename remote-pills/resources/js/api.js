@@ -156,4 +156,8 @@ export default{
 
     sendNotification: (data)=>
     axios.post(`${BASE_URL}/save_fcm_token`, data, token),
+
+
+    getusers: () =>
+    axios.get(`${BASE_URL}/all/users`, token),
 }

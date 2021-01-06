@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Medicine;
 use App\Models\Detail;
+use App\Models\Customer;
+
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -212,6 +214,13 @@ class PharmacyController extends Controller
     }
 
 
+    public function showCustomer(Customer $customer){
+
+        $customer->buy;
+
+
+        return response()->json($customer,200);
+    }
     
     
 }

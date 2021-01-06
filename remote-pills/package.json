@@ -36,7 +36,9 @@
         "google-maps-react": "^2.0.6",
         "react-firebase-hooks": "^2.2.0",
         "react-firebaseui": "^4.1.0",
+        "react-loading": "^2.0.3",
         "react-router-dom": "^5.2.0",
+        "react-toastify": "^6.2.0",
         "universal-cookie": "^4.0.4"
     }
 }

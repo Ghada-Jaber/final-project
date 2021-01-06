@@ -56,11 +56,16 @@ export default function Header(props){
 
     const [uid, setUID] = useState('');
 
+    const[notifications, setNotifications] = useState([]);
+
+
+  let counter = 0;
+
 
     var roles = 'ROLE_NORMALUSER';
 
 
-  
+    
 
 
     // const test = require('../../../../storage/app/uploads/userimage/NoImage.png');
@@ -97,34 +102,12 @@ export default function Header(props){
     
     details();
 
-
+   
 
  },[]);
 
- function play(n) {
-  options = {
-  'body' : n.body,
-  'icon' : n.icon,
-  'silent' : 'false',
-  'sound' : 'inflicted.ogg'
-  }
-  var notification = new Notification(n.title, options);
-  }
 
-  function storeNotification(token){
-    const data ={
-      fcm_token: token,
-      
-      _token:'{{csrf_token()}}'
-   }
-   api.sendNotification(data).then(response => {
-      console.log(response.data)
-    }).catch(error =>{
-        console.log(error)
-    })
-   }
 
-   
 
 
  function details(){
@@ -133,13 +116,14 @@ export default function Header(props){
       setImage(response.data.image)
       setRole(response.data.roles[0])
       setUID(response.data.FirebaseUID)
-
+      getNotifications(response.data.FirebaseUID, 1);
       
       messaging.requestPermission()
       .then(function(){
           return messaging.getToken();
       })
       .then(token =>{
+        console.log(token)
                 const userRef = db.collection('fcm_token').doc(token);
                 userRef.set({
                   userToken: token,
@@ -173,12 +157,36 @@ export default function Header(props){
 
 
 
+function  getNotifications(userUID, click){
+  const query = db.collection('notifications').get();
+  let count = 0;
+   let messages = [];
+   
+  query.then(snapshot =>{
+    
+    snapshot.docs.forEach(doc=>{
+      if(userUID == doc.data().toUserID){
+       count++;
+       messages.push(doc.data().message)
+      }
+    })
+
+    setNotifications({
+      count:count,
+      messages: messages
+    })
+  })
+
+  counter = count;
+}
 
 
 
 function handleLogout() {
   api.logout().then((response) => {
       CookieService.remove('access_token', {path: '/'});
+      messaging.deleteToken();
+
       firebase.auth().signOut()
         .then(function() {
             // Sign-out successful.
@@ -272,6 +280,15 @@ return(
 )
 }
 
+
+function showNotifications(){
+  return notifications.messages.map((message, i) =>{
+    return(
+      <li key={i}>{message}</li>
+    )
+  }) 
+}
+
 function user(){
 return(
   <ul className="nav navbar-nav" >
@@ -292,6 +309,11 @@ return(
 )
 }
 
+
+
+function seeNotification(){
+  counter = 0;
+}
 function auth(){
   return (
     <i> 
@@ -314,13 +336,13 @@ function auth(){
 			  <div className="panel panel-default  offset-0" style={{ padding: '5px'}} >
 
         {/* <img src={require(test)} width="50px" height="50px" className="img"/> &nbsp;          */}
-        
+        <div style={{ display:'flex'}}>
         
         <img src= {image} 
-        width="50px" height="50px" className="img"/>&nbsp;
+        width="50px" height="50px" className="img"/>&nbsp;&nbsp;
 {/* <img src={require('../../../../storage/app/' + image)} width="50px" height="50px" className="img"/> &nbsp; */}
 {/* class="media-object img-circle templatemo-img-bordered" */}
-{greeting}
+{greeting}&nbsp;&nbsp;
 
         <li className="nav-item dropdown">
                     <a id="navbarDropdown" className="nav-link dropdown-toggle"
@@ -336,40 +358,37 @@ function auth(){
                         <i className="fa fa-sign-out fa-fw"></i>Logout</a>
                     </div>
                 </li>
+                </div> 
 			  </div>
 			  </div>
   </ul>
 
   <ul className="nav navbar-nav navbar-right" >
-  {/* <a href="cart.html" class="icons-btn d-inline-block bag">
-              <span class="icon-shopping-bag"></span>
-              
-            </a> */}
+  <li className="dropdown">
 
-            <li >
-
-<a   href="/chat"
-  className="icons-btn" style={{ position: 'relative', marginRight: '20px', marginTop: '10px' }}>
-                        <i className="fa fa-comments fa-fw"></i><sup className="badge badge-success notification-count">2</sup>
+<a   href="/chat">
+  <i className="fa fa-comments fa-fw"></i>
+  <sup className="badge badge-success notification-count">2</sup>
                     </a>
 </li>
-    <li className="nav-item dropdown">
-
-
-                    <a id="navbarDropdown" className="nav-link dropdown-toggle"
-                    role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" 
-                    className="icons-btn" style={{ position: 'relative', marginRight: '20px', marginTop: '10px' }}>
+     
+    <li className="dropdown">
+                    <a id="navbarDropdown" className="dropdown-toggle"
+                    data-toggle="dropdown" onClick={() => seeNotification()}>
                         <i className="fa fa-bell fa-fw"></i>
-                        <sup className="badge badge-primary notification-count" id="notification_count">0</sup>
+                        <sup className="badge badge-primary notification-count" 
+                        >{notifications.count}</sup>
                     </a>
-                    <div className="dropdown-menu dropdown-menu-right bg-dark"  aria-labelledby="navbarDropdown"
-                     style={{ fontSize:'17px',paddingLeft:'5px',  overflowY: 'auto', minHeight:'200px' }}
-                     aria-labelledby="navbarDropdown"  >
-                     
+                    
+                    <ul className="dropdown-menu" 
+                     style={{  overflowY: 'auto', minHeight:'200px' }} >
+                     {notifications.length !=0 ? showNotifications()
+                    : <li>no notification</li>}
 
 
     <br/>
-                    </div>
+   
+                    </ul>
                 </li>
     </ul>
   </i>
@@ -382,18 +401,7 @@ return(
      <ul className="nav navbar-nav" >
                       <li className= {`${(page =='/home' || page =='/') ? 'active' : '' }`}>
                       <a href="/home" ><i className="fa fa-home fa-fw"></i>Home</a></li>
-                       {/* <li className="dropdown">
-                    <a className="dropdown-toggle" data-toggle="dropdown" href="#"><i className="fa fa-bar-chart fa-fw"></i>About<span className="caret"></span></a>
-                    <ul className="dropdown-menu">
-                    <li><a href="details.php">Details</a></li>
-                    <li><a href="transport.php">Transport</a></li>
-                      <li><a href="securite.php">Securite</a></li>
-                       <li><a href="support.php">Support</a></li>
-                        <li><a href="finance.php">Finance</a></li>
-                       
-                     
-                    </ul>
-                  </li> */}
+                
                    
                       {/* <li><a href="service"><i className="fa fa-server fa-fw"></i>Service</a></li>
                        <li className="dropdown">

@@ -41,10 +41,25 @@ export  default function Payment(){
     const [cvv, setCvv] = useState('');
     const [errors, setErrors] = useState([]);
 
+
+
+    const [pharmacyBuy, setBuy] = useState('');
+
+    const [UserBuy, setUserBuy] = useState('');
+
+    const [username, setUserName] = useState('');
+
+
+    
+
+    
+
     const history = useHistory();
     
 
     useEffect(() => {
+        details();
+
      api.getCartMedicine().then(response => {
       setCart(response.data)
     
@@ -52,6 +67,14 @@ export  default function Payment(){
   
       
    },[]);
+
+   function details(){
+    api.details().then(response => {
+        setUserName(reponse.data.name)
+    }).catch(error => {
+      //  history.push('/');
+    })
+  }
 
 
    function hasErrorFor (field) {
@@ -144,18 +167,15 @@ function handleChangeCvv(event){
     setCvv(event.target.value)
 }
 
- function notification(){
-
-    
-
+ function notification(fcm_token, buy_id, pharmacy_UID, user_UID, user_name){
    const notification = {
     "notification": {
-        "title": "Firebase",
-        "body": "Firebase is awesome",
-        "click_action": "http://localhost:3000/",
+        "title": "Buy",
+        "body": "A user did buy",
+        "click_action": "http://localhost:8000/",
         "icon": "http://url-to-an-icon/icon.png"
     },
-    "to":"dW518aUiY7GiACmbd9Qcb9:APA91bGgd2aGZL9m9GRcICDOTBXDisBIOYWQfEZswgBNWMNJ3UzRbVheUvL_1ELvo2KKLwNsCr-VzuNJ-XJFAtCTjNk7-HdEfTHYEN6o57NJEeiwRIk29lwFNRjCsub6bNzyzIaEJASj"
+    "to":fcm_token
 }
 const header = {
   headers: {
@@ -164,8 +184,20 @@ const header = {
 },
 }
     axios.post('https://fcm.googleapis.com/fcm/send',notification , header).then((response) => {
-      console.log(response)
+        let request_id_str = String(buy_id);
+        const notificationRef = db.collection('notifications').doc(request_id_str);
+
+        notificationRef.set({
+            title: 'Buy Request',
+            message: `${user_name} wants to buy a medication`,
+            toUserID: pharmacy_UID, // pharmacy
+            fromUserID: user_UID, //login user
+        });
+
   });
+
+
+
  }
 
 function handleAddPayment(event){
@@ -185,18 +217,24 @@ function handleAddPayment(event){
     api.addPayment(payment)
     .then(response => {
 
-        console.log(response.data);
-        window.location.reload();
 
-        // const query = db.collection('fcm_token').where('userID', '==', uid of pharmacy).get();
-                  
-        // let fcm_token;
+
+    
+        console.log(response.data.customer.pharmacy.FirebaseUID);
         
-        // query.then(snapshot => {
-        //         const data = snapshot.docs[0].data;
-        //     }) 
 
-        notification();
+        const query = db.collection('fcm_token').where('userID', '==', response.data.customer.pharmacy.FirebaseUID).get();
+                  
+        
+        query.then(snapshot => {
+            console.log(snapshot.docs[0].data().userToken)
+         notification(snapshot.docs[0].data().userToken, response.data.id, response.data.customer.pharmacy.FirebaseUID, response.data.customer.customer.FirebaseUID, response.data.customer.customer.name);
+            }) 
+
+
+           // window.location.reload();
+
+       
     })
     .catch(error => {
         console.log(error)

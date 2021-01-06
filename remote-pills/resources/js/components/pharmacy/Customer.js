@@ -5,26 +5,13 @@ import api from '../../api';
 import Header from '../layouts/Header';
 import Footer from '../layouts/Footer';
 import ReactDOM from 'react-dom';
-// import ReactPaginate from 'react-paginate';
-// import Progress from 'react-progress-2';
-// import 'react-progress-2/main.css';
 
 export  default function Customer(){
 
   const [order, setOrder] = useState([]);
 
   const [delivred, setDelivred] = useState(0);
-
-  // const [pageCount, setPageCount] = useState(1);
-
-  // const [currentPage, setCurrentPage] = useState();
-
-      
   const history = useHistory();
-
-
-
-  
 
   useEffect(() => {
 
@@ -34,70 +21,17 @@ export  default function Customer(){
  },[]);
 
 
-//  useEffect(() => {
-
-// console.log(currentPage)
-  
-// },[currentPage]);
-
-
-
-
-
- function  handlePageClick(data) {
-  const page = data.selected >= 0 ? data.selected + 1 : 0;
-
-  setCurrentPage(2)
-
-  fetchMedicine();
-}
-
- 
-
  function fetchMedicine(){
-    // const newUrl =
-    //   window.location.protocol +
-    //   '//' +
-    //   window.location.host +
-    //   window.location.pathname +
-    //   '?page=' +
-    //   currentPage;
-    // window.history.pushState({ path: newUrl }, '', newUrl);
-
-    // const response = axios.post(newUrl);
-  // Progress.show();
     api.getPharmacyOrder().then(response => {
         console.log(response.data)
       setOrder(response.data);
-      // setMedicine(response.data.data);
-      // setCurrentPage(response.data.current_page);
-      // setPageCount(response.data.last_page);
-      
-      // window.scrollTo(0, 0);
-      // // Progress.hide();
   }) .catch(error => {
-    // Progress.hide();
     console.log(error)
-    //history.push('/');
   })
 
 }
 
 
-function getQueryStringValue(key) {
-  const value = decodeURIComponent(
-    window.location.search.replace(
-      new RegExp(
-        '^(?:.*[&\\?]' +
-          encodeURIComponent(key).replace(/[\.\+\*]/g, '\\$&') +
-          '(?:\\=([^&]*))?)?.*$',
-        'i'
-      ),
-      '$1'
-    )
-  );
-  return value ? value : null;
-}
 
 function handleSelectChange(event){
   var select = event.target.value;

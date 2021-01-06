@@ -16,6 +16,14 @@ use Illuminate\Support\Facades\DB;
 class UserController extends Controller
 {
 
+    public function getAllUsers(){
+
+        $user = User::all();
+
+
+        return response()->json($user, 201);
+    }
+
     public function getAllMedicinePharmacy(){
 
 
@@ -200,8 +208,6 @@ class UserController extends Controller
             ]);
         }
 
-        
-
         $payment =  Payment::create([
             'type' => $request['type'],
             'price' => $request['price'],
@@ -214,9 +220,6 @@ class UserController extends Controller
         
 
         $buy = $request['buy'];
-
-        
-
         foreach($buy as $id){
             $cart = Cart::find($id);
 
@@ -229,12 +232,19 @@ class UserController extends Controller
             ]);
 
             $cart->delete();
+
+
+            $addPayment->customer->pharmacy;
+            $addPayment->customer->customer;
+
+
+          
         }
         
 
 
 
-        return response()->json(['add'=>'succcess add'], 201);
+        return response()->json($addPayment, 201);
     }
 
 

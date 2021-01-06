@@ -38,7 +38,7 @@ import Customer from './pharmacy/Customer';
 
 import Profile from './Profile';
 import Chat from './Chat';
-
+import Main from './Main/Main'
 
 
 import firebaseChat from './firebase/firebaseChat';
@@ -167,7 +167,7 @@ function App(){
           {/* <Route exact path='/signin' component={SignIn}/> */}
 
 
-          <Route exact path='/chat' component={Chat} />
+      
 
 
           <Route exact path='/firebaseChat' component={firebaseChat} />
@@ -178,6 +178,7 @@ function App(){
              <Profile props={detail}/>
           </Route>
 
+          <Route exact path='/chat' component={Main} />
 
           </Switch>
         )
