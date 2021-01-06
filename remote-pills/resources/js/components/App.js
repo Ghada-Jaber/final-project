@@ -180,6 +180,8 @@ function App(){
 
           <Route exact path='/chat' component={Main} />
 
+          <Route exact path='/chat2' component={Chat} />
+
           </Switch>
         )
       }

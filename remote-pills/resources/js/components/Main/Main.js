@@ -12,7 +12,7 @@ import Header from '../layouts/Header';
 
 export  default function Main(){
     const [currentPeerUser, setCurrentPeerUser] =  useState([]);
-    const [detail, setDetail] =  useState('');
+    const [detail, setDetail] =  useState([]);
     const [listUser, setListUser ]=   useState([])
 
     useEffect(() => {
@@ -81,13 +81,13 @@ export  default function Main(){
                     <div className="viewListUser"> 
                     {listUser.length > 0 ? renderListUser() : ''}
                     </div>
-                    
-                    <div className="viewBoard">
 
                     
                     
+                    <div className="viewBoard">
                         {currentPeerUser.length != 0 ? (
                             <ChatBoard
+                                currentUser={detail}
                                 currentPeerUser={currentPeerUser}
                             />
                         ) : (

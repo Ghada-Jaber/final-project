@@ -1,5 +1,5 @@
 import moment from 'moment'
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import ReactLoading from 'react-loading'
 import 'react-toastify/dist/ReactToastify.css'
 import images from '../Themes/Images'
@@ -37,6 +37,7 @@ db.settings({
  timestampsInSnapshots: true
 });
 
+
 export  default function ChatBoard(props){
 
 
@@ -54,44 +55,53 @@ export  default function ChatBoard(props){
     let currentPeerUser = props.currentPeerUser;
     
     
-    let removeListener = null;
+  
     let currentPhotoFile = null;
     let messagesEnd= null;
     let refInput = null;
     
+    const mounted = useRef(false);
 
     useEffect(() => {
+
         api.details().then(response => {
             setDetail(response.data)
 
             getListHistory(response.data.id)
         })
 
-        
 
-    },[]);
+          return () => {
+            removeListener();
+        }
 
-          
 
-    // componentDidUpdate() {
-    //     this.scrollToBottom()
-    // }
+    },[props.currentPeerUser]);
 
-  
 
-    // componentWillUnmount() {
-    //     if (this.removeListener) {
-    //         this.removeListener()
-    //     }
-    // }
+    useEffect(() => 
+    
+    {
+
+      
+        scrollToBottom()
+   
+    });
+
+
+    function removeListener(){
+        return null;
+    }
 
     function getListHistory(user_id) {
+        console.log('here')
         let listMessage = [];
         let groupChatId = "";
-        if (removeListener) {
+        if (removeListener !=null) {
+            console.log('remove listenr')
             removeListener()
         }
-       listMessage.length = 0
+
         if (
             hashString(user_id) <=
             hashString(currentPeerUser.id)
@@ -101,10 +111,8 @@ export  default function ChatBoard(props){
             groupChatId = `${currentPeerUser.id}-${user_id}`;
         }
 
-
         setGroupChatId(groupChatId);
 
-       
 
         removeListener = db.collection('messages')
             .doc(groupChatId)
@@ -112,18 +120,20 @@ export  default function ChatBoard(props){
             .onSnapshot(
                 snapshot => {
                     snapshot.docChanges().forEach(change => {
-                        console.log(change.doc.data())
+                        //console.log(change.doc.data())
                         if (change.type === 'added') {
                             listMessage.push(change.doc.data())
                         }
                     })
+                    //console.log(listMessage)
+                    setMesssages(listMessage);
                 
                 },
-                err => {
-                   
+                err => { 
                 }
             )
-setMesssages(listMessage);
+   
+
 
 
     }
@@ -295,6 +305,7 @@ setMesssages(listMessage);
                         alt="icon send"
                         onClick={() => onSendMessage(inputValue, 0)}
                     />
+                   
                     </a>
                 </div>
 
@@ -309,9 +320,15 @@ setMesssages(listMessage);
                     // Item right (my message)
                     if (message.type === 0) {
                         viewListMessage.push(
+                          
                             <div className="viewItemRight" key={message.timestamp}>
-                                <span className="textContentItem">{message.content}</span>
-                            </div>
+                             <p className="textContentItem">{message.content}</p>
+                            <time >
+                            {moment(Number(message.timestamp)).format('lll')}
+                            </time>
+                        </div>
+
+                            
                         )
                     } else if (message.type === 1) {
                         viewListMessage.push(
@@ -340,39 +357,32 @@ setMesssages(listMessage);
                         viewListMessage.push(
                             <div className="viewWrapItemLeft" key={message.timestamp}>
                                 <div className="viewWrapItemLeft3">
-                                    {isLastMessageLeft(index) ? (
-                                        <img
+                                <img
                                             src={currentPeerUser.image}
                                             alt="avatar"
                                             className="peerAvatarLeft"
                                         />
-                                    ) : (
-                                        <div className="viewPaddingLeft"/>
-                                    )}
                                     <div className="viewItemLeft">
-                                        <span className="textContentItem">{message.content}</span>
+                                        <p className="textContentItem">{message.content}</p>
+                                        <time >
+                                        {moment(Number(message.timestamp)).format('lll')}
+                                        </time>
+                                      
                                     </div>
+                                    
                                 </div>
-                                {isLastMessageLeft(index) ? (
-                                    <span className="textTimeLeft">
-                    {moment(Number(message.timestamp)).format('ll')}
-                  </span>
-                                ) : null}
+                               
                             </div>
                         )
                     } else if (message.type === 1) {
                         viewListMessage.push(
                             <div className="viewWrapItemLeft2" key={message.timestamp}>
                                 <div className="viewWrapItemLeft3">
-                                    {isLastMessageLeft(index) ? (
-                                        <img
+                                <img
                                             src={currentPeerUser.image}
                                             alt="avatar"
                                             className="peerAvatarLeft"
                                         />
-                                    ) : (
-                                        <div className="viewPaddingLeft"/>
-                                    )}
                                     <div className="viewItemLeft2">
                                         <img
                                             className="imgItemLeft"
@@ -381,26 +391,20 @@ setMesssages(listMessage);
                                         />
                                     </div>
                                 </div>
-                                {isLastMessageLeft(index) ? (
-                                    <span className="textTimeLeft">
-                    {moment(Number(messsage.timestamp)).format('ll')}
+                                <span className="textTimeLeft">
+                    
                   </span>
-                                ) : null}
                             </div>
                         )
                     } else {
                         viewListMessage.push(
                             <div className="viewWrapItemLeft2" key={message.timestamp}>
                                 <div className="viewWrapItemLeft3">
-                                    {isLastMessageLeft(index) ? (
-                                        <img
+                                <img
                                             src={currentPeerUser.image}
                                             alt="avatar"
                                             className="peerAvatarLeft"
                                         />
-                                    ) : (
-                                        <div className="viewPaddingLeft"/>
-                                    )}
                                     <div className="viewItemLeft3" key={message.timestamp}>
                                         <img
                                             className="imgItemLeft"
@@ -409,11 +413,9 @@ setMesssages(listMessage);
                                         />
                                     </div>
                                 </div>
-                                {isLastMessageLeft(index) ? (
-                                    <span className="textTimeLeft">
-                    {moment(Number(message.timestamp)).format('ll')}
+                                <span className="textTimeLeft">
+                    {moment(Number(message.timestamp)).format('lll')}
                   </span>
-                                ) : null}
                             </div>
                         )
                     }
@@ -502,6 +504,7 @@ setMesssages(listMessage);
     }
 
     function hashString(str){
+        str = String(str);
         let hash = 0
         for (let i = 0; i < str.length; i++) {
             hash += Math.pow(str.charCodeAt(i) * 31, str.length - i)
@@ -537,9 +540,9 @@ setMesssages(listMessage);
 
     function isLastMessageLeft(index) {
         if (
-            (index + 1 < listMessage.length &&
-                listMessage[index + 1].idFrom === detail.id) ||
-            index === listMessage.length - 1
+            (index + 1 < messages.length &&
+                messages[index + 1].idFrom === detail.id) ||
+            index === messages.length - 1
         ) {
             return true
         } else {
@@ -549,9 +552,9 @@ setMesssages(listMessage);
 
     function isLastMessageRight(index) {
         if (
-            (index + 1 < listMessage.length &&
-                listMessage[index + 1].idFrom !== detail.id) ||
-            index === listMessage.length - 1
+            (index + 1 < messages.length &&
+                messages[index + 1].idFrom !== detail.id) ||
+            index === messages.length - 1
         ) {
             return true
         } else {
