@@ -38,12 +38,15 @@ db.settings({
 });
 
 
+const storage = firebase.storage();
+
+
 export  default function ChatBoard(props){
 
 
 
     const [detail, setDetail] =  useState('');
-    const [listUser, setListUser] =   useState([]);
+
     const[isShowSticker, setIsShowSticker] = useState(false);
 
     const[inputValue, setInputValue] = useState('');
@@ -51,6 +54,7 @@ export  default function ChatBoard(props){
     const[groupChatId, setGroupChatId] = useState();
 
     const[messages, setMesssages] = useState([]);
+    const[loader,setLoader] = useState(true);
 
     let currentPeerUser = props.currentPeerUser;
     
@@ -60,7 +64,7 @@ export  default function ChatBoard(props){
     let messagesEnd= null;
     let refInput = null;
     
-    const mounted = useRef(false);
+
 
     useEffect(() => {
 
@@ -71,19 +75,19 @@ export  default function ChatBoard(props){
         })
 
 
-          return () => {
-            removeListener();
-        }
+        //   return () => {
+        //     removeListener();
+        // }
 
 
-    },[props.currentPeerUser]);
+    },[props.currentPeerUser, loader]);
 
 
     useEffect(() => 
     
     {
+       
 
-      
         scrollToBottom()
    
     });
@@ -94,13 +98,12 @@ export  default function ChatBoard(props){
     }
 
     function getListHistory(user_id) {
-        console.log('here')
         let listMessage = [];
         let groupChatId = "";
-        if (removeListener !=null) {
-            console.log('remove listenr')
-            removeListener()
-        }
+        // if (removeListener !=null) {
+        //     console.log('remove listenr')
+        //     removeListener()
+        // }
 
         if (
             hashString(user_id) <=
@@ -120,18 +123,14 @@ export  default function ChatBoard(props){
             .onSnapshot(
                 snapshot => {
                     snapshot.docChanges().forEach(change => {
-                        //console.log(change.doc.data())
                         if (change.type === 'added') {
                             listMessage.push(change.doc.data())
                         }
                     })
-                    //console.log(listMessage)
                     setMesssages(listMessage);
+                    setLoader(false);
                 
-                },
-                err => { 
-                }
-            )
+                })
    
 
 
@@ -173,6 +172,7 @@ export  default function ChatBoard(props){
             .set(itemMessage)
             .then(() => {
                 setInputValue('')
+                setLoader(false)
             })
             .catch(err => {
             })
@@ -183,7 +183,7 @@ export  default function ChatBoard(props){
             currentPhotoFile = event.target.files[0]
             // Check this file is an image?
             const prefixFiletype = event.target.files[0].type.toString()
-            if (prefixFiletype.indexOf(AppString.PREFIX_IMAGE) === 0) {
+            if (prefixFiletype.indexOf('image/') === 0) {
                 uploadPhoto()
             }
         }
@@ -195,13 +195,13 @@ export  default function ChatBoard(props){
                 .valueOf()
                 .toString()
 
-            const uploadTask = myStorage
+            const uploadTask = storage
                 .ref()
                 .child(timestamp)
                 .put(currentPhotoFile)
 
             uploadTask.on(
-                AppString.UPLOAD_CHANGED,
+                'state_changed',
                 null,
                 err => {
                 },
@@ -293,6 +293,7 @@ export  default function ChatBoard(props){
                     <input
                         className="viewInput"
                         placeholder="Type your message..."
+                        id="send"
                         value={inputValue}
                         onChange={event => {
                             setInputValue(event.target.value)
@@ -338,16 +339,22 @@ export  default function ChatBoard(props){
                                     src={message.content}
                                     alt="content message"
                                 />
+                                   <time className="textTimeRight">
+                            {moment(Number(message.timestamp)).format('lll')}
+                            </time>
                             </div>
                         )
                     } else {
                         viewListMessage.push(
                             <div className="viewItemRight3" key={message.timestamp}>
                                 <img
-                                    className="imgItemRight"
+                                    className="gifItemRight"
                                     src={getGifImage(message.content)}
                                     alt="content message"
                                 />
+                                   <time >
+                            {moment(Number(message.timestamp)).format('lll')}
+                            </time>
                             </div>
                         )
                     }
@@ -357,11 +364,6 @@ export  default function ChatBoard(props){
                         viewListMessage.push(
                             <div className="viewWrapItemLeft" key={message.timestamp}>
                                 <div className="viewWrapItemLeft3">
-                                <img
-                                            src={currentPeerUser.image}
-                                            alt="avatar"
-                                            className="peerAvatarLeft"
-                                        />
                                     <div className="viewItemLeft">
                                         <p className="textContentItem">{message.content}</p>
                                         <time >
@@ -378,44 +380,35 @@ export  default function ChatBoard(props){
                         viewListMessage.push(
                             <div className="viewWrapItemLeft2" key={message.timestamp}>
                                 <div className="viewWrapItemLeft3">
-                                <img
-                                            src={currentPeerUser.image}
-                                            alt="avatar"
-                                            className="peerAvatarLeft"
-                                        />
                                     <div className="viewItemLeft2">
                                         <img
                                             className="imgItemLeft"
-                                            src={messsage.content}
+                                            src={message.content}
                                             alt="content message"
                                         />
+                                        <time >
+                                        {moment(Number(message.timestamp)).format('lll')}
+                                        </time>
+                                       
                                     </div>
                                 </div>
-                                <span className="textTimeLeft">
-                    
-                  </span>
                             </div>
                         )
                     } else {
                         viewListMessage.push(
                             <div className="viewWrapItemLeft2" key={message.timestamp}>
                                 <div className="viewWrapItemLeft3">
-                                <img
-                                            src={currentPeerUser.image}
-                                            alt="avatar"
-                                            className="peerAvatarLeft"
-                                        />
                                     <div className="viewItemLeft3" key={message.timestamp}>
                                         <img
-                                            className="imgItemLeft"
+                                            className="gifItemLeft"
                                             src={getGifImage(message.content)}
                                             alt="content message"
                                         />
                                     </div>
                                 </div>
-                                <span className="textTimeLeft">
-                    {moment(Number(message.timestamp)).format('lll')}
-                  </span>
+                                <time style={{ float:'left'}}>
+                                        {moment(Number(message.timestamp)).format('lll')}
+                                        </time>
                             </div>
                         )
                     }
