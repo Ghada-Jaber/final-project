@@ -233,9 +233,9 @@ function handleAddPayment(event){
          notification(snapshot.docs[0].data().userToken, response.data.id, response.data.customer.pharmacy.FirebaseUID, response.data.customer.customer.FirebaseUID, response.data.customer.customer.name);
             }) 
 
-
+            document.getElementById('close').style.display = 'none';
             
-           // window.location.reload();
+           
 
        
     })

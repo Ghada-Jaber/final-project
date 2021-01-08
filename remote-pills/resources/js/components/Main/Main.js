@@ -62,6 +62,13 @@ export  default function Main(){
                 <span className="textItem">{`${
                     user.name
                     }`}</span>
+                    <span className="textItem">
+                    role: &nbsp;
+                    {user.roles[0] == 'ROLE_ADMIN' ? 'admin'
+                    : user.roles[0] == 'ROLE_PHARMACY' ? 'pharmacy'
+                    :user.roles[0] == 'ROLE_DOCTOR' ? 'doctor'
+                    : 'normal user'
+                    }</span>
                             </div>
                         </button>
                         : '' }
