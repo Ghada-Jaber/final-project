@@ -3,6 +3,8 @@ import {Link, useHistory} from 'react-router-dom';
 import api from '../api';
 import Header from './layouts/Header';
 import Footer from './layouts/Footer';
+import images from './Themes/Images';
+import '../../css/Profile.css';
 
 export  default function Profile(props){
     const [pharmacy, setPharmacy] = useState([]);
@@ -20,14 +22,67 @@ export  default function Profile(props){
 
 
   useEffect(() => {
-    setId(props.props.id)
-    setName(props.props.name)
-    setEmail(props.props.email)
-    setBirthday(props.props.birthday)
-    setImage(props.props.image)
-    setAddress(props.props.address)
+
+    details();
+   
 
  },[]);
+ let refInput = null;
+
+ function details(){
+  api.details().then(response => {
+  
+    setId(response.data.id)
+    setName(response.data.name)
+    setEmail(response.data.email)
+    setBirthday(response.data.birthday)
+    setImage(response.data.image)
+    setAddress(response.data.address)
+      
+  }).catch(error => {
+    //  history.push('/');
+  })
+}
+
+
+function onChangeAvatar(event) {
+  if (event.target.files && event.target.files[0]) {
+      // Check this file is an image?
+      const prefixFiletype = event.target.files[0].type.toString()
+      if (prefixFiletype.indexOf(AppString.PREFIX_IMAGE) !== 0) {
+          this.props.showToast(0, 'This file is not an image')
+          return
+      }
+      this.newAvatar = event.target.files[0]
+      this.setState({photoUrl: URL.createObjectURL(event.target.files[0])})
+  } else {
+      this.props.showToast(0, 'Something wrong with input file')
+  }
+}
+
+function uploadAvatar () {
+  setIsLoading(true)
+  if (this.newAvatar) {
+      const uploadTask = myStorage
+          .ref()
+          .child(detail.id)
+          .put(this.newAvatar)
+      uploadTask.on(
+          AppString.UPLOAD_CHANGED,
+          null,
+          err => {
+              this.props.showToast(0, err.message)
+          },
+          () => {
+              uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+                  this.updateUserInfo(true, downloadURL)
+              })
+          }
+      )
+  } else {
+      this.updateUserInfo(false, null)
+  }
+}
 
 
 
@@ -84,19 +139,34 @@ function handleProfileChange (event) {
     style={{ width:'50%'}}>
    
     <div className="templatemo-content-widget  col-2">
-              <i className="fa fa-edit"></i>
-              <div className="media margin-bottom-30">
-                <div className="media-left">
-                  <a href="#">
-                  <img src={`./images/userimage/${image}`} width="100px" height="100px"
-                   className="media-object img-circle templatemo-img-bordered"/>
-                  </a>
+              
+              <img className="avatar" alt="Avatar" src={image}/>
+
+                <div className="viewWrapInputFile">
+                    <img
+                        className="imgInputFile"
+                        alt="icon gallery"
+                        src={images.ic_input_file}
+                        onClick={() =>refInput.click()}
+                    />
+                    <input
+                        ref={el => {
+                            refInput = el
+                        }}
+                        accept="image/*"
+                        className="viewInputFile"
+                        type="file"
+                        onChange={onChangeAvatar}
+                    />
                 </div>
+              <div className="media margin-bottom-30">
+                
                 <div className="media-body">
                   <h2 className="media-heading text-uppercase blue-text">{name}</h2>
                 </div>        
               </div>
               <div className="table-responsive">
+              <i className="fa fa-edit"></i>
                 <table className="table">
                   <tbody>
                     <tr>
@@ -122,43 +192,7 @@ function handleProfileChange (event) {
             </div>       
               </div>
 
-              <div className="templatemo-content-widget  no-padding templatemo-overflow-hidden"
-    style={{ width:'50%'}}>
-    <div className="templatemo-content-widget  col-2">
-              <div className="media margin-bottom-30">
-                <div className="media-left">
-                  <input type="file" className="form-control"
-                    onChange={handleImageChange}
-                  />
-                </div>       
-              </div>
-              <div className="table-responsive">
-                <table className="table">
-                  <tbody>
-                  <tr>
-                      <td>name</td>
-                      <td>{name}</td>                    
-                    </tr> 
-                    <tr>
-                      <td>password</td>
-                      <td>22</td>                    
-                    </tr>  
-                    <tr>
-                      <td>birthday</td>
-                      <td>13</td>                    
-                    </tr>  
-                    <tr>
-                      <td>Address</td>
-                      <td>18</td>                    
-                    </tr>                                      
-                  </tbody>
-                </table>
-              </div>   
-              <button type="submit" className="templatemo-blue-button"
-              onClick={(event) => handleProfileChange(event)} >
-              Change</button>          
-            </div>        
-              </div>
+           
               </div> 
        </div>                       
             </div>      

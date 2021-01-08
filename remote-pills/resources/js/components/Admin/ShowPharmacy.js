@@ -70,7 +70,7 @@ export  default function ShowPharmacy(props){
   
         </div>
         <div className="col-md-4">
-        <h3>Pharmacy have medicine {name} / Number: {medicine.length}</h3>
+        <h3>Pharmacy have {medicine.length} medicine</h3>
     <div className="scrollform">
 
     <div className ="templatemo-content-widget blue-bg" >   

@@ -65,7 +65,7 @@ export  default function SignIn(){
         .then((auth) => {
             auth.user.getIdToken().then(function(accessToken) {
             if(auth.additionalUserInfo.isNewUser == false){
-
+                console.log(accessToken)
                   const login = {
                     Firebasetoken : accessToken,
                     email: email,

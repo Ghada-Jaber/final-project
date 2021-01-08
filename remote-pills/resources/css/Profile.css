@@ -78,7 +78,7 @@ input::placeholder {
 .viewWrapInputFile {
     position: absolute;
     align-self: center;
-    top: 215px;
+    top: 160px;
     background-color: rgba(1, 1, 1, 0.5);
     width: 40px;
     height: 40px;

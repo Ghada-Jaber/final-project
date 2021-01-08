@@ -15,7 +15,6 @@ class CreatePaymentConditionTable extends Migration
     {
         Schema::create('payment', function (Blueprint $table) {
             $table->id();
-            //$table->foreignId('customer_id')->constrained('customer')->onDelete('cascade');
             $table->string('type');
             $table->double('price');
             $table->integer('creditCardNumber')->nullable();

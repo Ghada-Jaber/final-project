@@ -1,45 +1,61 @@
-import React, {Component} from 'react'
+import React, {useState, useEffect} from 'react';
 import ReactLoading from 'react-loading'
 import {withRouter} from 'react-router-dom'
 import 'react-toastify/dist/ReactToastify.css'
-import {myFirestore, myStorage} from '../../Config/MyFirebase'
 import images from './../Themes/Images'
-import './Profile.css'
-import {AppString} from './../Const'
+import './Profile.css';
+import api from '../../api';
+import Header from '../layouts/Header';
+export  default function Profile(){
 
-class Profile extends Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            isLoading: false,
-            id: localStorage.getItem(AppString.ID),
-            nickname: localStorage.getItem(AppString.NICKNAME),
-            aboutMe: localStorage.getItem(AppString.ABOUT_ME),
-            photoUrl: localStorage.getItem(AppString.PHOTO_URL)
-        }
-        this.newAvatar = null
-        this.newPhotoUrl = ''
+    const[isLoading, setIsLoading] =  useState(false);
+
+    const[detail, setDetail] =  useState([]);
+
+    const [name, setName] = useState('');
+    const[password, setPassword] = useState('');
+      const [image, setImage] = useState('');
+      const [address, setAddress] = useState('');
+
+
+    useEffect(() => {
+
+        details();
+       
+    
+     },[]);
+
+     function details(){
+        api.details().then(response => {
+            setDetail(response.data);
+        }).catch(error => {
+          //  history.push('/');
+        })
+      }
+
+
+    //  this.state = {
+    //     isLoading: false,
+    //     nickname: localStorage.getItem(AppString.NICKNAME),
+    //     aboutMe: localStorage.getItem(AppString.ABOUT_ME),
+    //     photoUrl: localStorage.getItem(AppString.PHOTO_URL)
+    // }
+    let newAvatar = null;
+    let newPhotoUrl = '';
+    let refInput = null;
+   
+
+   
+
+    function onChangeNickname (event) {
+        setName(event.target.value)
     }
 
-    componentDidMount() {
-        this.checkLogin()
+    function onChangeAboutMe (event){
+        setPassword(event.target.value)
     }
 
-    checkLogin (){
-        if (!localStorage.getItem(AppString.ID)) {
-            this.props.history.push('/')
-        }
-    }
-
-    onChangeNickname (event) {
-        this.setState({nickname: event.target.value})
-    }
-
-    onChangeAboutMe (event){
-        this.setState({aboutMe: event.target.value})
-    }
-
-    onChangeAvatar(event) {
+    function onChangeAvatar(event) {
         if (event.target.files && event.target.files[0]) {
             // Check this file is an image?
             const prefixFiletype = event.target.files[0].type.toString()
@@ -54,12 +70,12 @@ class Profile extends Component {
         }
     }
 
-    uploadAvatar () {
-        this.setState({isLoading: true})
+    function uploadAvatar () {
+        setIsLoading(true)
         if (this.newAvatar) {
             const uploadTask = myStorage
                 .ref()
-                .child(this.state.id)
+                .child(detail.id)
                 .put(this.newAvatar)
             uploadTask.on(
                 AppString.UPLOAD_CHANGED,
@@ -78,82 +94,66 @@ class Profile extends Component {
         }
     }
 
-    updateUserInfo (isUpdatePhotoUrl, downloadURL) {
+    function updateUserInfo (isUpdatePhotoUrl, downloadURL) {
         let newInfo
         if (isUpdatePhotoUrl) {
             newInfo = {
-                nickname: this.state.nickname,
-                aboutMe: this.state.aboutMe,
+                name: name,
                 photoUrl: downloadURL
             }
         } else {
             newInfo = {
-                nickname: this.state.nickname,
-                aboutMe: this.state.aboutMe
+                name: name
             }
         }
-        myFirestore
-            .collection(AppString.NODE_USERS)
-            .doc(this.state.id)
-            .update(newInfo)
-            .then(data => {
-                localStorage.setItem(AppString.NICKNAME, this.state.nickname)
-                localStorage.setItem(AppString.ABOUT_ME, this.state.aboutMe)
-                if (isUpdatePhotoUrl) {
-                    localStorage.setItem(AppString.PHOTO_URL, downloadURL)
-                }
-                this.setState({isLoading: false})
-                this.props.showToast(1, 'Update info success')
-            })
+       
     }
 
-    render() {
+  
         return (
             <div className="root">
-                <div className="header">
-                    <span>PROFILE</span>
-                </div>
+                <Header/>
 
-                <img className="avatar" alt="Avatar" src={this.state.photoUrl}/>
+                <img className="avatar" alt="Avatar" src={detail.image}/>
 
                 <div className="viewWrapInputFile">
                     <img
                         className="imgInputFile"
                         alt="icon gallery"
                         src={images.ic_input_file}
-                        onClick={() => this.refInput.click()}
+                        onClick={() =>refInput.click()}
                     />
                     <input
                         ref={el => {
-                            this.refInput = el
+                            refInput = el
                         }}
                         accept="image/*"
                         className="viewInputFile"
                         type="file"
-                        onChange={this.onChangeAvatar}
+                        onChange={onChangeAvatar}
                     />
                 </div>
 
                 <span className="textLabel">Nickname:</span>
                 <input
                     className="textInput"
-                    value={this.state.nickname ? this.state.nickname : ''}
+                    value={name ? name : ''}
                     placeholder="Your nickname..."
-                    onChange={this.onChangeNickname}
+                    onChange={onChangeNickname}
                 />
                 <span className="textLabel">About me:</span>
                 <input
                     className="textInput"
-                    value={this.state.aboutMe ? this.state.aboutMe : ''}
+                    value={password ? password : ''}
                     placeholder="Tell about yourself..."
-                    onChange={this.onChangeAboutMe}
+                    onChange={onChangeAboutMe}
                 />
 
-                <button className="btnUpdate" onClick={this.uploadAvatar}>
+                <button className="btnUpdate" onClick={uploadAvatar}>
                     UPDATE
                 </button>
 
-                {this.state.isLoading ? (
+                {isLoading ? (
                     <div className="viewLoading">
                         <ReactLoading
                             type={'spin'}
@@ -165,7 +165,5 @@ class Profile extends Component {
                 ) : null}
             </div>
         )
-    }
 }
 
-export default withRouter(Profile)

@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Medicine;
 use App\Models\Detail;
 use App\Models\Customer;
+use App\Models\Buy;
 
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
@@ -214,12 +215,72 @@ class PharmacyController extends Controller
     }
 
 
+    public function getPharmacyReservation(){
+        $pharmacy = Auth::user();
+
+         $customers = $pharmacy->pharmacy;
+
+        foreach($pharmacy->pharmacy as $customer){
+
+           $customers->customer = $customer->customer;
+
+           $customers->cart = $customer->cart;
+
+                foreach($customer->cart as $cart){
+                    $customer->cart->medicine = $cart->medicine;
+                }
+        }
+
+        
+
+        return response()->json($customers,200);
+    }
+
+
+    public function getPharmacyOrders(){
+        $pharmacy = Auth::user();
+
+        $customers = $pharmacy->pharmacy;
+
+       
+
+        foreach($pharmacy->pharmacy as $customer){
+
+           $customers->customer = $customer->customer;
+           
+            $customers->buy = $customer->buy;
+
+                foreach($customer->buy as $payment){
+                    $customer->buy->medicine = $payment->medicine;
+                    $customer->buy->payment = $payment->payment;
+                    
+                }
+
+
+        }
+
+        
+
+        return response()->json($customers,200);
+
+    }
+
+
     public function showCustomer(Customer $customer){
 
         $customer->buy;
 
 
         return response()->json($customer,200);
+    }
+
+
+    public function deliver(Buy $buy, Request $request){
+        $buy->update([
+            'delivred' => $request['delivred']
+          ]);
+
+          return response()->json($buy,200);
     }
     
     

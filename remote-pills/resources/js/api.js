@@ -46,6 +46,9 @@ export default{
     getInfoPharmacy: (id) =>
     axios.get(`${BASE_URL}/admin/pharmacy/getInfo/${id}`, token),
 
+    getInfoDoctor: (id) =>
+    axios.get(`${BASE_URL}/admin/doctor/getInfo/${id}`, token),
+
     getInfoMedicine: (id) =>
     axios.get(`${BASE_URL}/admin/medicine/getInfo/${id}`, token),
 
@@ -121,6 +124,17 @@ export default{
 
     getPharmacyOrder: () =>
     axios.get(`${BASE_URL}/pharmacy/order`, token),
+
+
+    getPharmacyOrders: () =>
+    axios.get(`${BASE_URL}/pharmacy/orders`, token),
+
+    getPharmacyReservation: () =>
+    axios.get(`${BASE_URL}/pharmacy/reservation`, token),
+
+
+    deliver: (buy_id, deliver) =>
+    axios.post(`${BASE_URL}/pharmacy/deliver/${buy_id}`, deliver, token),
 
     
 

@@ -192,6 +192,7 @@ const header = {
             message: `${user_name} wants to buy a medication`,
             toUserID: pharmacy_UID, // pharmacy
             fromUserID: user_UID, //login user
+            isOpened: false,
         });
 
   });
@@ -227,11 +228,13 @@ function handleAddPayment(event){
                   
         
         query.then(snapshot => {
-            console.log(snapshot.docs[0].data().userToken)
+            console.log(snapshot.docs)
+            //console.log(snapshot.docs[0].data().userToken)
          notification(snapshot.docs[0].data().userToken, response.data.id, response.data.customer.pharmacy.FirebaseUID, response.data.customer.customer.FirebaseUID, response.data.customer.customer.name);
             }) 
 
 
+            
            // window.location.reload();
 
        

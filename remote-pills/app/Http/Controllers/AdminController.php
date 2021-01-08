@@ -133,6 +133,17 @@ class AdminController extends Controller
     }
 
 
+    public function getInfoDoctor(User $user){
+
+        $user->doctor;
+        foreach($user->doctor as $patient){
+            $patient->patient;
+        }
+        
+        return response()->json($user, 201);
+    }
+
+
     public function updateInfoMedicine(Request $request, Medicine $medicine){
 
         
@@ -201,6 +212,8 @@ class AdminController extends Controller
         $request->validate([
             'symptomName' => 'required|string',
         ]);
+
+        
 
 
         $symptom = Symptom::create([

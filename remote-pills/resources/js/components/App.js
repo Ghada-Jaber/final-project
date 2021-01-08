@@ -174,9 +174,7 @@ function App(){
           {/* <Route exact path='/notification' component={notification} /> */}
 
 
-          <Route exact path='/profile'>
-             <Profile props={detail}/>
-          </Route>
+          <Route exact path='/profile' component={Profile} />
 
           <Route exact path='/chat' component={Main} />
 

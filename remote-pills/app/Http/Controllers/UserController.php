@@ -220,6 +220,8 @@ class UserController extends Controller
         
 
         $buy = $request['buy'];
+
+        
         foreach($buy as $id){
             $cart = Cart::find($id);
 
@@ -232,13 +234,9 @@ class UserController extends Controller
             ]);
 
             $cart->delete();
-
-
             $addPayment->customer->pharmacy;
             $addPayment->customer->customer;
 
-
-          
         }
         
 

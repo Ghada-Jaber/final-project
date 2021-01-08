@@ -15,7 +15,7 @@ class CreateSymptomTable extends Migration
     {
         Schema::create('symptom', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->unique();
             $table->timestamps();
         });
     }

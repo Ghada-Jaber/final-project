@@ -219,7 +219,7 @@ function renderMedicine(){
         colorhover ${pharmacy.prescription == 1 ? 'orange-bg' : ''}`} >
         <br/>
         <a href={"/user/medicine/show/"+pharmacy.id} key={pharmacy.id}> 
-        <img src={`${pharmacy.image}`} width="350px" height="200px" alt="Image"/>
+        <img src={`${pharmacy.image}`} width="100%" height="200px" alt="Image"/>
         <h3 className="text-dark">{pharmacy.name}</h3>
         </a>
 

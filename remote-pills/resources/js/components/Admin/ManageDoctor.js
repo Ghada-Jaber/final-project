@@ -141,12 +141,12 @@ for (i = 1; i < tr.length; i++) {
                     <div className="btn-group " role="group">
                     
                                
-                               <a href={`/managePharmacy/show/${medicine.id}`}
+                               <a href={`/manageDoctor/show/${medicine.id}`}
                                className="btn btn-info"
                                    title="Show">
                                    <i className="fa fa-info fa-fw"></i>
                                 </a>
-                                <a href={`/managePharmacy/edit/${medicine.id}`}
+                                <a href={`/manageDoctor/edit/${medicine.id}`}
                                 className="btn btn-primary"
                                    title="Edit">
                                    <i className="fa fa-edit fa-fw"></i>

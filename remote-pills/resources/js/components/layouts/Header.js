@@ -57,6 +57,8 @@ export default function Header(props){
     const [uid, setUID] = useState('');
 
     const[notifications, setNotifications] = useState([]);
+    const[notified, setNotified] = useState(false);
+    const[notificationOpen, setNotificationOpened] = useState(false);
 
 
   let counter = 0;
@@ -104,7 +106,7 @@ export default function Header(props){
 
    
 
- },[]);
+ },[notified, notificationOpen]);
 
 
 
@@ -158,27 +160,43 @@ export default function Header(props){
 
 
 function  getNotifications(userUID, click){
-  const query = db.collection('notifications').get();
+  const query = db.collection('notifications');
+
   let count = 0;
    let messages = [];
    
-  query.then(snapshot =>{
+  query.onSnapshot(snapshot =>{
     
-    snapshot.docs.forEach(doc=>{
-      if(userUID == doc.data().toUserID){
-       count++;
-       messages.push(doc.data().message)
+    snapshot.docChanges().forEach(change => { 
+      if(change.type == 'added'){
+        if(userUID == change.doc.data().toUserID){
+          
+          messages.push(change.doc.data().message)
+          if(change.doc.data().isOpened == false){
+            count++;
+          }
+         }
       }
+
+      if(change.type == 'modified'){
+        setNotificationOpened(!notificationOpen);
+      }
+     
     })
 
     setNotifications({
       count:count,
       messages: messages
     })
+
+    if(messages.length !=0){
+      setNotified(true)
+    }
   })
 
   counter = count;
 }
+
 
 
 
@@ -312,7 +330,14 @@ return(
 
 
 function seeNotification(){
-  counter = 0;
+  const query = db.collection('notifications');
+  query.get().then(snapshot => {
+      snapshot.forEach(doc => {
+        if(doc.data().toUserID == uid){
+           doc.ref.update({'isOpened':true});
+        }
+      })
+  })
 }
 function auth(){
   return (

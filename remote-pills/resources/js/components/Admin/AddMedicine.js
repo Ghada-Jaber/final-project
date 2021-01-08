@@ -131,8 +131,11 @@ function handleAddMedicine(event) {
         window.location.reload();
       })
       .catch(error => {
-        console.log(error)
-        setErrors(error.response.data.errors)
+        if(error.response.status == 500){
+          alert('medicine already exist')
+       }else{
+         setErrors(error.response.data.errors)
+       }
       })
 }
 
@@ -205,8 +208,12 @@ function filterFunction(event){
 
     })
     .catch(error => {
-      console.log(error)
-      setErrors(error.response.data.errors)
+      if(error.response.status == 500){
+         alert('symptom already exist')
+      }else{
+        setErrors(error.response.data.errors)
+      }
+      
     })
  }
 

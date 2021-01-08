@@ -37,6 +37,8 @@ Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_ADM
 
     Route::get('/admin/pharmacy/getInfo/{user}', [AdminController::class, 'getInfoPharmacy']);
 
+    Route::get('/admin/doctor/getInfo/{user}', [AdminController::class, 'getInfoDoctor']);
+
     Route::get('/admin/medicine/getInfo/{medicine}', [AdminController::class, 'getInfoMedicine']);
 
     Route::get('/admin/medicine/{medicine}/pharmacy', [AdminController::class, 'getMedicinePharmacy']);
@@ -98,8 +100,15 @@ Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_PHA
 
     Route::get('/pharmacy/order', [PharmacyController::class, 'getPharmacyOrder']); 
 
+    Route::get('/pharmacy/orders', [PharmacyController::class, 'getPharmacyOrders']); 
 
-    Route::put('/pharmacy/customer/{customer}', [PharmacyController::class, 'showCustomer']);    
+    Route::get('/pharmacy/reservation', [PharmacyController::class, 'getPharmacyReservation']); 
+
+
+    Route::put('/pharmacy/customer/{customer}', [PharmacyController::class, 'showCustomer']);   
+    
+    
+    Route::post('/pharmacy/deliver/{buy}', [PharmacyController::class, 'deliver']); 
 
 });
 
