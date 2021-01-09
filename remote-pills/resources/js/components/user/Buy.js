@@ -22,6 +22,8 @@ export  default function Buy(props){
 
   const[description, setDescription] = useState('');
 
+  const [errors, setErrors] = useState([]);
+
       
   const history = useHistory();
 
@@ -53,13 +55,19 @@ export  default function Buy(props){
     
  },[]);
 
+ function hasErrorFor (field) {
+  return !!errors[field]
+}
 
-//  useEffect(() => {
-
-// console.log(currentPage)
-  
-// },[currentPage]);
-
+function renderErrorFor (field) {
+  if (hasErrorFor(field)) {
+      return (
+          <span style={{ color: '#D7425C' }}>
+              <strong>{errors[field][0]}</strong>
+          </span>
+      )
+  }
+}
 
 
 function handleReservationChange(event){
@@ -70,39 +78,15 @@ function handleReservationChange(event){
 }
 }
 
- function  handlePageClick(data) {
-  const page = data.selected >= 0 ? data.selected + 1 : 0;
-
-  setCurrentPage(2)
-
-  fetchMedicine();
-}
 
  
 
  function fetchMedicine(id){
-    // const newUrl =
-    //   window.location.protocol +
-    //   '//' +
-    //   window.location.host +
-    //   window.location.pathname +
-    //   '?page=' +
-    //   currentPage;
-    // window.history.pushState({ path: newUrl }, '', newUrl);
-
-    // const response = axios.post(newUrl);
-  // Progress.show();
+    
     api.getAllMedicineAvailable(id).then(response => {
       setMedicine(response.data);
-      
-      // setMedicine(response.data.data);
-      // setCurrentPage(response.data.current_page);
-      // setPageCount(response.data.last_page);
-      
-      // window.scrollTo(0, 0);
-      // // Progress.hide();
+     
   }) .catch(error => {
-    // Progress.hide();
     console.log(error)
     //history.push('/');
   })
@@ -110,57 +94,6 @@ function handleReservationChange(event){
 }
 
 
-function getQueryStringValue(key) {
-  const value = decodeURIComponent(
-    window.location.search.replace(
-      new RegExp(
-        '^(?:.*[&\\?]' +
-          encodeURIComponent(key).replace(/[\.\+\*]/g, '\\$&') +
-          '(?:\\=([^&]*))?)?.*$',
-        'i'
-      ),
-      '$1'
-    )
-  );
-  return value ? value : null;
-}
-
-function handleReferenceChange(event){
-  var reference = event.target.value;
-  alert(reference)
-  if(reference == 'getNameOrderAsc'){
-    api.getOrderMedicineByNameAsc().then(response => {
-      setMedicine(response.data);
-  }) .catch(error => {
-    console.log(error)
-  })
-  }
-
-  if(reference == 'getNameOrderDesc'){
-    api.getOrderMedicineByNameDesc().then(response => {
-      setMedicine(response.data);
-  }) .catch(error => {
-    console.log(error)
-  })
-  }
-
-  if(reference == 'getPriceOrderAsc'){
-    api.getOrderMedicineByPriceAsc().then(response => {
-      setMedicine(response.data);
-  }) .catch(error => {
-    console.log(error)
-  })
-  }
-
-  if(reference == 'getPriceOrderDesc'){
-    api.getOrderMedicineByPriceDesc().then(response => {
-      setMedicine(response.data);
-  }) .catch(error => {
-    console.log(error)
-  })
-  }
-
-}
 
 
 function handleQuantityChange(event){
@@ -181,7 +114,7 @@ function  askPrescription(event, name){
     alert('ask done')
   })
   .catch(error => {
-     // setErrors(error.response.data.errors)
+     setErrors(error.response.data.errors)
   })
 }
 
@@ -214,12 +147,15 @@ function renderMedicine(){
   return medicine.map(pharmacy => {
       return(
         <section key={pharmacy.id}>
-        <div 
+        {pharmacy[0].length > 0 ? 
+          <div 
         className={`templatemo-content-widget no-padding white-bg col-sm-6 col-lg-4 text-center item mb-4
-        colorhover ${pharmacy.prescription == 1 ? 'orange-bg' : ''}`} >
+        colorhover ${pharmacy.prescription == 1 ? 'pres-bg' : ''}`} >
         <br/>
         <a href={"/user/medicine/show/"+pharmacy.id} key={pharmacy.id}> 
-        <img src={`${pharmacy.image}`} width="100%" height="200px" alt="Image"/>
+        <img src={`${pharmacy.image}`} width="80%" height="200px" alt="Image"
+          style={{ mixBlendMode: 'multiply' }}
+        />
         <h3 className="text-dark">{pharmacy.name}</h3>
         </a>
 
@@ -230,7 +166,7 @@ function renderMedicine(){
                       <td><b>Pharmacy</b></td>
                       <td><b>Price</b></td>
                       <td><b>Quantity</b></td>
-                      <td><b>Reservation</b></td>
+                      <td><b>Reserve</b></td>
                       <td><b>Add</b></td>
                       </tr>
                     </thead>
@@ -265,7 +201,7 @@ function renderMedicine(){
               </div> : 
            
 
-              <div  className="form-group" style={{ padding: '5px'}}>
+              <div  className={`form-group ${hasErrorFor('description') ? 'has-error' : ''}`} style={{ padding: '5px'}}>
 	        		<div className="input-group">
 		        		<div className="input-group-addon">
                 <button onClick={(event) => askPrescription(event, pharmacy.name)}
@@ -275,7 +211,9 @@ function renderMedicine(){
                className="form-control"></textarea>
                                    
 		          	</div>
-                <br/>	  
+                 
+                {renderErrorFor('description')}  
+                <br/>	
 	        	</div>
 
               
@@ -283,6 +221,8 @@ function renderMedicine(){
       
          
       </div>
+      : ''}
+        
       </section>
     
         )

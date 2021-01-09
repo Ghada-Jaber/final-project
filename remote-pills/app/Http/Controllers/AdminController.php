@@ -64,11 +64,8 @@ class AdminController extends Controller
 
     public function addMedicine(Request $request){
 
-        
-
         $request->validate([
             'name' => 'required|string|max:255',
-            // 'image' => 'image|mimes:jpeg,png,jpg,gif,svg', //|exists:users
             'format' => 'required',
             'description' => 'required|string',
             'ingredient' => 'required|string',
@@ -79,7 +76,7 @@ class AdminController extends Controller
             'symptom' => 'required',
         ]);
 
-        //return response()->json(['al' =>'dd'], 201);
+        
         if($request->hasFile('image')){
         $image = $request['image']->store('public/uploads/medicine');
 

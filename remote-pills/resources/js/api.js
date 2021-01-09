@@ -29,7 +29,7 @@ export default{
     axios.get(`${BASE_URL}/details`, token),
 
     changeProfile: (profile) =>
-    axios.put(`${BASE_URL}/user/profile`, profile, token),
+    axios.post(`${BASE_URL}/user/profile`, profile, token),
 
     logout: () =>
     axios.get(`${BASE_URL}/logout`, token),

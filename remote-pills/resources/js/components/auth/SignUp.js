@@ -292,10 +292,8 @@ export  default function SignUp(props){
 		<div className="templatemo-content-widget templatemo-login-widget  white-bg"
 		 >
 		 <a onClick={() => displayFormSignUp()} ><i className="fa fa-times"></i></a>
-
+		 <div id="spacing"></div>
 		 <div className="scrollform">
-
-		
 
 	        {/* <form className="templatemo-login-form" encType="multipart/form-data" onSubmit={() => handleCreateNewUser()}> */}
 			<div className={`form-group ${hasErrorFor('name') ? 'has-error' : ''}`} >

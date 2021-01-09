@@ -83,8 +83,8 @@ export  default function ShowMedicine(props){
 
   <div className="container">
       <div className="row">
-      <div className="col-md-4">
-              <img src={image} alt="Image"  style={{ width:'100%' , height:'300px'}}/>
+      <div className="col-md-4" style={{ top:'10px', left:'-2%'}}>
+              <img src={image} alt="Image"  style={{ width:'100%' , height:'300px'}} className="test"/>
           </div>
         <div className="col-md-4">
           <h2 className="text-black">{name} {format}, {dosage} {unit}</h2>

@@ -191,21 +191,7 @@ for (i = 1; i < tr.length; i++) {
                            onChange={filterFunction} 
                />  
                </div>
-               </div> 
-               <div className="pagination-wrap" style={{ float:'right'}}>
-            <ul className="pagination">
-              <li><a href="#">1</a></li>
-              <li><a href="#">2</a></li>
-              <li className="active"><a href="#">3 <span className="sr-only">(current)</span></a></li>
-              <li><a href="#">4</a></li>
-              <li><a href="#">5</a></li>
-              <li>
-                <a href="#" aria-label="Next">
-                  <span aria-hidden="true"><i className="fa fa-play"></i></span>
-                </a>
-              </li>
-            </ul>
-          </div>  
+               </div>  
                </caption>
                 <thead>
                   <tr>

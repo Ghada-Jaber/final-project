@@ -214,36 +214,20 @@ class AuthenticationController extends Controller
     }
 
     public function setProfile(Request $request){
-
-        //return response()->json(['test' => $request->hasFile('image')],200);
        
         if($request->hasFile('image')){
-            
-            $img = $request->file('image');
-            $fileNameWithExt = $img->getClientOriginalName(); // all file name with extension
-     
-            $fileName = pathinfo($fileNameWithExt,PATHINFO_FILENAME); //only file name without extension
-            $fileExt = $img->getClientOriginalExtension(); // file extension
-            $fileNameToStore = $fileName.'_'. time() .'.'.$fileExt; // a timing to diffrent between image 
+            $image = $request['image']->store('public/uploads/userimage');
 
-             if(!File::exists(public_path()."/images/userimage")) {
+      }else{
+          $image = "public/uploads/userimage/NoImage.png";
+      }
 
-                File::makeDirectory(public_path()."/images/userimage");
-                
-             }
+      $url = Storage::url($image);
 
-             return response()->json(['test' => $fileNameToStore],200);
-             
-             $img->move(public_path().'/images/userimage/', $fileNameToStore);
-
-        }else{
-            
-            $fileNameToStore = "NoImage.png";
-        }
 
         $u = Auth::user();
         $user = User::find($u->id);
-        $user->image = $fileNameToStore;
+        $user->image = $url;
         $user->save();
 
 

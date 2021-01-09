@@ -167,13 +167,13 @@ function handleChangeCvv(event){
     setCvv(event.target.value)
 }
 
- function notification(fcm_token, buy_id, pharmacy_UID, user_UID, user_name){
+ function notification(fcm_token, buy_id, pharmacy_UID, user_UID, user_name, medicine){
    const notification = {
     "notification": {
         "title": "Buy",
-        "body": "A user did buy",
-        "click_action": "http://localhost:8000/",
-        "icon": "http://url-to-an-icon/icon.png"
+        "body": user_name+" wants to buy "+medicine+" medication",
+        "click_action": "/customer",
+        "icon": "../../../images/logo.png"
     },
     "to":fcm_token
 }
@@ -189,7 +189,7 @@ const header = {
 
         notificationRef.set({
             title: 'Buy Request',
-            message: `${user_name} wants to buy a medication`,
+            message: `${user_name} wants to buy ${medicine} medication`,
             toUserID: pharmacy_UID, // pharmacy
             fromUserID: user_UID, //login user
             isOpened: false,
@@ -217,10 +217,7 @@ function handleAddPayment(event){
 
     api.addPayment(payment)
     .then(response => {
-
-
-
-    
+        console.log(response.data)
         console.log(response.data.customer.pharmacy.FirebaseUID);
         
 
@@ -230,7 +227,7 @@ function handleAddPayment(event){
         query.then(snapshot => {
             console.log(snapshot.docs)
             //console.log(snapshot.docs[0].data().userToken)
-         notification(snapshot.docs[0].data().userToken, response.data.id, response.data.customer.pharmacy.FirebaseUID, response.data.customer.customer.FirebaseUID, response.data.customer.customer.name);
+         notification(snapshot.docs[0].data().userToken, response.data.id, response.data.customer.pharmacy.FirebaseUID, response.data.customer.customer.FirebaseUID, response.data.customer.customer.name, response.data.medicine.name);
             }) 
 
             document.getElementById('close').style.display = 'none';

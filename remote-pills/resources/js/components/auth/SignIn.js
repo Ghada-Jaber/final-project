@@ -126,6 +126,7 @@ export  default function SignIn(){
         <br/>
         <div className="templatemo-content-widget templatemo-login-widget white-bg">
         <a onClick={() => displayFormSignIn()} ><i className="fa fa-times"></i></a>
+        <div id="spacing"></div>
 	
 	        <form  className="templatemo-login-form" onSubmit={handleLogin}>
             

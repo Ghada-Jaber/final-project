@@ -8,7 +8,7 @@ import {AppString} from './../Const'
 
 import api from '../../api'
 import Header from '../layouts/Header';
-
+import Footer from '../layouts/Footer';
 
 export  default function Main(){
     const [currentPeerUser, setCurrentPeerUser] =  useState([]);
@@ -110,7 +110,7 @@ export  default function Main(){
 
                 {/* Dialog confirm */}
               
-
+<Footer/>
             
             </div>
         )

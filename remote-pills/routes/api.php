@@ -149,7 +149,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/all/users', [UserController::class, 'getAllUsers']); 
 
 
-    Route::put('/user/profile', [AuthenticationController::class, 'setProfile']);
+    Route::post('/user/profile', [AuthenticationController::class, 'setProfile']);
 
   
 

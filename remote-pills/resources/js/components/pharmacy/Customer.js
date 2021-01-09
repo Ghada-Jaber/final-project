@@ -67,8 +67,14 @@ function handleSelectChange(event){
   }
 
   if(select == 'Delivred'){
-    console.log('here')
-    setDelivred(1)
+    api.getPharmacyOrders().then(response => {
+      setOrders(response.data);
+      setDeliver([]);
+      setDelivred(1)
+      setReserve([])
+  }) .catch(error => {
+    console.log(error)
+  })
   }
 
   if(select == 'Reserved'){

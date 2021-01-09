@@ -302,7 +302,7 @@ return(
 function showNotifications(){
   return notifications.messages.map((message, i) =>{
     return(
-      <li key={i}>{message}</li>
+      <li key={i} style={{ borderBottom:'1px solid black', padding:'5px'}}>{message}</li>
     )
   }) 
 }
@@ -320,8 +320,7 @@ return(
   <li className= {`${(page =='/cart') ? 'active' : '' }`}>
                       <a href="/cart"><i className="fa fa-shopping-bag fa-fw"></i>Cart</a></li>
 
-                      <li className= {`${(page =='/map') ? 'active' : '' }`}>
-                      <a href="/map"><i className="fa fa-map-marker fa-fw"></i>Map</a></li>
+                  
                       
                       </ul>
 )
@@ -375,10 +374,11 @@ function auth(){
                         {name}
                     </a>
                     <div className="dropdown-menu dropdown-menu-right"
-                    style={{ fontSize:'17px',paddingLeft:'5px' }}
+                    style={{ fontSize:'17px',padding:'5px',textAlign:'center' }}
                      aria-labelledby="navbarDropdown">
                          <a className="dropdown-item" href="/profile" >
-                         <i className="fa fa-id-badge fa-fw"></i>Profile</a><br/>
+                         <i className="fa fa-id-badge fa-fw"></i>Profile</a>
+                           <hr/>
                         <a className="dropdown-item" onClick= {() => handleLogout()}>
                         <i className="fa fa-sign-out fa-fw"></i>Logout</a>
                     </div>
@@ -393,7 +393,7 @@ function auth(){
 
 <a   href="/chat">
   <i className="fa fa-comments fa-fw"></i>
-  <sup className="badge badge-success notification-count">2</sup>
+  {/* <sup className="badge badge-success notification-count">2</sup> */}
                     </a>
 </li>
      
@@ -406,12 +406,9 @@ function auth(){
                     </a>
                     
                     <ul className="dropdown-menu" 
-                     style={{  overflowY: 'auto', minHeight:'200px' }} >
-                     {notifications.length !=0 ? showNotifications()
+                     style={{  overflowY: 'auto', minHeight:'200px', width:'350px' }} >
+                     {notifications.messages !='' ? 'showNotifications()'
                     : <li>no notification</li>}
-
-
-    <br/>
    
                     </ul>
                 </li>

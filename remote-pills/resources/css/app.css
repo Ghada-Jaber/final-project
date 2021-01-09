@@ -58,7 +58,11 @@
     padding-right: 0;
 }
 
-body {	font-size: 13px; }
+body {	font-size: 13px;
+
+	background:url(../images/geometric-leaves.png) !important;
+	background-color:rgba(0,0,0,0.2) !important;
+	}
 body, .templatemo-left-nav { background: #1f2124; }
 
 
@@ -113,17 +117,17 @@ text-decoration: none;
 a:hover { text-decoration: none !important;}
 
 	 .colorhover:hover{
-		 background-color:#18191b !important;
-		 color:white !important;
+		 background-color:#d4d4d4 !important;
+		 color:black !important;
 	 }
 
-	 .colorhover img{
+	 /* .colorhover img{
 		background-color: white ;
 	}
 
 	 .colorhover img:hover{
 		 background-color: white ;
-	 }
+	 } */
 
 nav li {
 	font-size: 1.1em;
@@ -148,7 +152,20 @@ nav li {
 	color: white;
 }
 
+.pres-bg {
+	background-color: #929292;/* For browsers that do not support gradients */
+	background-image: radial-gradient(#929292, #929292, #929292); 
+	color: black;
+}
+
+
 .white-bg .fa-times { background-color: #d7d7d7; }
+
+@media screen and (max-width: 1000px) {
+	#spacing{ height:25px;}
+	
+}
+
 .white-bg .fa-times:hover {	background: #83ccd1; }
 
 .orange-bg .fa-times {	background-color: #F0A790; }
@@ -161,6 +178,13 @@ nav li {
 
 .scrollform{
 height: 360px;
+overflow-y: auto;
+overflow-x: hidden;
+padding:10px;
+}
+
+scroll{
+	height: 360px;
 overflow-y: auto;
 overflow-x: hidden;
 padding:10px;
@@ -738,9 +762,6 @@ input[type="radio"]:checked + label span {
 	nav li { font-size: 1em; }
 	.templatemo-left-nav a { padding: 15px; }
 	.templatemo-top-nav a { padding: 0 30px; }
-	
-
-	
 	
 }
 

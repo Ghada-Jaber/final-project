@@ -132,11 +132,50 @@ function renderErrorFor (field) {
 
 
   function handleMfdChange(event){
+    var d = new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate())
+
+    var start_date = new Date(event.target.value);
+    start_date.setHours(0);
+    start_date.setMinutes(0);
+    start_date.setSeconds(0);
+  
+    if (start_date <= d)
     setMfd(event.target.value);
+    else
+       alert('Cannot choose a date afer the current date');
+       //console.log("Cannot choose a date afer the current date");
   }
 
   function handleExpChange(event){
-    setExp(event.target.value);
+    if(mfd != '') {
+      var d = new Date(new Date().getFullYear(),new Date().getMonth() , new Date().getDate());
+    
+      var mfd_date = new Date(mfd);
+      mfd_date.setHours(0);
+      mfd_date.setMinutes(0);
+      mfd_date.setSeconds(0);
+    
+      var start_date = new Date(event.target.value);
+      start_date.setHours(0);
+      start_date.setMinutes(0);
+      start_date.setSeconds(0);
+    
+      if (start_date >= d){
+        if(start_date> mfd_date){
+      setExp(event.target.value);
+      }else{
+      alert('Choose a exp date after the mfd date');
+      //console.log("Choose a exp date after the mfd date");
+      }
+       } else{
+         alert('Cannot choose a date before the current date');
+         // console.log("Cannot choose a date before the current date");
+       }
+    }
+    else {
+      alert('You have to choose mfd date first');
+     // console.log("You have to choose mfd date first");
+    }
   }
    
 
@@ -154,8 +193,8 @@ function renderErrorFor (field) {
 
     <div className="container">
         <div className="row">
-          <div className="col-md-4">
-              <img src={image} alt="Image"  style={{ width:'100%' , height:'300px'}}/>
+        <div className="col-md-4" style={{ top:'10px', left:'-2%'}}>
+              <img src={image} alt="Image"  style={{ width:'100%' , height:'300px'}} className="test"/>
           </div>
           <div className="col-md-4">
             <h2 className="text-black">{name} {format}, {dosage} {unit}</h2>

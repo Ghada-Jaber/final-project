@@ -236,6 +236,7 @@ class UserController extends Controller
             $cart->delete();
             $addPayment->customer->pharmacy;
             $addPayment->customer->customer;
+            $addPayment->medicine;
 
         }
         

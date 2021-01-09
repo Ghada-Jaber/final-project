@@ -2,6 +2,7 @@
     text-align: center;
     flex-direction: column;
     display: flex;
+    background-color:rgba(0,0,0,0.2);
    
 }
 

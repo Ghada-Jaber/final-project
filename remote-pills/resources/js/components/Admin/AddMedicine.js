@@ -105,10 +105,6 @@ function handleUnitChange(event){
    
 function handleAddMedicine(event) {
   event.preventDefault();
-
-
-
-
   const fd = new FormData();
   fd.append('dosage_unit', unit);
         fd.append('symptom', symptomId);
@@ -120,12 +116,13 @@ function handleAddMedicine(event) {
         fd.append('tablet', tablet);
         fd.append('dosage', dosage);
         fd.append('dosage_unit', unit);
+        fd.append('image', image);
     
 
   api.addMedicineInfo(fd , {headers:{'Accept': "application/json",  'Content-Type': "multipart/form-data"}})
       .then(response => {
         console.log(response.data)
-        alert("add success");
+        alert("add medicine success");
 
         history.push('/manageMedicine')
         window.location.reload();
@@ -270,13 +267,14 @@ function filterFunction(event){
     <div className="templatemo-content-widget templatemo-login-widget  white-bg">
    <a onClick={() => closeForm()} ><i className="fa fa-times"></i></a>
     <div className="scrollform">
-    <div className="form-group">
+    <div className={`form-group ${hasErrorFor('image') ? 'has-error' : ''}`} >
           <div className="input-group" >
             <div className="input-group-addon">image</div>	        		
             <input type="file" className="form-control"
               onChange={handleImageChange}
                />   
 		          	</div>
+                {renderErrorFor('image')} 
                 </div>
 
           <div className={`form-group ${hasErrorFor('name') ? 'has-error' : ''}`} >
