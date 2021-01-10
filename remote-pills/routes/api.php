@@ -7,6 +7,7 @@ use App\Http\Controllers\PharmacyController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\DoctorController;
 use App\Http\Controllers\FirebaseController;
 
 /*
@@ -63,14 +64,19 @@ Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_ADM
 
 
     Route::get('/admin/allUsers/{type}', [AdminController::class, 'getUsers']);
+});
 
 
-    
+Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_DOCTOR])->group(function() {
+
+    Route::get('/doctor/getAskPrescription', [DoctorController::class, 'getAskPrescription']);
+
+    Route::get('/doctor/getPatient', [DoctorController::class, 'getPatient']);
 
 
-    
-    
-  
+    Route::get('/doctor/prescription/{patient}', [DoctorController::class, 'getDescription']);
+
+    Route::get('/doctor/getMedicine', [DoctorController::class, 'getMedicine']);
 
 });
 

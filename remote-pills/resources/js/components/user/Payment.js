@@ -217,23 +217,24 @@ function handleAddPayment(event){
 
     api.addPayment(payment)
     .then(response => {
-        console.log(response.data)
-        console.log(response.data.customer.pharmacy.FirebaseUID);
-        
-
-        const query = db.collection('fcm_token').where('userID', '==', response.data.customer.pharmacy.FirebaseUID).get();
-                  
-        
-        query.then(snapshot => {
-            console.log(snapshot.docs)
-            //console.log(snapshot.docs[0].data().userToken)
-         notification(snapshot.docs[0].data().userToken, response.data.id, response.data.customer.pharmacy.FirebaseUID, response.data.customer.customer.FirebaseUID, response.data.customer.customer.name, response.data.medicine.name);
-            }) 
-
-            document.getElementById('close').style.display = 'none';
+       let array = Array.from(Array(response.data.length), () => new Array(6))
+       var count = 0;
+        for(var i =0 ; i<response.data.length; i++){
+            const query = db.collection('fcm_token').where('userID', '==', response.data[i].customer.pharmacy.FirebaseUID).get();
+            query.then(snapshot => {
+                console.log(snapshot.docs)
+                
+                notification(snapshot.docs[0].data().userToken, response.data[count].id, response.data[count].customer.pharmacy.FirebaseUID, response.data[count].customer.customer.FirebaseUID, response.data[count].customer.customer.name, response.data[count].medicine.name)
             
-           
-
+                count++;
+                     document.getElementById('close').style.display = 'none';
+             setTimeout(function(){
+                 location.reload();
+             },1000);
+            })  
+            
+        }
+       
        
     })
     .catch(error => {

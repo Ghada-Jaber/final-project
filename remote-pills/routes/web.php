@@ -33,7 +33,7 @@ Route::view('medicine/show/{id}', 'app');
 
 Route::view('user/medicine/show/{id}', 'app');
 
-Route::view('doctor/prescription/{id}', 'app');
+Route::view('prescription/{id}', 'app');
 
 
 

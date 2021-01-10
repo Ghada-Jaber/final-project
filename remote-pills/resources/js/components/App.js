@@ -36,6 +36,11 @@ import ShowMedicine from './pharmacy/ShowMedicine';
 import Customer from './pharmacy/Customer';
 
 
+import Patient from './doctor/Patient';
+import Prescription from './doctor/Prescription';
+import AddPrescription from './doctor/AddPrescription';
+
+
 import Profile from './Profile';
 import Chat from './Chat';
 import Main from './Main/Main'
@@ -120,7 +125,9 @@ function App(){
       function doctor(){
         return(
           <Switch>
-            {/* <Route exact path='/patient' component={Patient} />  */}
+            <Route exact path='/patient' component={Patient} /> 
+            <Route exact path='/prescription' component={Prescription} /> 
+            <Route exact path='/prescription/:id' component={AddPrescription} /> 
 
           </Switch>
         )

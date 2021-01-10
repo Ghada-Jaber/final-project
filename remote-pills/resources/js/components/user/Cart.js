@@ -69,8 +69,6 @@ export  default function Cart(){
 function renderCart(){
     return cart.map(cart => {
 return(
-
-   
           renderBuy(cart)
     )
 })
@@ -136,9 +134,8 @@ function payment(){
                 </tbody>
               </table>
             </div>
-        </div>
-    
-        <div className="row">
+
+            <div className="row">
           <div className="col-md-6 pl-5">
             <div className="row justify-content-end">
               <div className="col-md-7">
@@ -171,6 +168,9 @@ function payment(){
             </div>
           </div>
         </div>
+        </div>
+    
+       
   
         <div id="payment" style={{ display:'none'}}>
               <Payment />

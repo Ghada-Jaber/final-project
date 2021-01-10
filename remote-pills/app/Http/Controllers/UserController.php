@@ -222,6 +222,7 @@ class UserController extends Controller
         $buy = $request['buy'];
 
         
+        $array = [];
         foreach($buy as $id){
             $cart = Cart::find($id);
 
@@ -234,16 +235,18 @@ class UserController extends Controller
             ]);
 
             $cart->delete();
-            $addPayment->customer->pharmacy;
+             $addPayment->customer->pharmacy;
             $addPayment->customer->customer;
             $addPayment->medicine;
+            array_push($array,  $addPayment); 
+          
 
         }
         
 
 
 
-        return response()->json($addPayment, 201);
+        return response()->json($array, 201);
     }
 
 

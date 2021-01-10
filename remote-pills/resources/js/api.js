@@ -167,6 +167,18 @@ export default{
     ShowPrescription: (id)=>
     axios.get(`${BASE_URL}/user/prescription/${id}`, token),
 
+    getAskPrescription: () =>
+    axios.get(`${BASE_URL}/doctor/getAskPrescription`, token),
+
+    getPatient: () =>
+    axios.get(`${BASE_URL}/doctor/getPatient`, token),
+
+    getMedicineAvailable: () =>
+    axios.get(`${BASE_URL}/doctor/getMedicine`, token),
+
+    getAddPrescription: (id) =>
+    axios.get(`${BASE_URL}/doctor/prescription/${id}`, token),
+
 
     sendNotification: (data)=>
     axios.post(`${BASE_URL}/save_fcm_token`, data, token),

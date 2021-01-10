@@ -281,8 +281,10 @@ return(
 function doctor(){
   return(
     <ul className="nav navbar-nav" >
-    <li className= {`${(page =='/medicine') ? 'active' : '' }`}>
+    <li className= {`${(page =='/patient') ? 'active' : '' }`}>
     <a href="patient"><i className="fa fa-medkit fa-fw"></i>Patient</a></li>
+    <li className= {`${(page =='/prescription') ? 'active' : '' }`}>
+    <a href="prescription"><i className="fa fa-medkit fa-fw"></i>Prescription</a></li>
     </ul>
   )
   }
@@ -407,7 +409,7 @@ function auth(){
                     
                     <ul className="dropdown-menu" 
                      style={{  overflowY: 'auto', minHeight:'200px', width:'350px' }} >
-                     {notifications.messages !='' ? 'showNotifications()'
+                     {notifications.length!=0 ? showNotifications()
                     : <li>no notification</li>}
    
                     </ul>

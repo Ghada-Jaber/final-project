@@ -97,7 +97,12 @@ function handleReservationChange(event){
 
 
 function handleQuantityChange(event){
+  if(event.target.value > 0){
   setQuantity(event.target.value);
+  }else{
+    // alert('no negative number')
+    // setQuantity(event.target.value);
+  }
 }
 
 
