@@ -5,7 +5,7 @@ import SignUp from '../auth/SignUp';
 import ForgetPassword from '../auth/ForgetPassword';
 import api from '../../api';
 import CookieService from '../../Service/CookieService';
-import logo from '../../../images/logo.png';
+import logo from '../../../images/logo2.png';
 
 
 import { messaging } from "../firebase/init-fcm";
@@ -304,7 +304,11 @@ return(
 function showNotifications(){
   return notifications.messages.map((message, i) =>{
     return(
-      <li key={i} style={{ borderBottom:'1px solid black', padding:'5px'}}>{message}</li>
+      <>
+      {i != notifications.messages.length-1  ? 
+        <li key={i} style={{ borderBottom:'1px solid black', padding:'5px'}}>{message}</li>
+        : <li key={i} style={{  padding:'5px'}}>{message}</li>}
+      </>
     )
   }) 
 }
@@ -362,12 +366,13 @@ function auth(){
 			  <div className="panel panel-default  offset-0" style={{ padding: '5px'}} >
 
         {/* <img src={require(test)} width="50px" height="50px" className="img"/> &nbsp;          */}
-        <div style={{ display:'flex'}}>
+        <div style={{ display:'flex', flexFlow: 'row wrap'}}>
         
         <img src= {image} 
         width="50px" height="50px" className="img"/>&nbsp;&nbsp;
 {/* <img src={require('../../../../storage/app/' + image)} width="50px" height="50px" className="img"/> &nbsp; */}
 {/* class="media-object img-circle templatemo-img-bordered" */}
+<div style={{ display:'flex', flexFlow: 'column wrap'}}>
 {greeting}&nbsp;&nbsp;
 
         <li className="nav-item dropdown">
@@ -386,6 +391,7 @@ function auth(){
                     </div>
                 </li>
                 </div> 
+                </div>
 			  </div>
 			  </div>
   </ul>
@@ -406,11 +412,18 @@ function auth(){
                         <sup className="badge badge-primary notification-count" 
                         >{notifications.count}</sup>
                     </a>
+
+
                     
-                    <ul className="dropdown-menu" 
-                     style={{  overflowY: 'auto', minHeight:'200px', width:'350px' }} >
-                     {notifications.length!=0 ? showNotifications()
-                    : <li>no notification</li>}
+                    
+                    <ul className={`dropdown-menu 
+                    ${notifications.length!=0 ? notifications.messages.length !=0 ? 'notificationscroll' : '' : ''}
+                    `}
+                   
+                      >
+
+                     {notifications.length!=0 ? notifications.messages.length !=0 ? showNotifications()
+                    : <li>no notification</li> :''}
    
                     </ul>
                 </li>
@@ -423,10 +436,6 @@ function guest(){
 return(
   <i>
      <ul className="nav navbar-nav" >
-                      <li className= {`${(page =='/home' || page =='/') ? 'active' : '' }`}>
-                      <a href="/home" ><i className="fa fa-home fa-fw"></i>Home</a></li>
-                
-                   
                       {/* <li><a href="service"><i className="fa fa-server fa-fw"></i>Service</a></li>
                        <li className="dropdown">
                     <a className="dropdown-toggle" data-toggle="dropdown" href="#"><i className="fa fa-sliders fa-fw"></i>Blog<span className="caret"></span></a>
@@ -454,6 +463,8 @@ return(
 )
 }
 
+
+
         return (
             <i >
             <nav className="navbar navbar-inverse navbar-fixed-top" >
@@ -465,14 +476,17 @@ return(
                   <span className="icon-bar"></span>                        
                 </button>
                     <h2>
-                      <img src={logo} width="50" height="50" alt="" style={{ marginRight:'5px' }}/>
+                      <img src={logo} width="200" height="50" alt="" style={{ marginRight:'5px' }}/>
                       <b>
-                        <font color="#2375b8">remote pills</font>
+                        {/* <font color="#2375b8">remote pills</font> */}
                       </b>
                     </h2>
               </div>
               <div className="collapse navbar-collapse" id="myNavbar">
-               
+              <ul className="nav navbar-nav" >
+                      <li className= {`${(page =='/home' || page =='/') ? 'active' : '' }`}>
+                      <a href="/home" ><i className="fa fa-home fa-fw"></i>Home</a></li>
+                      </ul>
 
               { cookie ? auth() : guest() }
                 

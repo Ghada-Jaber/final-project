@@ -223,7 +223,8 @@ export  default function ChatBoard(props){
 
     function scrollToBottom(){
         if (messagesEnd) {
-            messagesEnd.scrollIntoView({})
+            
+            messagesEnd.scrollIntoViewIfNeeded()
         }
     }
 
@@ -242,7 +243,7 @@ export  default function ChatBoard(props){
                 </div>
 
                 {/* List message */}
-                <div className="viewListContentChat">
+                <div className="viewListContentChat" id="chat">
                     {messages.length >0 ?  renderListMessage() : 
                         <div className="viewWrapSayHi">
                     <span className="textSayHi">Say hi to new friend</span>

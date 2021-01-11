@@ -58,8 +58,21 @@
     padding-right: 0;
 }
 
-body {	font-size: 13px;
+@font-face {
+	font-family: myFirstFont;
+	src: url(/fonts/Helvetica.otf);
+  }
+  
+  * {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	font-weight: bold;
+	font-family: myFirstFont;
+  }
 
+body {	
+	font-size: 15px;
 	background:url(/images/geometric-leaves.png?7afd00289cd8d904275b7ac044faa933) !important;
 	background-color:rgba(0,0,0,0.2) !important;
 	}
@@ -172,6 +185,21 @@ nav li {
 	background-color: #cc0000;
 	color: white;
 }
+
+
+.banner-1-inner {
+	position:absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+     }
+    .banner-1-inner h2 {
+      color: #000;
+      text-transform: uppercase;
+      font-weight: 900; }
+    .banner-1-inner p {
+      color: rgba(0, 0, 0, 0.5);
+      font-size: 1.2rem; }
 
 
 .scrollform{
@@ -1004,3 +1032,14 @@ select option{
   background-position:bottom left;
   padding-left: 20px;
   }
+
+
+  .notificationscroll{
+	overflow-y: auto;
+	 min-height:200px;
+	 width:350px;
+  }
+
+  
+
+  

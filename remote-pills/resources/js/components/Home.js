@@ -54,6 +54,11 @@ export  default function Home(){
 
       <div className="item">
         <img src="./images/bg_2.jpg" alt="Chicago" style={{ width: '100%', height:'500px'  }}/>
+        <div class="banner-1-inner ml-auto  align-self-center">
+                <h2>Rated by Experts</h2>
+                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Molestiae ex ad minus rem odio voluptatem.
+                </p>
+              </div>
       </div>
     
       <div className="item">
