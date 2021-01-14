@@ -7,23 +7,36 @@ import Payment from './Payment';
 
 export  default function Cart(){
   const [cart, setCart] = useState([]);
+  const [totals, setTotals] = useState(0);
+  var total =0;
 
   useEffect(() => {
    api.getCartMedicine().then(response => {
      console.log(response.data)
     setCart(response.data)
+
+    for(var i =0; i<response.data.length;i++){
+      for(var j =0; j< response.data[i].cart.length;j++){
+        total = total +(response.data[i].cart[j].price * response.data[i].cart[j].quantity);
+      }
+      
+    }
+
+    setTotals(total)
+
+    
   
 })
 
     
  },[]);
- var total =0;
+
 
  
 
  function renderBuy(carts){
     return carts.cart.map(buy=>{
-        total = total +(buy.price * buy.quantity);
+       
         return(
             <tr key={buy.id}  className={`${buy.reservation==1 ? 'orange-bg' : ''}`} >
             <td>
@@ -70,9 +83,7 @@ export  default function Cart(){
 function renderCart(){
     return cart.map(cart => {
 return(
-  <>
-  {cart.cart.length > 0 ? renderBuy(cart) : <tr><td>no data</td></tr>}
-          </>
+  renderBuy(cart)
     )
 })
 
@@ -112,8 +123,9 @@ function payment(){
               <div className="col-1">				 
             
               <div className="templatemo-content-widget no-padding">
-              
-            <div className="panel panel-default table-responsive">
+              {totals> 0 ? 
+              <>
+              <div className="panel panel-default table-responsive">
             <table id="myTable" className="table table-striped table-bordered templatemo-user-table"
              cellSpacing="0" width="100%">
                 <thead>
@@ -132,8 +144,6 @@ function payment(){
                 
                 {renderCart()}
 
-           
-
                 </tbody>
               </table>
             </div>
@@ -142,35 +152,26 @@ function payment(){
           <div className="col-md-6 pl-5">
             <div className="row justify-content-end">
               <div className="col-md-7">
-           
                 <div className="row">
-                  <div className="col-md-12 text-right border-bottom mb-5">
-                    <h3 className="text-black h4 text-uppercase">Cart Totals</h3>
-                    
+                  <div className="col-md-3">
+                    <span className="text-black">Price Totals</span>
+                  </div>
+                  <div className="col-md-4 text-right">
+                    <strong className="text-black">{totals}</strong>
+                  </div>
+                  <div className="col-md-4">
+                  <button  onClick={() => payment()}
+                    className="btn btn-primary" >Proceed To
+                      Checkout</button>
                   </div>
                  
-                </div>
-                <div className="row mb-5">
-                  <div className="col-md-6">
-                    <span className="text-black">Total</span>
-                  </div>
-                  <div className="col-md-6 text-right">
-                    <strong className="text-black">{total}</strong>
-                  </div>
-                </div>
-    
-                <div className="row">
-                  <div className="col-md-12">
-                    <button  onClick={() => payment()}
-                    className="btn btn-primary btn-lg btn-block" >Proceed To
-                      Checkout</button>
-                      {/* onClick="window.location='checkout.html'" */}
-                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
+              </>: 'cart is empty go buy some medicine'}
+            
         </div>
     
        

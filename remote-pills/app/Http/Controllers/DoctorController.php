@@ -6,7 +6,8 @@ use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Http\Request;
 use App\Models\Patient;
-use App\Models\User;
+use App\Models\Medicine;
+use App\Models\Prescription;
 
 class DoctorController extends Controller
 {
@@ -47,12 +48,41 @@ class DoctorController extends Controller
 
 
     public function getMedicine(){
-        $pharmacys = User::all();
+        $medicines = Medicine::all();
 
-        foreach($pharmacys as $pharmacy){
-            $pharmacy->medicine;
+        foreach($medicines as $medicine){
+            $medicine->pharmacy;
         }
         
-        return response()->json($pharmacys, 201); 
+        return response()->json($medicines, 201); 
+    }
+
+
+    public function sendPrescription(Request $request, Patient $patient){
+        $doctor = Auth::user();
+        $patient->doctor_id = $doctor->id;
+        $patient->save();
+
+
+        $send = $request['array'];
+
+
+        $array = explode("/", $send ); 
+
+        $arrlength =count($array);
+
+        for($i=0;$i<$arrlength-1;$i++){
+            $arr2 = explode(",",$array[$i]);
+            $medicine_id = $arr2[0];
+            $quantity = $arr2[1];
+
+            Prescription::create([
+                'patient_id' => $patient->id,
+                'medicine_id' => $medicine_id,
+                'quantity' => $quantity
+            ]);
+        }
+
+        return response()->json($send, 201); 
     }
 }

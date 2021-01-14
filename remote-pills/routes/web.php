@@ -21,8 +21,8 @@ Route::view('manageDoctor/edit/{id}', 'app');
 Route::view('managePharmacy/show/{id}', 'app');
 Route::view('managePharmacy/edit/{id}', 'app');
 
-Route::view('manageNormalUser/show/{id}', 'app');
-Route::view('manageNormalUser/edit/{id}', 'app');
+Route::view('manageUser/show/{id}', 'app');
+Route::view('manageUser/edit/{id}', 'app');
 
 Route::view('manageMedicine/show/{id}', 'app');
 Route::view('manageMedicine/edit/{id}', 'app');

@@ -148,13 +148,12 @@ function handleUpdateMedicine(event) {
             <div className="col-1">	
             <Back  />
 
-            <div className="col-md-4">
-              <img src={image} alt="Image"  style={{ width:'100%' , height:'300px'}}/>
-          </div>
+        
 
     <div className="templatemo-content-widget templatemo-login-widget  white-bg">
 
-
+    <img src= {image} 
+        width="70px" height="70px" /> <br/><br/>
           <div className={`form-group ${hasErrorFor('name') ? 'has-error' : ''}`} >
           <div className="input-group" >
             <div className="input-group-addon">name</div>	        		

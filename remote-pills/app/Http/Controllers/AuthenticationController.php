@@ -60,7 +60,8 @@ class AuthenticationController extends Controller
 
         $login = [
             'email' => $getRequest['email'],
-            'password' => $getRequest['password']
+            'password' => $getRequest['password'],
+            'active' => 1
         ];
 
         if(!Auth::attempt($login))
@@ -93,7 +94,7 @@ class AuthenticationController extends Controller
         // Return a JSON object containing the token datas
         // You may format this object to suit your needs
         return response()->json([
-            'id' => $user->id,
+            'role' => $user->roles,
             'access_token' => $tokenResult->accessToken,
             'token_type' => 'Bearer',
             'expires_at' => Carbon::parse(
@@ -115,8 +116,6 @@ class AuthenticationController extends Controller
     
     public function register(Request $request){
 
-        
-        
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email', //|exists:users
@@ -206,28 +205,24 @@ class AuthenticationController extends Controller
 
     public function details(){
         $user = auth()->user();
-        $street = $user->street->name;
-        $city = $user->street->city->name;
-        $country = $user->street->city->country->name;
-        $user->address = $street." , ".$city." , ".$country;
+        $street = $user->street;
+        $city = $user->street->city;
+        $country = $user->street->city->country;
+        $user->street = $street;
+        $user->city = $city;
+        $user->country = $country;
         return response()->json($user, 200);
     }
 
     public function setProfile(Request $request){
-       
-        if($request->hasFile('image')){
-            $image = $request['image']->store('public/uploads/userimage');
-
-      }else{
-          $image = "public/uploads/userimage/NoImage.png";
-      }
-
-      $url = Storage::url($image);
+      
 
 
         $u = Auth::user();
         $user = User::find($u->id);
-        $user->image = $url;
+        //$user->password = $request['password'];
+        $user->birthday = $request['birthday'];
+        $user->street_id = $request['street_id'];
         $user->save();
 
 

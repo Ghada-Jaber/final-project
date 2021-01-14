@@ -9,6 +9,7 @@ use App\Models\Medicine;
 use App\Models\MedicineSymptom;
 use App\Models\Symptom;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -125,6 +126,7 @@ class AdminController extends Controller
     public function getInfoPharmacy(User $user){
 
         $user->medicine;
+        $user->street->city->country;
         
         return response()->json($user, 201);
     }
@@ -136,6 +138,7 @@ class AdminController extends Controller
         foreach($user->doctor as $patient){
             $patient->patient;
         }
+        $user->street->city->country;
         
         return response()->json($user, 201);
     }
@@ -220,4 +223,24 @@ class AdminController extends Controller
         return response()->json($symptom, 201);
 
     }
+
+    public function deleteUser(User $user, Request $request){
+
+        $user->active = $request['active'];
+        $user->save();
+
+        return response()->json($user, 201);
+
+    }
+
+    public function activeUser(User $user, Request $request){
+
+        $user->active = $request['active'];
+        $user->save();
+
+        return response()->json($user, 201);
+
+    }
+
+    
 }

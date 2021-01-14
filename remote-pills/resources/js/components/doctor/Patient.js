@@ -122,7 +122,7 @@ function renderPrescription(){
         <div className="templatemo-content col-1 light-gray-bg">
         
          <Header />
-          <div className="templatemo-flex-row flex-content-row " >
+         <div className="templatemo-flex-row flex-content-row " style={{ marginTop:'100px' }}>
               <div className="col-1">		
       <div className="container"  >
         <div className="row" style={{  display: 'flex'}}>

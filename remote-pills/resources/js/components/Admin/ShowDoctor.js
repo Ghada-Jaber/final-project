@@ -26,6 +26,7 @@ export  default function ShowDoctor(props){
         setEmail(response.data.email);
         setOpened(response.data.birthday);
         setMedicine(response.data.doctor);
+        setAddress(response.data.street.name+", "+response.data.street.city.name+", "+response.data.street.city.country.name)
       })
 
   },[]);
@@ -56,7 +57,7 @@ export  default function ShowDoctor(props){
 
   <div className="container">
       <div className="row">
-        <div className="col-md-4">
+      <div className="col-md-4" style={{ top:'10px', left:'-2%'}}>
         <img src={image} alt="Image" width="50px" height="50px" className="img-fluid p-5" />
           <h2 className="text-black">{name}</h2>
 
@@ -64,7 +65,7 @@ export  default function ShowDoctor(props){
           <p>{email}</p>
 
           <h3>Address</h3>
-          <p></p>
+          <p>{address}</p>
 
           <h3>Opened</h3>
           <p>{open}</p>

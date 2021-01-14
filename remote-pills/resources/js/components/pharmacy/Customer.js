@@ -91,92 +91,6 @@ function handleSelectChange(event){
 }
 
 
-function renderOrder(){
-  return order.map(order => {
-      return(
-        <section>
-        
-        <div className="templatemo-content-widget no-padding white-bg col-sm-6 col-lg-4 text-center item mb-4" >
-        <br/>
-       
-        <h3 className="text-dark">{order.customer.name}</h3>
-       <div className="table-responsive" style={{ overflow:'auto', height:'100px'}}>
-                <table className="table">
-                <thead >
-                    <tr >
-                      <td><b>medicine name</b></td>
-                      <td><b>Price</b></td>
-                      <td><b>Quantity</b></td>
-                      <td><b>Action</b></td>
-                      </tr>
-                    </thead>
-                  <tbody>
-                  {order.buy.map(namepharmacy=>{
-             return(
-
-              <tr key={namepharmacy.id}>
-                 {delivred == namepharmacy.delivred  ? 
-                  <> 
-               <td>  
-               {namepharmacy.medicine.name} </td><td>{namepharmacy.price}</td>
-               <td>
-               {namepharmacy.quantity}
-               </td>
-               <td>
-               {namepharmacy.delivred== 0 ? 
-                <a onClick={() => deliver(namepharmacy.id)}
-                    className="btn btn-primary"
-                        title="deliver">
-                        <i className="fa fa-share fa-fw"></i>
-                     </a>: ''}
-               <a 
-                    className="btn btn-primary"
-                        title="show Payment">
-                        <i className="fa fa-info fa-fw"></i>
-                     </a>
-               </td>
-               </>
-               : <></>} 
-               </tr>
-              
-             )
-          })}
-
-          {order.cart.map(namepharmacy=>{
-             return(
-              <tr key={namepharmacy.id}>
-                 {delivred == 2 ? 
-                  <>
-                 {namepharmacy.reservation == 1  ? 
-                  <>
-               <td> {namepharmacy.medicine.name} </td><td>{namepharmacy.price}</td>
-               <td>
-               {namepharmacy.quantity}
-               </td>
-               <td>
-               <a 
-                    className="btn btn-primary"
-                        title="confirm">
-                        confirm
-                     </a>
-               </td>
-               </>
-                 : <></>}
-                 </>
-               : <></>} 
-               </tr>
-             )
-          })}
-                                   
-                  </tbody>
-                </table>
-              </div> 
-      </div>
-      </section>
-        )
-      })
-  }
-
 
     function renderOrders(){
       return orders.map(order => {
@@ -215,12 +129,12 @@ function renderOrder(){
                         className="btn btn-primary"
                             title="deliver">
                             <i className="fa fa-share fa-fw"></i>
-                         </a>: ''}
-                   <a 
+                         </a>:  <a 
                         className="btn btn-primary"
                             title="show Payment">
                             <i className="fa fa-info fa-fw"></i>
-                         </a>
+                         </a>}
+                  
                    </td>
                    </>
                    : <></>} 
@@ -241,6 +155,16 @@ function renderOrder(){
           </section>
             )
           })
+      }
+
+      function confirmReservation(cart_id){
+        const conf = {
+          confirm : 0
+        }
+        api.confirmReservation(cart_id, conf).then(response => {
+          window.location.reload()
+        }
+      )
       }
 
       function renderReservation(){
@@ -276,7 +200,7 @@ function renderOrder(){
                      {namepharmacy.quantity}
                      </td>
                      <td>
-                     <a 
+                     <a onClick ={()=> confirmReservation(namepharmacy.id)}
                           className="btn btn-primary"
                               title="confirm">
                               confirm
@@ -336,13 +260,13 @@ function renderOrder(){
         <div className="templatemo-content col-1 light-gray-bg">
         
          <Header />
-          <div className="templatemo-flex-row flex-content-row " >
+          <div className="templatemo-flex-row flex-content-row " style={{ marginTop:'100px' }}>
               <div className="col-1">		
       <div className="container"  >
         <div className="row" style={{  display: 'flex'}}>
 
        
-        <div className="search" style={{ marginRight:'10px' }}>   		
+        <div className="search" style={{ marginLeft:'10px', marginRight:'10px' }}>   		
 		              	<input type="text" className="form-control"
 						   placeholder="Serach"  
                onChange={filterFunction}

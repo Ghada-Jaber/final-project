@@ -59,7 +59,18 @@ function handleNameChange(event){
 
 
 function handleImageChange(event){
-  setImage(event.target.files[0]); 
+  
+  if (event.target.files && event.target.files[0]) {
+    // Check this file is an image?
+    const prefixFiletype = event.target.files[0].type.toString()
+    if (prefixFiletype.indexOf('image/') !== 0) {
+      document.getElementById('fileimage').value="";
+      alert('This file is not an image')
+      
+      return
+    }
+    setImage(event.target.files[0]); 
+  }
 }
 
 
@@ -122,7 +133,7 @@ function handleAddMedicine(event) {
   api.addMedicineInfo(fd , {headers:{'Accept': "application/json",  'Content-Type': "multipart/form-data"}})
       .then(response => {
         console.log(response.data)
-        alert("add medicine success");
+        alert("Add medicine success");
 
         history.push('/manageMedicine')
         window.location.reload();
@@ -216,17 +227,12 @@ function filterFunction(event){
 
     return(
       <div id="addmedicine"  className="formShow">
-              <div className="col-1">	
+              <div className="col-1" >	
 
-    <div style={{ marginTop:'10px' }} >
-        </div>
-
-        
-
-        <div className="col-md-4">
+        {/* <div className="col-md-4" >
         Symptom
         <div className="form-group">
-          <div className="search" style={{ marginRight:'10px' }}>  	      		
+          <div className="search" >  	      		
 		              	<input type="text" className="search form-control"
 						   placeholder="Serach"  
                id="myInput" onChange={filterFunction}
@@ -251,26 +257,17 @@ function filterFunction(event){
              
              	
 
-              <div className={`form-group ${hasErrorFor('symptom') ? 'has-error' : ''}`} >
-          <div className="input-group" >
-            <div className="input-group-addon">symptom</div>	        		
-            <select onChange={handleChangeSymptom} className="form-control select" size="5" 
-              multiple="multiple"
-              id="searchMed">
-							{ symptom.length >0 ? renderSymptom() : '' }
-              </select>
-		          	</div>
-                {renderErrorFor('symptom')} 
-                </div>
-          </div>
+            
+          </div> */}
 
     <div className="templatemo-content-widget templatemo-login-widget  white-bg">
    <a onClick={() => closeForm()} ><i className="fa fa-times"></i></a>
     <div className="scrollform">
+    
     <div className={`form-group ${hasErrorFor('image') ? 'has-error' : ''}`} >
           <div className="input-group" >
-            <div className="input-group-addon">image</div>	        		
-            <input type="file" className="form-control"
+            <div className="input-group-addon">Image</div>	        		
+            <input type="file" name="file" id="fileimage" className="form-control"
               onChange={handleImageChange}
                />   
 		          	</div>
@@ -279,7 +276,7 @@ function filterFunction(event){
 
           <div className={`form-group ${hasErrorFor('name') ? 'has-error' : ''}`} >
           <div className="input-group" >
-            <div className="input-group-addon">name</div>	        		
+            <div className="input-group-addon">Name</div>	        		
             <input type="text" className="form-control"
             value={name} onChange={handleNameChange}
             />  
@@ -290,7 +287,7 @@ function filterFunction(event){
 
                 <div className={`form-group ${hasErrorFor('format') ? 'has-error' : ''}`} >
           <div className="input-group" >
-            <div className="input-group-addon">format</div>	 
+            <div className="input-group-addon">Format</div>	 
             <select className="form-control"value={format} onChange={handleFormatChange} >
               <option value="Tablet">Tablet</option>
               <option value="Liquid">Liquid</option>
@@ -300,12 +297,22 @@ function filterFunction(event){
                 {renderErrorFor('format')} 
                 </div>
 
-
+                <div className={`form-group ${hasErrorFor('symptom') ? 'has-error' : ''}`} >
+          <div className="input-group" >
+            <div className="input-group-addon">Symptom</div>	        		
+            <select onChange={handleChangeSymptom} className="form-control select" size="5" 
+              multiple="multiple"
+              id="searchMed">
+							{ symptom.length >0 ? renderSymptom() : '' }
+              </select>
+		          	</div>
+                {renderErrorFor('symptom')} 
+                </div>
                 
 
                 <div className={`form-group ${hasErrorFor('description') ? 'has-error' : ''}`} >
           <div className="input-group" >
-            <div className="input-group-addon">description</div>	        		
+            <div className="input-group-addon">Description</div>	        		
             <textarea type="text" className="form-control"
              value={description} onChange={handleDescriptionChange}
 
@@ -316,7 +323,7 @@ function filterFunction(event){
 
                 <div className={`form-group ${hasErrorFor('ingredient') ? 'has-error' : ''}`} >
           <div className="input-group" >
-            <div className="input-group-addon">ingredient</div>	        		
+            <div className="input-group-addon">Ingredient</div>	        		
             <textarea type="text" className="form-control"
              value={ingredient} onChange={handleIngredientChange}
                />   
@@ -326,7 +333,7 @@ function filterFunction(event){
 
                 <div className={`form-group ${hasErrorFor('tablet') ? 'has-error' : ''}`} >
           <div className="input-group" >
-            <div className="input-group-addon">tablet</div>	        		
+            <div className="input-group-addon">Tablet</div>	        		
             <input type="number" className="form-control"
              value={tablet} onChange={handleTabletChange}
                />   
@@ -336,7 +343,7 @@ function filterFunction(event){
 
                 <div className={`form-group ${hasErrorFor('dosage') ? 'has-error' : ''}`} >
           <div className="input-group" >
-            <div className="input-group-addon">dosage</div>	        		
+            <div className="input-group-addon">Dosage</div>	        		
             <input type="number" className="form-control"
              value={dosage} onChange={handleDosageChange}
                />   
@@ -346,7 +353,7 @@ function filterFunction(event){
 
                 <div className={`form-group ${hasErrorFor('dosage_unit') ? 'has-error' : ''}`} >
           <div className="input-group" >
-            <div className="input-group-addon">dosage unit</div>	        		
+            <div className="input-group-addon">Dosage Unit</div>	        		
             <input type="text" className="form-control"
                value={unit} onChange={handleUnitChange}
                />   

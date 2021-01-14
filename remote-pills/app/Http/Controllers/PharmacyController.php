@@ -8,6 +8,7 @@ use App\Models\Medicine;
 use App\Models\Detail;
 use App\Models\Customer;
 use App\Models\Buy;
+use App\Models\Cart;
 
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
@@ -34,6 +35,13 @@ class PharmacyController extends Controller
         
 
         return response()->json($detail,200);
+    }
+
+
+    public function getAvailableMedicine(){
+        $medicine = Medicine::all();
+
+        return response()->json($medicine,200);
     }
 
     public function addMedicine(Request $request){
@@ -283,5 +291,12 @@ class PharmacyController extends Controller
           return response()->json($buy,200);
     }
     
+    public function confirm(Cart $cart, Request $request){
+        $cart->update([
+            'reservation' => $request['confirm']
+          ]);
+
+          return response()->json($cart,200);
+    }
     
 }

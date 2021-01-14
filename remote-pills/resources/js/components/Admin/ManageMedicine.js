@@ -257,17 +257,17 @@ for (i = 1; i < tr.length; i++) {
                     <th><a onClick={() => sortTable(2)} 
                      className="white-text templatemo-sort-by">
                     Name <span className="caret"></span></a></th>
-                    <th><a onClick={() => sortTable(4)}  className="white-text templatemo-sort-by">
+                    <th><a onClick={() => sortTable(3)}  className="white-text templatemo-sort-by">
                     Medicine description <span className="caret"></span></a></th>
-                    <th><a onClick={() => sortTable(5)}  className="white-text templatemo-sort-by">
+                    <th><a onClick={() => sortTable(4)}  className="white-text templatemo-sort-by">
                     Ingredient <span className="caret"></span></a></th>
-                    <th><a onClick={() => sortTable(6)}  className="white-text templatemo-sort-by">
+                    <th><a onClick={() => sortTable(5)}  className="white-text templatemo-sort-by">
                     Format <span className="caret"></span></a></th>
-                    <th><a onClick={() => sortTable(7)}  className="white-text templatemo-sort-by">
+                    <th><a onClick={() => sortTable(6)}  className="white-text templatemo-sort-by">
                     Need Prescription <span className="caret"></span></a></th>
-                    <th><a onClick={() => sortTable(8)}  className="white-text templatemo-sort-by">
+                    <th><a onClick={() => sortTable(7)}  className="white-text templatemo-sort-by">
                     Tablet <span className="caret"></span></a></th>
-                    <th><a onClick={() => sortTable(9)}  className="white-text templatemo-sort-by">
+                    <th><a onClick={() => sortTable(8)}  className="white-text templatemo-sort-by">
                     Dosage <span className="caret"></span></a></th>
                     <td>Action</td>
                   </tr>
@@ -276,10 +276,6 @@ for (i = 1; i < tr.length; i++) {
 
                 {medicine.length > 0 ? renderMedicine() : 
                 <tr><td colSpan="7" style={{ textAlign:'center' }} >no data</td></tr>}
-               
-
-                 
-
                 </tbody>
               </table>    
             </div> 

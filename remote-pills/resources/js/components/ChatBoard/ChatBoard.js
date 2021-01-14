@@ -185,7 +185,10 @@ export  default function ChatBoard(props){
             const prefixFiletype = event.target.files[0].type.toString()
             if (prefixFiletype.indexOf('image/') === 0) {
                 uploadPhoto()
+            }else{
+                alert('Only image allowed to send')
             }
+            
         }
     }
 

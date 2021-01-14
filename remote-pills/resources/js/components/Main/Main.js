@@ -63,11 +63,11 @@ export  default function Main(){
                     user.name
                     }`}</span>
                     <span className="textItem">
-                    role: &nbsp;
-                    {user.roles[0] == 'ROLE_ADMIN' ? 'admin'
-                    : user.roles[0] == 'ROLE_PHARMACY' ? 'pharmacy'
-                    :user.roles[0] == 'ROLE_DOCTOR' ? 'doctor'
-                    : 'normal user'
+                    Role: &nbsp;
+                    {user.roles[0] == 'ROLE_ADMIN' ? 'Admin'
+                    : user.roles[0] == 'ROLE_PHARMACY' ? 'Pharmacy'
+                    :user.roles[0] == 'ROLE_DOCTOR' ? 'Doctor'
+                    : 'Normal user'
                     }</span>
                             </div>
                         </button>
@@ -83,8 +83,8 @@ export  default function Main(){
             <div className="root">
                 {/* Header */}
                 <Header/>
-
-                <div className="body">
+                
+                <div className="body" style={{ marginTop:'90px' }}>
                     <div className="viewListUser"> 
                     {listUser.length > 0 ? renderListUser() : ''}
                     </div>

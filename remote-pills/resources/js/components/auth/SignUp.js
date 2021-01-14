@@ -116,7 +116,17 @@ export  default function SignUp(props){
 	}
 	
 	function handleImageChange(event){
-        setImg(event.target.files[0]);
+		if (event.target.files && event.target.files[0]) {
+			// Check this file is an image?
+			const prefixFiletype = event.target.files[0].type.toString()
+			if (prefixFiletype.indexOf('image/') !== 0) {
+				document.getElementById('file').value=""
+				alert('This file is not an image')
+				
+				return
+			}
+			setImg(event.target.files[0]);
+		}
     }
 
 
@@ -187,8 +197,6 @@ export  default function SignUp(props){
 
 	function handleCreateNewUser (event) {
 		event.preventDefault();
-
-
 		if (!firebase.apps.length) {
             firebase.initializeApp(config);
         }else {
@@ -218,7 +226,7 @@ export  default function SignUp(props){
 						if(props.props=='ROLE_NORMALUSER'){
 						const options = {Path: "/",Expires: response.data.expires, Secure: true};
 						CookieService.set('access_token', response.data.access, options);
-						history.push('/home');
+						history.push('/buy');
 						}
 						if(props.props=='ROLE_PHARMACY'){
 							history.push('/managePharmacy');
@@ -245,39 +253,6 @@ export  default function SignUp(props){
 		});
 
 
-        // const fd = new FormData();
-        // fd.append('image', img);
-        // fd.append('name', name);
-        // fd.append('email', email);
-        // fd.append('password', password);
-		// fd.append('confirm_password', confirm_password);
-		// fd.append('birthday', birthday);
-		// fd.append('street_id', streetId);
-		// fd.append('role', props.props);
-		
-		// //console.log(name+" "+email+" "+password+" "+confirm_password+" "+birthday+" "+streetId+" "+img);
-
-        // api.register(fd, {headers:{'Accept': "application/json",  'Content-Type': "multipart/form-data"}})
-        //     .then(response => {
-		// 		if(props.props=='ROLE_NORMALUSER'){
-        //         const options = {Path: "/",Expires: response.data.expires, Secure: true};
-        //         CookieService.set('access_token', response.data.access, options);
-		// 		history.push('/home');
-		// 		}
-		// 		if(props.props=='ROLE_PHARMACY'){
-		// 			history.push('/managePharmacy');
-		// 		}
-
-		// 		if(props.props=='ROLE_DOCTOR'){
-		// 			history.push('/manageDoctor');
-		// 		}
-
-		// 		window.location.reload();
-		// 		console.log('ehre')
-        //     }) .catch(error => {
-		// 		console.log(error)
-        //         setErrors(error.response.data.errors);
-        //     })
 	}
 	
 
@@ -407,7 +382,8 @@ export  default function SignUp(props){
 <div className="form-group">
 	        		<div className="input-group">
 		        		<div className="input-group-addon"><i className="fa fa-photo fa-fw"></i></div>	        		
-		              	<input type="file" className="form-control" name="file"  required 
+		              	<input type="file" className="form-control" name="file"
+						  id="file"  required 
 							   onChange={handleImageChange}
 						  />           
 		          	</div>	

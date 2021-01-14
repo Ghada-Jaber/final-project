@@ -50,19 +50,30 @@ export  default function Home(){
     <div className="carousel-inner">
       <div className="item active">
         <img src="./images/hero_1.jpg" alt="Los Angeles" style={{ width: '100%', height:'500px' }}/>
+        <div class="banner-1-inner ml-auto  align-self-center">
+                <h1>Pharmacy</h1>
+                <h2>
+                Find the medication you need near a location
+                </h2>
+              </div>
       </div>
 
       <div className="item">
         <img src="./images/bg_2.jpg" alt="Chicago" style={{ width: '100%', height:'500px'  }}/>
         <div class="banner-1-inner ml-auto  align-self-center">
-                <h2>Rated by Experts</h2>
-                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Molestiae ex ad minus rem odio voluptatem.
-                </p>
+                <h1>Doctor</h1>
+                <h2>Ask for prescription from doctor
+                </h2>
               </div>
       </div>
     
       <div className="item">
         <img src="./images/bg_3.jpg" alt="New york" style={{ width: '100%', height:'500px'  }}/>
+        <div class="banner-1-inner ml-auto  align-self-center">
+                <h1>User</h1>
+                <h2>Buy medicine from any pharmacy you need
+                </h2>
+              </div>
       </div>
     </div>
     <a className="left carousel-control" href="#myCarousel" data-slide="prev">

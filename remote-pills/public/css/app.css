@@ -50,8 +50,7 @@
 
 .ml-auto{margin-left:auto!important}
   
-  
-* {	font-family: 'Open Sans', sans-serif; }
+ 
 
 .offset-0 {
     padding-left: 0;
@@ -74,6 +73,8 @@
 body {	
 	font-size: 15px;
 	background:url(/images/geometric-leaves.png?7afd00289cd8d904275b7ac044faa933) !important;
+
+	
 	background-color:rgba(0,0,0,0.2) !important;
 	}
 body, .templatemo-left-nav { background: #1f2124; }
@@ -141,9 +142,9 @@ a:hover { text-decoration: none !important;}
 	 } */
 
 nav li {
-	font-size: 1.1em;
+	font-size: 18px;
 	list-style: none;	
-	text-transform: uppercase;
+	
 }
 .templatemo-inline-block {
 	display: inline-block;
@@ -156,7 +157,25 @@ nav li {
 .green-bg {	background-color: #39ADB4; }
 
 .yellow-bg { background-color: #D8D138; }
-.white-bg {	background-color: white; }
+.white-bg {	background-color: white; 
+	box-shadow: 10px 10px 5px rgba(0,0,0,0.2) !important;
+}
+
+.menuwidth{
+min-width: 100px !important;
+margin: 0 auto !important;
+padding:0px !important;
+text-align:center !important;
+}
+
+
+.navbar-nav{
+	height:25px;
+}
+ .itemstyle li{
+	 font-weight:normal;
+ }
+
 .orange-bg {
 	background-color: #D7425C;/* For browsers that do not support gradients */
 	background-image: radial-gradient(#D7425C, #D7425C, #D7425C);
@@ -192,14 +211,15 @@ nav li {
 	top: 50%;
 	left: 50%;
 	transform: translate(-50%, -50%);
+	text-align: center;
      }
-    .banner-1-inner h2 {
-      color: #000;
+    .banner-1-inner h1 {
+      color: black;
       text-transform: uppercase;
       font-weight: 900; }
-    .banner-1-inner p {
-      color: rgba(0, 0, 0, 0.5);
-      font-size: 1.2rem; }
+    .banner-1-inner h2 {
+      color: black;
+     }
 
 
 .scrollform{
@@ -346,9 +366,28 @@ h3{
 	background-color: #39ADB4;
 	color: white;
 }
+
+::-moz-placeholder {
+	color: rgb(209, 207, 207) !important;
+	opacity: 1; /* Firefox */
+  }
+
+:-ms-input-placeholder {
+	color: rgb(209, 207, 207) !important;
+	opacity: 1; /* Firefox */
+  }
+
+::placeholder {
+	color: rgb(209, 207, 207) !important;
+	opacity: 1; /* Firefox */
+  }
+
+
 .form-control.highlight::-webkit-input-placeholder { /* WebKit browsers */
     color:    #ccc;
 }
+
+
 .form-control.highlight:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
    color:    #ccc;
    opacity:  1;
@@ -475,11 +514,10 @@ h3{
 .media { margin-top: 0; }
 .media-body { vertical-align: middle; }
 .badge {
-	background-color: #d6973d;
-	border-radius: 5px;
-	margin-left: 5px;
-	padding: 5px 10px;
-	vertical-align: top;
+	background-color: #2375b8 !important;
+	margin-left: -6px !important;
+	padding: 5px 10px !important;
+	vertical-align: top !important;
 }
 .templatemo-img-bordered {
 	border: 1px solid #ccc;
@@ -798,6 +836,8 @@ input[type="radio"]:checked + label span {
 	.templatemo-top-nav a { padding: 0 15px; }
 }
 
+
+
 @media screen and (max-width: 992px) {
 	nav li { font-size: 1em; }
 	.templatemo-left-nav a { padding: 15px 10px; }	
@@ -903,6 +943,7 @@ select option{
 
 
   .logincontainer{
+	  overflow:auto;
 	background-repeat: no-repeat;
 	background-position:center right;
 	background-image: url(/images/background.png?72fa2112fc830c8d4fdd847bdbfd2f3f);
@@ -916,6 +957,7 @@ select option{
 }
 
 .formShow{
+	overflow:auto;
 	background-repeat: no-repeat;
 	background-position:center right;
 	background-color:rgba(0,0,0,0.8);
@@ -1038,6 +1080,12 @@ select option{
 	overflow-y: auto;
 	 min-height:200px;
 	 width:350px;
+	 
+  }
+
+  .notificationscroll li{
+	text-align:center;
+
   }
 
   

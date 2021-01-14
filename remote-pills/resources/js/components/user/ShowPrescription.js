@@ -31,6 +31,9 @@ export  default function ShowPrescription(props){
         )
       })
   }
+  function goBack(){
+    history.goBack();
+}
 
     return(
         <div className="templatemo-flex-row">
@@ -40,11 +43,12 @@ export  default function ShowPrescription(props){
          <Header />
           <div className="templatemo-flex-row flex-content-row " style={{ marginTop:'100px' }}>
               <div className="col-1">		
-      
-
-      <Back  />
 
       <div className="templatemo-content-widget no-padding">
+      <a className='btn btn-primary' onClick={goBack}>
+                    <i className="fa fa-arrow-left"></i>
+                </a>  
+                <br /> <br />
             <div className="panel panel-default table-responsive">
             <table id="myTable" className="table table-striped table-bordered templatemo-user-table"
              cellSpacing="0" width="100%">

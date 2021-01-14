@@ -265,15 +265,15 @@ return(
                     <a className="dropdown-toggle" data-toggle="dropdown" href="#"><i className="fa fa-bar-chart fa-fw"></i>
                     Manage Users<span className="caret"></span></a>
                     <ul className="dropdown-menu">
-                    <li><a href="/manageDoctor">Doctor</a></li>
-                    <li><a href="/managePharmacy">Pharmacy</a></li>
-                    <li><a href="/manageUser">User</a></li>
+                    <li><a href="/manageDoctor">Doctors</a></li>
+                    <li><a href="/managePharmacy">Pharmacies</a></li>
+                    <li><a href="/manageUser">Users</a></li>
                        
                      
                     </ul>
                   </li>
                   <li className= {`${(page =='/manageMedicine') ? 'active' : '' }`}>
-  <a href="manageMedicine"><i className="fa fa-medkit fa-fw"></i>manage medicine</a></li>
+  <a href="/manageMedicine"><i className="fa fa-medkit fa-fw"></i>manage medicine</a></li>
                   </ul>
 )
 }
@@ -282,9 +282,9 @@ function doctor(){
   return(
     <ul className="nav navbar-nav" >
     <li className= {`${(page =='/patient') ? 'active' : '' }`}>
-    <a href="patient"><i className="fa fa-medkit fa-fw"></i>Patient</a></li>
+    <a href="/patient"><i className="fa fa-medkit fa-fw"></i>Patient</a></li>
     <li className= {`${(page =='/prescription') ? 'active' : '' }`}>
-    <a href="prescription"><i className="fa fa-medkit fa-fw"></i>Prescription</a></li>
+    <a href="/prescription"><i className="fa fa-medkit fa-fw"></i>Prescription</a></li>
     </ul>
   )
   }
@@ -306,7 +306,7 @@ function showNotifications(){
     return(
       <>
       {i != notifications.messages.length-1  ? 
-        <li key={i} style={{ borderBottom:'1px solid black', padding:'5px'}}>{message}</li>
+        <li key={i} style={{ borderBottom:'1px solid  rgba(0,0,0,0.1)', padding:'5px'}}>{message}</li>
         : <li key={i} style={{  padding:'5px'}}>{message}</li>}
       </>
     )
@@ -346,7 +346,7 @@ function seeNotification(){
 }
 function auth(){
   return (
-    <i> 
+    <> 
 
 {role == 'ROLE_ADMIN' ? admin() : ''}
 
@@ -363,31 +363,31 @@ function auth(){
 
       <div className="panel-group" id="accordion">
       
-			  <div className="panel panel-default  offset-0" style={{ padding: '5px'}} >
+			  <div className=" offset-0" style={{ padding: '5px'}} >
 
         {/* <img src={require(test)} width="50px" height="50px" className="img"/> &nbsp;          */}
         <div style={{ display:'flex', flexFlow: 'row wrap'}}>
         
         <img src= {image} 
-        width="50px" height="50px" className="img"/>&nbsp;&nbsp;
+        width="60px" height="60px" className="img"/>&nbsp;&nbsp;
 {/* <img src={require('../../../../storage/app/' + image)} width="50px" height="50px" className="img"/> &nbsp; */}
 {/* class="media-object img-circle templatemo-img-bordered" */}
 <div style={{ display:'flex', flexFlow: 'column wrap'}}>
-{greeting}&nbsp;&nbsp;
+<div style={{ marginBottom : '10px'}}></div>
+<font color="white">{greeting}</font>
 
         <li className="nav-item dropdown">
                     <a id="navbarDropdown" className="nav-link dropdown-toggle"
                     role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {name}
                     </a>
-                    <div className="dropdown-menu dropdown-menu-right"
-                    style={{ fontSize:'17px',padding:'5px',textAlign:'center' }}
-                     aria-labelledby="navbarDropdown">
+                    <div className="dropdown-menu menuwidth" aria-labelledby="navbarDropdown">
+
                          <a className="dropdown-item" href="/profile" >
-                         <i className="fa fa-id-badge fa-fw"></i>Profile</a>
+                         <br/><i className="fa fa-id-badge fa-fw"></i>Profile</a>
                            <hr/>
                         <a className="dropdown-item" onClick= {() => handleLogout()}>
-                        <i className="fa fa-sign-out fa-fw"></i>Logout</a>
+                        <i className="fa fa-sign-out fa-fw"></i>Logout</a><br/><br/>
                     </div>
                 </li>
                 </div> 
@@ -400,7 +400,7 @@ function auth(){
   <li className="dropdown">
 
 <a   href="/chat">
-  <i className="fa fa-comments fa-fw"></i>
+  <i className="fa fa-comments fa-fw"  style={{ fontSize:'20px'}}></i>
   {/* <sup className="badge badge-success notification-count">2</sup> */}
                     </a>
 </li>
@@ -408,7 +408,8 @@ function auth(){
     <li className="dropdown">
                     <a id="navbarDropdown" className="dropdown-toggle"
                     data-toggle="dropdown" onClick={() => seeNotification()}>
-                        <i className="fa fa-bell fa-fw"></i>
+                        <i className="fa fa-bell fa-fw"
+                        style={{ fontSize:'20px'}}></i>
                         <sup className="badge badge-primary notification-count" 
                         >{notifications.count}</sup>
                     </a>
@@ -416,19 +417,19 @@ function auth(){
 
                     
                     
-                    <ul className={`dropdown-menu 
+                    <ul className={`dropdown-menu itemstyle
                     ${notifications.length!=0 ? notifications.messages.length !=0 ? 'notificationscroll' : '' : ''}
                     `}
                    
                       >
 
                      {notifications.length!=0 ? notifications.messages.length !=0 ? showNotifications()
-                    : <li>no notification</li> :''}
+                    : <li style={{padding:'5px'}}>no notification</li> :''}
    
                     </ul>
                 </li>
     </ul>
-  </i>
+  </>
   )
 }
 
@@ -466,7 +467,7 @@ return(
 
 
         return (
-            <i >
+            <>
             <nav className="navbar navbar-inverse navbar-fixed-top" >
             <div className="container-fluid">
               <div className="navbar-header  " style={{ marginRight:'5px' }}>
@@ -475,12 +476,10 @@ return(
                   <span className="icon-bar"></span>
                   <span className="icon-bar"></span>                        
                 </button>
-                    <h2>
-                      <img src={logo} width="200" height="50" alt="" style={{ marginRight:'5px' }}/>
+                      <img src={logo} width="200" height="70" alt="" style={{ marginRight:'5px' }}/>
                       <b>
                         {/* <font color="#2375b8">remote pills</font> */}
                       </b>
-                    </h2>
               </div>
               <div className="collapse navbar-collapse" id="myNavbar">
               <ul className="nav navbar-nav" >
@@ -508,8 +507,8 @@ return(
                 <ForgetPassword/>
               </div>
           
-          <div style={{ marginTop:'120px' }}> </div>
-          </i>
+          
+          </>
 
         )
 

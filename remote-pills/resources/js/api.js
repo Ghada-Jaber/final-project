@@ -29,7 +29,7 @@ export default{
     axios.get(`${BASE_URL}/details`, token),
 
     changeProfile: (profile) =>
-    axios.post(`${BASE_URL}/user/profile`, profile, token),
+    axios.put(`${BASE_URL}/user/profile`, profile, token),
 
     logout: () =>
     axios.get(`${BASE_URL}/logout`, token),
@@ -42,6 +42,13 @@ export default{
 
     getStreet: (city_id) =>
     axios.get(`${BASE_URL}/street/${city_id}`),
+
+
+    deleteUser: (id, active) =>
+    axios.put(`${BASE_URL}/admin/user/delete/${id}`, active, token),
+
+    activeUser: (id, active) =>
+    axios.put(`${BASE_URL}/admin/user/active/${id}`, active, token),
 
     getInfoPharmacy: (id) =>
     axios.get(`${BASE_URL}/admin/pharmacy/getInfo/${id}`, token),
@@ -81,6 +88,9 @@ export default{
 
     getAllSymptom: () =>
     axios.get(`${BASE_URL}/admin/getAllSymptom`, token),
+
+    getAllAvailableMedicine: () =>
+    axios.get(`${BASE_URL}/pharmacy/available/medicine`, token),
 
     getMedicine: () =>
     axios.get(`${BASE_URL}/pharmacy/medicine`, token),
@@ -134,7 +144,11 @@ export default{
 
 
     deliver: (buy_id, deliver) =>
-    axios.post(`${BASE_URL}/pharmacy/deliver/${buy_id}`, deliver, token),
+    axios.put(`${BASE_URL}/pharmacy/deliver/${buy_id}`, deliver, token),
+
+
+    confirmReservation: (cart_id, conf) =>
+    axios.put(`${BASE_URL}/pharmacy/confirm/${cart_id}`, conf, token),
 
     
 
@@ -180,10 +194,17 @@ export default{
     axios.get(`${BASE_URL}/doctor/prescription/${id}`, token),
 
 
+    sendPrescription: (send, id) =>
+    axios.post(`${BASE_URL}/doctor/send/${id}`, send, token),
+
+
     sendNotification: (data)=>
     axios.post(`${BASE_URL}/save_fcm_token`, data, token),
 
 
     getusers: () =>
     axios.get(`${BASE_URL}/all/users`, token),
+
+
+    
 }

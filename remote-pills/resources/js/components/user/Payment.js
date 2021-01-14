@@ -250,95 +250,23 @@ function handleAddPayment(event){
     return(
         <div className="formShow" id="close">
       <div className="col-1 " >	
-    <div className="container ">
-        <div className="row white-bg">
+      <div className="templatemo-content-widget templatemo-login-widget  white-bg"
+		 >
         <a onClick={() => closeForm()} ><i className="fa fa-times"></i></a>
-          <div className="col-md-6 ">
-            <h2 className="text-black">1. Payment Method</h2>
-          
+            <div >
+            <h2 className="text-black">Payment Method</h2>
 
                 <div className="form-group">
 				        <input type="radio" onChange={handleChangeType}
                         value="on delivery"
                          name="radio" id="r5" defaultChecked={true} />
-						<label htmlFor="r5" ><span></span>On Delivery</label>			    
+						<label htmlFor="r5" ><span></span>On Delivery</label> &nbsp;
+                        <button onClick={(event) => handleAddPayment(event)} 
+                className="btn btn-primary">Buy</button>  			    
 				</div>
 
-                  <div className="form-group">
-				        <input type="radio" onChange={handleChangeType}
-                        value="credit card"
-                         name="radio" id="r6" defaultChecked={false} />
-						<label htmlFor="r6" ><span></span>Credit card</label>
-                        <img src="./images/cards.png" />			    
-				</div>
-
-            <div  className={`form-group ${hasErrorFor('nameOnCard') ? 'has-error' : ''}`}  >
-	        		<div className="input-group">
-		        		<div className="input-group-addon"><i className="fa fa-user fa-fw"></i></div>	        		
-		              	<input type="text" className="form-control" 
-						   placeholder=" Full Name" 
-                           value={name}
-                           onChange={handleChangeName}
-						    />
-
-
-                                   
-		          	</div>	
-                      {renderErrorFor('nameOnCard')}     
-	        	</div>
-           
-            <div  className={`form-group ${hasErrorFor('creditCardNumber') ? 'has-error' : ''}`} >
-	        		<div className="input-group">
-		        		<div className="input-group-addon"><i className="fa fa-credit-card fa-fw"></i></div>	        		
-		              	<input type="number" className="form-control" 
-						   placeholder=" Card Number" 
-                           value={number}
-                           onChange={handleChangeNumber}
-						    />
-
-
-                                   
-		          	</div>	
-                      {renderErrorFor('creditCardNumber')}  
-	        	</div>
-
-                <div  className={`form-group ${hasErrorFor('expiryDate') ? 'has-error' : ''}`}  >
-	        		<div className="input-group">
-		        		<div className="input-group-addon">Exp Date</div>	        		
-		                <input type="month" className="form-control" 
-                          value={expiry}
-                           onChange={handleChangeExpiry}
-						    />
-
-                                   
-		          	</div>	
-                      {renderErrorFor('expiryDate')}
-	        	</div>
-                <div  className={`form-group ${hasErrorFor('cvvCode') ? 'has-error' : ''}`} >
-	        		<div className="input-group">
-                            <div className="input-group-addon">CVC</div>	        		
-		                <input type="number" className="form-control"  maxLength="3"
-                          value={cvv}
-                           onChange={handleChangeCvv}
-						    />
-
-
-                                   
-		          	</div>	
-                      {renderErrorFor('cvvCode')}
-	        	</div>
-
-                <button onClick={(event) => handleAddPayment(event)} 
-                className="btn btn-primary">Buy</button>
-
-
-              
-
-              
-            
-</div>
-            <div className="col-md-6">
-            <h4 style={{ color:'#2375b8' }}>Card Summary</h4>
+               
+            <h4 style={{ color:'#2375b8' }}>Buy Summary</h4>
             
             <div style={{ overflow:'auto', width:'300px', height:'400px', padding:'10px' }}>
                 {renderCart()}
@@ -351,7 +279,7 @@ function handleAddPayment(event){
               {total}
             </div>
 
-        </div>
+        
       </div>
        </div>   
        </div>

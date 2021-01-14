@@ -34,6 +34,10 @@ Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_ADM
 
     Route::get('/users', [AdminController::class, 'getUsers']); 
 
+    Route::put('/admin/user/delete/{user}', [AdminController::class, 'deleteUser']); 
+
+    Route::put('/admin/user/active/{user}', [AdminController::class, 'activeUser']);
+
     Route::post('/admin/medicine/addInfo', [AdminController::class, 'addMedicine']); 
 
     Route::get('/admin/pharmacy/getInfo/{user}', [AdminController::class, 'getInfoPharmacy']);
@@ -78,6 +82,9 @@ Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_DOC
 
     Route::get('/doctor/getMedicine', [DoctorController::class, 'getMedicine']);
 
+    Route::post('/doctor/send/{patient}', [DoctorController::class, 'sendPrescription']);
+    
+
 });
 
 
@@ -87,6 +94,10 @@ Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_PHA
 
 
     Route::get('/pharmacy/medicine', [PharmacyController::class, 'getMedicine']); 
+
+    Route::get('/pharmacy/available/medicine', [PharmacyController::class, 'getAvailableMedicine']); 
+
+    
 
     Route::post('/pharmacy/medicine/getByName', [PharmacyController::class, 'getMedicineByName']); 
 
@@ -114,7 +125,11 @@ Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_PHA
     Route::put('/pharmacy/customer/{customer}', [PharmacyController::class, 'showCustomer']);   
     
     
-    Route::post('/pharmacy/deliver/{buy}', [PharmacyController::class, 'deliver']); 
+    Route::put('/pharmacy/deliver/{buy}', [PharmacyController::class, 'deliver']); 
+
+    Route::put('/pharmacy/confirm/{cart}', [PharmacyController::class, 'confirm']); 
+
+    
 
 });
 
@@ -134,7 +149,7 @@ Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_NOR
     Route::get('/user/cart/getCartMedicine', [UserController::class, 'getCartMedicine']);
 
 
-    Route::delete('/user/cart/deleteCart/{buy}', [UserController::class, 'deleteCartMedicine']);
+    Route::delete('/user/cart/deleteCart/{cart}', [UserController::class, 'deleteCartMedicine']);
 
 
     Route::post('/user/addPayment', [UserController::class, 'addPayment']);
@@ -155,7 +170,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/all/users', [UserController::class, 'getAllUsers']); 
 
 
-    Route::post('/user/profile', [AuthenticationController::class, 'setProfile']);
+    Route::put('/user/profile', [AuthenticationController::class, 'setProfile']);
 
   
 

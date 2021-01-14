@@ -191,13 +191,14 @@ class UserController extends Controller
     }
 
 
-    function deleteCartMedicine(Buy $buy){
-        $buy->delete();
-        return response()->json($buy, 201);
+    public function deleteCartMedicine(Cart $cart){
+        $cart->delete();
+
+        return response()->json($cart, 201);
     }
 
 
-    function addPayment(Request $request){
+    public function addPayment(Request $request){
         
         if($request['type']== 'credit card'){
             $request->validate([

@@ -15,6 +15,7 @@ class AddCountryToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->foreignId('street_id')->constrained('street')->onDelete('cascade');
+            $table->boolean('active')->default(1);
         });
     }
 

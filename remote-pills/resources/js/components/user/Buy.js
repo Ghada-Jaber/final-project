@@ -116,7 +116,7 @@ function  askPrescription(event, name){
 
   api.askPrescription(patient)
   .then(response => {
-    alert('ask done')
+    alert('Your request has been sent successfully')
   })
   .catch(error => {
      setErrors(error.response.data.errors)
@@ -136,7 +136,7 @@ function addToCart(event, medicine_id, pharmacy_id, price){
 
 api.addToCart(medicine_id, addtocart)
 .then(response => {
-  alert('add done')
+  alert('Item Added To Cart')
 })
 .catch(error => {
    // setErrors(error.response.data.errors)
@@ -208,12 +208,13 @@ function renderMedicine(){
 
               <div  className={`form-group ${hasErrorFor('description') ? 'has-error' : ''}`} style={{ padding: '5px'}}>
 	        		<div className="input-group">
-		        		<div className="input-group-addon">
-                <button onClick={(event) => askPrescription(event, pharmacy.name)}
-               className="btn btn-danger">Ask Prescription</button></div>	        		
+		        	      		
                 <textarea  onChange={handleDescriptionChange}
-              placeholder="write your description this medicine need prescription"
+              placeholder="What you are feeling ?"
                className="form-control"></textarea>
+               	<div className="input-group-addon">
+                <button onClick={(event) => askPrescription(event, pharmacy.name)}
+               className="btn btn-danger">Ask for Prescription</button></div>	  
                                    
 		          	</div>
                  
@@ -313,15 +314,15 @@ function handleStreetChange(event){
         <div className="templatemo-content col-1 light-gray-bg">
         
          <Header />
-          <div className="templatemo-flex-row flex-content-row " >
+         <div className="templatemo-flex-row flex-content-row " style={{ marginTop:'100px' }}>
               <div className="col-1">		
       <div className="container"  >
         <div className="row" style={{  display: 'flex'}}>
 
        
-        <div className="search" style={{ marginRight:'10px' }}>   		
+        <div className="search" style={{marginLeft:'10px', marginRight:'10px' }}>   		
 		              	<input type="text" className="form-control"
-						   placeholder="Serach"  
+						   placeholder="Search"  
                onChange={filterFunction}
                />   
                </div>
@@ -364,7 +365,7 @@ function handleStreetChange(event){
   
     <div className="row">
         <div id="showSearch">
-      {renderMedicine()}
+      {medicine.length> 0 ? renderMedicine() : 'no data'}
       </div>
 
      

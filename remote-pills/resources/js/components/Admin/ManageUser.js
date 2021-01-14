@@ -112,13 +112,30 @@ for (i = 1; i < tr.length; i++) {
 
    function handleDeleteMedicine(medicine_id){ //I added event here and in line 89
     event.preventDefault();
-    var confirm_delete = confirm('Are you sure you want to Delete Medicine?');
+    var confirm_delete = confirm('Are you sure you want to Deactivate This User?');
     if (confirm_delete == true) {
-        api.deleteMedicine(medicine_id).then(response => {
-            window.location.reload();
-        })
+      const active = {
+        active:0
+      }
+      api.deleteUser(medicine_id, active).then(response => {
+        window.location.reload()
+      })
     }
 }
+
+function handleActiveUser(medicine_id){ //I added event here and in line 89
+  event.preventDefault();
+  var confirm_delete = confirm('Are you sure you want to Activate This User?');
+  if (confirm_delete == true) {
+    const active = {
+      active:1
+    }
+    api.activeUser(medicine_id, active).then(response => {
+      window.location.reload()
+    })
+  }
+}
+
 
   
 
@@ -139,22 +156,25 @@ for (i = 1; i < tr.length; i++) {
                     <div className="btn-group " role="group">
                     
                                
-                               <a href={`/managePharmacy/show/${medicine.id}`}
+                               <a href={`/manageUser/show/${medicine.id}`}
                                className="btn btn-info"
                                    title="Show">
                                    <i className="fa fa-info fa-fw"></i>
                                 </a>
-                                <a href={`/managePharmacy/edit/${medicine.id}`}
-                                className="btn btn-primary"
-                                   title="Edit">
-                                   <i className="fa fa-edit fa-fw"></i>
-                                </a>
                             
-                                <a  onClick= {() => handleDeleteMedicine(medicine.id)}
+                                {medicine.active ==1 ? 
+                                  <a  onClick= {() => handleDeleteMedicine(medicine.id)}
                                  className="btn btn-default"
-                                   title="Delete">
+                                   title="Deactivate">
                                    <i className="fa fa-trash fa-fw"></i>
                                 </a>
+                                : 
+                                <a  onClick= {() => handleActiveUser(medicine.id)}
+                                 className="btn btn-default"
+                                   title="Activate">
+                                   <i className="fa fa-check fa-fw"></i>
+                                </a>
+                                }
                             </div>
                             </td>
                   </tr>
@@ -182,7 +202,7 @@ for (i = 1; i < tr.length; i++) {
              
         <div className="search" style={{ marginLeft:'10px', marginRight:'10px' }}>  	        		
 		              	<input type="text" className="form-control"
-						   placeholder="Serach" 
+						   placeholder="Search" 
                            onChange={filterFunction} 
                />  
                </div>
@@ -202,7 +222,7 @@ for (i = 1; i < tr.length; i++) {
                     Address <span className="caret"></span></a></th>
                     <th><a onClick={() => sortTable(4)}  className="white-text templatemo-sort-by">
                     Email <span className="caret"></span></a></th>
-                    <th><a onClick={() => sortTable(6)}  className="white-text templatemo-sort-by">
+                    <th><a onClick={() => sortTable(5)}  className="white-text templatemo-sort-by">
                     opened <span className="caret"></span></a></th>
                     <td>Action</td>
                   </tr>

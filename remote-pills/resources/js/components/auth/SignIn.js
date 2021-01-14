@@ -75,12 +75,35 @@ export  default function SignIn(){
             api.firebaseLogin(login).then(response => {
                 const options = {Path: "/",Expires: response.data.expires_at, Secure: true};
                 CookieService.set('access_token', response.data.access_token, options);
+
+                if(response.data.role[0]=='ROLE_ADMIN'){
+                    history.push('/manageMedicine') 
+                }
+
+                if(response.data.role[0]=='ROLE_DOCTOR'){
+                    history.push('/patient') 
+                }
+              
+                if(response.data.role[0]=='ROLE_PHARMACY'){
+                    history.push('/medicine') 
+                }
+
+                if(response.data.role[0]=='ROLE_NORMALUSER'){
+                    history.push('/buy') 
+                }
     
-                history.push('/')
+                // history.push('/')
                
                 window.location.reload();
               }
-            );
+            ).catch(error => {
+                console.log('here')
+
+                if(error.response.data.error == 'Unauthorised'){
+                    alert('incorrect username or password');
+                }
+              })  
+            ;
 
             }     
           })
@@ -89,31 +112,16 @@ export  default function SignIn(){
                 setErrors(error)
             }else{
                 alert('incorrect username or password');
+                firebase.auth().signOut()
+                .then(function() {
+                    // Sign-out successful.
+                }, function(error) {
+                       // An error happened. 
+                });
             }
-            
-            //console.log(error.message)
             
         })
 
-        // api.checkLogin(login)
-        //     .then(response => {
-
-        //         console.log(response);
-
-        //         const options = {Path: "/",Expires: response.data.expires, Secure: true};
-        //         CookieService.set('access_token', response.data.access, options);
-
-        //         history.push('/')
-        //         window.location.reload();
-        //     })
-        //     .catch(error => {
-        //         console.log(error.response.data.errors);
-        //         if(email=='' || password==''){
-        //         setErrors(error.response.data.errors)
-        //         }else{
-        //             alert('incorrect username or password');
-        //         }
-        //     })
     }
 
     function displayFormSignIn(){
@@ -167,11 +175,12 @@ export  default function SignIn(){
 				
 	        </form>
 		</div>
-		<div className="templatemo-content-widget templatemo-login-widget templatemo-register-widget white-bg">
+		{/* <div className="templatemo-content-widget templatemo-login-widget templatemo-register-widget white-bg">
 			<p>Not a registered user yet? <strong>
             <a  href="signup" >Sign up now!</a></strong><br />
-			<a  href="forpass">Forget Password!</a></p>
-		</div>
+			<a  href="forpass">Forget Password!</a>
+            </p>
+		</div> */}
 
         </div>
 

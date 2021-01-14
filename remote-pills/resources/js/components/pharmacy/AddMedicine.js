@@ -10,7 +10,7 @@ export  default function AddMedicine(props){
 
     const [id, setMedicineId] = useState('');
 
-    const [quantity, setQuantity] = useState('');
+    const [quantity, setQuantity] = useState(0);
     const [price, setPrice] = useState('');
     const [mfd, setMfd] = useState('');
     const [exp, setExp] = useState('');
@@ -19,11 +19,10 @@ export  default function AddMedicine(props){
   const history = useHistory();
 
   useEffect(() => {
-    var url= 'http://127.0.0.1:8000/api/pharmacy/medicine/allMedicine';
-    api.getAllMedicine(url).then(response => {
-      console.log(response.data.data)
-        setMedicineId(response.data.data[0].id)
-        setMedicine(response.data.data);
+    api.getAllAvailableMedicine().then(response => {
+      console.log(response.data)
+        setMedicineId(response.data[0].id)
+        setMedicine(response.data);
       })
 
   },[]);
@@ -138,6 +137,7 @@ function handleAddMedicine(event) {
         setPrice('');
         setExp('');
         setMfd('');
+        history.push('/medicine')
       })
       .catch(error => {
         setErrors(error.response.data.errors)

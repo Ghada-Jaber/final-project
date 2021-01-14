@@ -144,12 +144,12 @@ function renderMedicine(){
         <div className="templatemo-content col-1 light-gray-bg">
         
          <Header />
-          <div className="templatemo-flex-row flex-content-row " >
+         <div className="templatemo-flex-row flex-content-row " style={{ marginTop:'100px' }}>
               <div className="col-1">		
       <div className="container"  >
         <div className="row" style={{  display: 'flex'}}>
 
-        <div style={{ marginRight:'10px' }}>
+        <div style={{ marginLeft:'10px', marginRight:'10px' }}>
           <a className='btn btn-primary' title='Add Medicine' href='/medicine/add'>
           <i className="fa fa-plus"></i>
                 </a> 
@@ -167,8 +167,8 @@ function renderMedicine(){
             onChange={handleReferenceChange}>
             <optgroup label="Filter by Reference" >
               <option value="getAll">Choose</option>
-              <option value="getNameOrderAsc">Name, A to Z</option>
-              <option value="getNameOrderDesc">Name, Z to A</option>
+              {/* <option value="getNameOrderAsc">Name, A to Z</option>
+              <option value="getNameOrderDesc">Name, Z to A</option> */}
               {/* <div className="dropdown-divider"></div> */}
               <option value="getPriceOrderAsc">Price, low to high</option>
               <option value="getPriceOrderDesc">Price, high to low</option>
@@ -180,45 +180,10 @@ function renderMedicine(){
         </div>
   
     <div className="row">
-    {/* <Progress.Component
-					style={{ background: '#99999978', height: '5px' }}
-					thumbStyle={{ background: '#5900b3', height: '5px' }}
-				/> */}
         <div id="showSearch" >
       {renderMedicine()}
       </div>
 
-      {/* <ReactPaginate
-					pageCount={pageCount}
-					initialPage={currentPage - 1}
-					forcePage={currentPage - 1}
-					pageRangeDisplayed={4}
-					marginPagesDisplayed={2}
-					previousLabel="&#x276E;"
-					nextLabel="&#x276F;"
-					containerClassName="uk-pagination uk-flex-center"
-					activeClassName="uk-active"
-					disabledClassName="uk-disabled"
-					onPageChange={handlePageClick}
-					disableInitialCallback={true}
-				/> */}
-
-          {/* <div className="row mt-5">
-          
-            <div className="col-md-12 text-center">
-            <div className="site-block-27">
-              <ul>
-                <li><a href="#">&lt;</a></li>
-                <li className="active"><span>1</span></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">4</a></li>
-                <li><a href="#">5</a></li>
-                <li><a href="#">&gt;</a></li>
-              </ul>
-            </div>
-          </div>
-          </div> */}
         </div>     
       </div>
        </div>                       

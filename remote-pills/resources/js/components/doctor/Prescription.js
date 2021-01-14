@@ -194,7 +194,7 @@ function renderPrescription(){
         <p style={{ overflowY:'auto', width:'100%', height: '100px', whiteSpace: 'pre-line' }}>
         {prescription.description}</p>
          <a className="btn btn-primary"
-         href={`/prescription/${prescription.id}`}>give him prescription</a>
+         href={`/prescription/${prescription.id}`}>Prescripe</a>
          <br/><br/>
       </div>
     
@@ -245,7 +245,7 @@ function renderPrescription(){
         <div className="templatemo-content col-1 light-gray-bg">
         
          <Header />
-          <div className="templatemo-flex-row flex-content-row " >
+         <div className="templatemo-flex-row flex-content-row " style={{ marginTop:'100px' }}>
               <div className="col-1">		
       <div className="container"  >
         <div className="row" style={{  display: 'flex'}}>
@@ -270,7 +270,7 @@ function renderPrescription(){
 					thumbStyle={{ background: '#5900b3', height: '5px' }}
 				/> */}
         <div id="showSearch">
-      {renderPrescription()}
+      {prescription.length > 0 ? renderPrescription() : 'no data'}
       </div>
        
         </div>     

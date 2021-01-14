@@ -202,9 +202,6 @@ function renderErrorFor (field) {
             <h3>Description</h3>
             <p style={{ overflowY:'auto', width:'100%', height: '100px', whiteSpace: 'pre-line' }}>{description}</p>
 
-            <h3>Dosage</h3>
-            <p style={{ overflowY:'auto', width:'100%', height: '100px', whiteSpace: 'pre-line' }}>dosage.</p>
-
             <h3>Ingredient</h3>
             <p style={{ overflowY:'auto', width:'100%', height: '100px', whiteSpace: 'pre-line' }}>
             {ingredient}</p>

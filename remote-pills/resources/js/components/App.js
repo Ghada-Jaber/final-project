@@ -60,6 +60,7 @@ import api from '../api';
 function App(){
   const [detail, setDetail] = useState([]);
     const [role, setRole] = useState('');
+    const history = useHistory();
 
     useEffect(() => {
   
@@ -81,7 +82,8 @@ function App(){
             setDetail(response.data);
             setRole(response.data.roles[0]);
 
-    //            if(response.data.roles[0] == 'ROLE_NORMALUSER'){
+    //  if(response.data.roles[0] == 'ROLE_NORMALUSER'){
+    //    console.log('ere')
     //   history.push('/buy')
     //  }
 
@@ -108,7 +110,6 @@ function App(){
 
               <Route exact path='/manageUser' component={ManageUser} />
               <Route exact path='/manageUser/show/:id' component={ShowUser} />
-              <Route exact path='/manageUser/edit/:id' component={EditUser} />
 
               <Route exact path='/managePharmacy' component={ManagePharmacy} />
               <Route exact path='/managePharmacy/show/:id' component={ShowPharmacy} />
