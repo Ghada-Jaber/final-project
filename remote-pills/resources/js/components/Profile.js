@@ -6,6 +6,28 @@ import Footer from './layouts/Footer';
 import images from './Themes/Images';
 import '../../css/Profile.css';
 
+
+import firebase from 'firebase';
+import config from './firebase/config';
+
+
+if (!firebase.apps.length) {
+  firebase.initializeApp(config);
+}else {
+firebase.app(); // if already initialized
+}
+
+if ("serviceWorker" in navigator) {
+navigator.serviceWorker
+  .register("./firebase-messaging-sw.js")
+  .then(function(registration) {
+    console.log("Registration successful, scope is:", registration.scope);
+  })
+  .catch(function(err) {
+    console.log("Service worker registration failed, error:", err);
+  });
+}
+
 export  default function Profile(props){
 
   const [country, setCountry] = useState([]);
@@ -164,15 +186,22 @@ function updateInfo(){
 
   api.changeProfile(profile)
       .then(response => {
-          
-
           console.log(response.data);
   document.getElementById('edit').style.display="";
   document.getElementById('save').style.display="none";
   document.getElementById('password').disabled= true;
   document.getElementById('birthday').disabled= true;
 
-  window.location.reload()
+  var user = firebase.auth().currentUser;
+  console.log(user)
+
+user.updatePassword(password).then(function() {
+  console.log('here')
+}).catch(function(error) {
+  console.log(error)
+});
+
+  //window.location.reload()
   //       document.getElementById('price').disabled= true;
   //       document.getElementById('mfd').disabled= true;
   //       document.getElementById('exp').disabled= true;
@@ -341,7 +370,7 @@ function handleStreetChange(event){
                       <div className={`form-group ${hasErrorFor('password') ? 'has-error' : ''}`} >
                         <input className="form-control" id="password"
                         type="password" 
-                        value='*****'
+                        value={password}
                         onChange={handlePasswordChange} 
                         disabled
                         />

@@ -42,8 +42,10 @@ export  default function Cart(){
             <td>
                 {carts.pharmacy.name}
             </td>
-            <td> 
-                <img src={buy.medicine.image} width="100px" height="100px"/>
+            <td > 
+                <img src={buy.medicine.image} width="120px" height="120px"
+                  style={{ objectFit: 'contain', padding:'0px' }}
+                />
             </td>
 
             <td> 
@@ -131,7 +133,7 @@ function payment(){
                 <thead>
                   <tr>
                   <th>Pharmacy</th>
-                    <th>Image</th>
+                    <th style={{ width:'20px'}}>Image</th>
                     <th>Medicine</th>
                     <th>Price</th>
                     <th>Quantity</th>

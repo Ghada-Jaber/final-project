@@ -254,6 +254,9 @@ function handleActiveUser(medicine_id){ //I added event here and in line 89
                                      
           </div>   
           <div id="addmedicine" style={{ display:'none'}}>
+          <h4 className="closecss"> 
+                  The field date in add doctor is when<br/> the doctor did open
+                  </h4>
               <SignUp props={role}/>
 
             </div>

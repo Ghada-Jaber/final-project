@@ -163,19 +163,42 @@ nav li {
 	box-shadow: 10px 10px 5px rgba(0,0,0,0.2) !important;
 }
 
+
+
+
 .menuwidth{
 min-width: 100px !important;
-margin: 0 auto !important;
-padding:0px !important;
 text-align:center !important;
+}
+
+.menuwidth li{
+	padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.menuwidth a{
+	height: 5px !important;
 }
 
 
 .navbar-nav{
-	height:25px;
+	height:65px;
+	margin-top:10px !important;
 }
+
+.navbar-nav>.active>a {
+	background-color: #2375b8 !important;
+	border-radius: 5px;
+}
+
+
+
+
  .itemstyle li{
 	 font-weight:normal;
+	 padding: 15px;
+	 margin:15px;
+	 text-align: center;
  }
 
 .orange-bg {
@@ -1085,8 +1108,8 @@ select option{
 
 
   .notificationscroll{
-	overflow-y: auto;
-	 min-height:200px;
+	overflow-y: auto !important;
+	 height:200px !important;
 	 width:350px;
 	 
   }

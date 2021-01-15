@@ -250,8 +250,9 @@ input::placeholder {
 /* Item text */
 
 .textContentItem {
-    font-size: 14px;
+    font-size: 17px;
     word-break: break-all;
+    font-weight: normal;
 }
 
 .viewListContentChat div:last-child {

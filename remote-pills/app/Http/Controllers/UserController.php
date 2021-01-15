@@ -11,7 +11,15 @@ use App\Models\Buy;
 use App\Models\Payment;
 use App\Models\Cart;
 use App\Models\Patient;
+use App\Models\Detail;
 use Illuminate\Support\Facades\DB;
+
+
+// use PHPMailer\PHPMailer\PHPMailer;
+// use PHPMailer\PHPMailer\Exception;
+// require 'PHPMailer-master/src/Exception.php';
+// require 'PHPMailer-master/src/PHPMailer.php';
+// require 'PHPMailer-master/src/SMTP.php';
 
 class UserController extends Controller
 {
@@ -262,7 +270,7 @@ class UserController extends Controller
 
         $addPayment = Patient::create([
             'patient_id' => $user->id,
-            'description' => $request['name']." ".$request['description']
+            'description' => $request['name']."\n ".$request['description']
         ]);
 
 
@@ -311,5 +319,117 @@ class UserController extends Controller
 
         return response()->json($prescription, 201);
     }
+
+    public function getAllPharmacies(){
+        $users = User::all();
+        $pharmacy = [];
+
+        foreach($users as $user){
+            if($user->roles[0] =='ROLE_PHARMACY'){
+                array_push($pharmacy, $user);
+                
+            }
+        }
+
+        return response()->json($pharmacy, 201);
+    }
+
+
+    public function orderMedicine(Request $request){
+        $user = Auth::user();
+
+        $pharmacy = $request['pharmacy'];
+
+
+        
+
+        
+
+        $customer= Customer::where('pharmacy_id', '=', $pharmacy)
+        ->where('customer_id', '=', $user->id)->get()->flatten();
+
+
+
+        if($customer->count()==0){
+        $customer =  Customer::create([
+            'pharmacy_id' => $pharmacy,
+            'customer_id' => $user->id
+        ]);
+        $id= $customer->id;
+
+        }else{
+            $id = $customer[0]->id;
+        }
+
+        $array = $request['array']; 
+
+        $buyId = [];
+        $medicineName = [];
+
+        for($i=0; $i< count($array); $i++){
+            $item = explode(",", $array[$i] ); 
+
+           $detail = Detail::where('pharmacy_id', '=', $pharmacy)
+           ->where('medicine_id', '=', $item[0])->get()->flatten();
+
+           $medicine = Medicine::find($detail[0]->medicine_id);
+
+           array_push($medicineName, $medicine->name); 
+          
+
+            $buy = Buy::create([
+                'customer_id' => $id,
+                'medicine_id' => $item[0],
+                'quantity' => $item[1],
+                'price'=> $detail[0]->price
+            ]);
+
+            array_push($buyId,  $buy->id); 
+
+        }
+
+
+        $pharma= User::find($pharmacy);
+
+
+        return response()->json(
+            ['userUID'=>$user->FirebaseUID,
+            'username'=>$user->name,
+             'pharmacyUID'=>$pharma->FirebaseUID,
+            'buyId'=>$buyId,
+             'medicineName' => $medicineName], 201);  
+    }
+    
+
+    public function sendPrescriptionByMail(Request $request, User $user){
+        $u = Auth::user();
+        $mail = new PHPMailer();
+        $mail->IsSMTP();
+        $mail->Mailer = "smtp";
+
+        $mail->SMTPDebug  = 1;  
+        $mail->SMTPAuth   = TRUE;
+        $mail->SMTPSecure = "tls";
+        $mail->Port       = 587;
+        $mail->Host       = "smtp.gmail.com";
+        $mail->Username   = $user->email;
+        $mail->Password   = "your-gmail-password";
+
+        $mail->IsHTML(true);
+        $mail->AddAddress( $user->email,  $user->name);
+        $mail->SetFrom($u->email, $u->name);
+        $mail->AddReplyTo($u->email, $u->name);
+        $mail->Subject = "Prescription";
+        $content = "Hello, pharmacy "+$user->pharmacy+" \n I'am sending my prescription from my doctor to you";
+        
+        $mail->MsgHTML($content); 
+        if(!$mail->Send()) {
+          echo "Error while sending Email.";
+          var_dump($mail);
+        } else {
+          echo "Email sent successfully";
+        }
+    }
+
     
 }

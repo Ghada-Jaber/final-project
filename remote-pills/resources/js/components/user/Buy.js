@@ -82,7 +82,7 @@ function handleReservationChange(event){
  
 
  function fetchMedicine(id){
-    
+    console.log('here')
     api.getAllMedicineAvailable(id).then(response => {
       setMedicine(response.data);
      
@@ -159,7 +159,7 @@ function renderMedicine(){
         <br/>
         <a href={"/user/medicine/show/"+pharmacy.id} key={pharmacy.id}> 
         <img src={`${pharmacy.image}`} width="80%" height="200px" alt="Image"
-          style={{ mixBlendMode: 'multiply' }}
+          style={{ mixBlendMode: 'multiply', objectFit: 'contain'  }}
         />
         <h3 className="text-dark">{pharmacy.name}</h3>
         </a>

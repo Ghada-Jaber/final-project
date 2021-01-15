@@ -40,7 +40,7 @@ export  default function Home(){
           <div className="templatemo-flex-row flex-content-row " style={{ marginTop:'100px' }}>
               <div className="col-1">	
 
-              <div className="container">
+              <div className="templatemo-content-widget no-padding">
   <div id="myCarousel" className="carousel slide" data-ride="carousel">
     <ol className="carousel-indicators">
       <li data-target="#myCarousel" data-slide-to="0" className="active"></li>

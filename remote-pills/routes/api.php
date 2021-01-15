@@ -137,6 +137,10 @@ Route::middleware(['auth:api', 'check_user_role:' . \App\Role\UserRole::ROLE_NOR
     //get all medicine in each pharmacy
     Route::get('/user/pharmacyMedicine', [UserController::class, 'getAllMedicinePharmacy']); 
 
+    Route::post('/user/order/medicine', [UserController::class, 'orderMedicine']); 
+
+    Route::get('/user/allPharmacy', [UserController::class, 'getAllPharmacies']); 
+
     Route::get('/user/allMedicine/{id}', [UserController::class, 'getAllMedicineAvailable']); 
 
 

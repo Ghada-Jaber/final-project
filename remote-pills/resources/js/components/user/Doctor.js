@@ -33,20 +33,35 @@ function handleReservationChange(event){
 function renderPrescription(){
   return prescription.map(prescription => {
       return(
-        <a href={`doctor/prescription/${prescription.id}`} key={prescription.id}>
+        <>
+        {prescription.doctor_id !=null ? 
+          
+          <a href={`doctor/prescription/${prescription.id}`} key={prescription.id}>
         <div 
         className="templatemo-content-widget no-padding white-bg col-sm-6 
         col-lg-4 text-center item mb-4
         colorhover">
         <br/>
         <h3>
-          {prescription.doctor_id !=null ? prescription.doctor.name: 'No prescription yet'}
+        <u>Doctor:</u> {prescription.doctor.name}
         </h3>
         <p style={{ overflowY:'auto', width:'100%', height: '100px', whiteSpace: 'pre-line' }}>
         {prescription.description}</p>
          
       </div>
-      </a>
+      </a>: 
+      <div 
+        className="templatemo-content-widget no-padding white-bg col-sm-6 
+        col-lg-4 text-center item mb-4">
+        <br/>
+        <h3>
+         No prescription yet
+        </h3>
+        <p style={{ overflowY:'auto', width:'100%', height: '100px', whiteSpace: 'pre-line' }}>
+        {prescription.description}</p>
+         
+      </div>}
+        </>
     
         )
       })

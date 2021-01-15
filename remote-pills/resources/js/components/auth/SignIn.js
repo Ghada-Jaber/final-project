@@ -101,6 +101,12 @@ export  default function SignIn(){
 
                 if(error.response.data.error == 'Unauthorised'){
                     alert('incorrect username or password');
+                    firebase.auth().signOut()
+                    .then(function() {
+                        // Sign-out successful.
+                    }, function(error) {
+                           // An error happened. 
+                    });
                 }
               })  
             ;
@@ -108,16 +114,12 @@ export  default function SignIn(){
             }     
           })
         }).catch((error) => {
+            console.log('firebase')
             if(email =='' || password==''){
                 setErrors(error)
             }else{
                 alert('incorrect username or password');
-                firebase.auth().signOut()
-                .then(function() {
-                    // Sign-out successful.
-                }, function(error) {
-                       // An error happened. 
-                });
+              
             }
             
         })

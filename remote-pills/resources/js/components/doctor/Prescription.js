@@ -251,7 +251,7 @@ function renderPrescription(){
         <div className="row" style={{  display: 'flex'}}>
 
        
-        <div className="search" style={{ marginRight:'10px' }}>   		
+        <div className="search" style={{ marginLeft:'10px', marginRight:'10px' }}>   		
 		              	<input type="text" className="form-control"
 						   placeholder="Serach"  
                onChange={filterFunction}

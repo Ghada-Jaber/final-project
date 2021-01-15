@@ -141,7 +141,8 @@ for (i = 1; i < tr.length; i++) {
                     <td>{medicine.id}</td>
                     <td>
                     
-                    <img src={medicine.image} width="100px" height="100px"/></td>
+                    <img src={medicine.image} 
+                    style={{objectFit: 'contain' }} width="100px" height="100px"/></td>
                     <td>{medicine.name}</td>
                     <td>
                       <div style={{ overflowY:'auto', width:'200px' , height: '100px', whiteSpace: 'pre-line' }}>
@@ -263,8 +264,8 @@ for (i = 1; i < tr.length; i++) {
                     Ingredient <span className="caret"></span></a></th>
                     <th><a onClick={() => sortTable(5)}  className="white-text templatemo-sort-by">
                     Format <span className="caret"></span></a></th>
-                    <th><a onClick={() => sortTable(6)}  className="white-text templatemo-sort-by">
-                    Need Prescription <span className="caret"></span></a></th>
+                    <th ><a onClick={() => sortTable(6)}  className="white-text templatemo-sort-by">
+                    Prescription <span className="caret"></span></a></th>
                     <th><a onClick={() => sortTable(7)}  className="white-text templatemo-sort-by">
                     Tablet <span className="caret"></span></a></th>
                     <th><a onClick={() => sortTable(8)}  className="white-text templatemo-sort-by">

@@ -264,7 +264,7 @@ return(
   <li className="dropdown">
                     <a className="dropdown-toggle" data-toggle="dropdown" href="#"><i className="fa fa-bar-chart fa-fw"></i>
                     Manage Users<span className="caret"></span></a>
-                    <ul className="dropdown-menu">
+                    <ul className="dropdown-menu" style={{ textAlign:'center'}}>
                     <li><a href="/manageDoctor">Doctors</a></li>
                     <li><a href="/managePharmacy">Pharmacies</a></li>
                     <li><a href="/manageUser">Users</a></li>
@@ -306,7 +306,7 @@ function showNotifications(){
     return(
       <>
       {i != notifications.messages.length-1  ? 
-        <li key={i} style={{ borderBottom:'1px solid  rgba(0,0,0,0.1)', padding:'5px'}}>{message}</li>
+        <li key={i} style={{ borderBottom:'1px solid  rgba(0,0,0,0.1)'}}>{message}</li>
         : <li key={i} style={{  padding:'5px'}}>{message}</li>}
       </>
     )
@@ -369,11 +369,10 @@ function auth(){
         <div style={{ display:'flex', flexFlow: 'row wrap'}}>
         
         <img src= {image} 
-        width="60px" height="60px" className="img"/>&nbsp;&nbsp;
+        width="50px" height="50px" className="img"/>&nbsp;&nbsp;
 {/* <img src={require('../../../../storage/app/' + image)} width="50px" height="50px" className="img"/> &nbsp; */}
 {/* class="media-object img-circle templatemo-img-bordered" */}
 <div style={{ display:'flex', flexFlow: 'column wrap'}}>
-<div style={{ marginBottom : '10px'}}></div>
 <font color="white">{greeting}</font>
 
         <li className="nav-item dropdown">
@@ -381,13 +380,18 @@ function auth(){
                     role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         {name}
                     </a>
-                    <div className="dropdown-menu menuwidth" aria-labelledby="navbarDropdown">
+                    <div className="dropdown-menu menuwidth" 
+                    style={{ padding: '12px'}} aria-labelledby="navbarDropdown">
 
-                         <a className="dropdown-item" href="/profile" >
-                         <br/><i className="fa fa-id-badge fa-fw"></i>Profile</a>
-                           <hr/>
-                        <a className="dropdown-item" onClick= {() => handleLogout()}>
-                        <i className="fa fa-sign-out fa-fw"></i>Logout</a><br/><br/>
+    <ul>
+                         <li style={{ borderBottom: '1px solid  rgba(0,0,0,0.1)'}}
+                         ><a className="dropdown-item" href="/profile" >
+                         <i className="fa fa-id-badge fa-fw"></i>Profile</a></li>
+                          
+                        <li><a className="dropdown-item" onClick= {() => handleLogout()}>
+                        <i className="fa fa-sign-out fa-fw"></i>Logout</a></li>
+
+                        </ul>
                     </div>
                 </li>
                 </div> 
@@ -424,7 +428,7 @@ function auth(){
                       >
 
                      {notifications.length!=0 ? notifications.messages.length !=0 ? showNotifications()
-                    : <li style={{padding:'5px'}}>no notification</li> :''}
+                    : <li style={{padding:'5px'}}>No notification</li> :''}
    
                     </ul>
                 </li>
@@ -476,7 +480,7 @@ return(
                   <span className="icon-bar"></span>
                   <span className="icon-bar"></span>                        
                 </button>
-                      <img src={logo} width="200" height="70" alt="" style={{ marginRight:'5px' }}/>
+                      <img src={logo} width="200" height="70" alt="" style={{ marginTop:'10px' , marginRight:'5px' }}/>
                       <b>
                         {/* <font color="#2375b8">remote pills</font> */}
                       </b>

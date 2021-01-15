@@ -220,7 +220,7 @@ class AuthenticationController extends Controller
 
         $u = Auth::user();
         $user = User::find($u->id);
-        //$user->password = $request['password'];
+        $user->password = bcrypt($request['password']);
         $user->birthday = $request['birthday'];
         $user->street_id = $request['street_id'];
         $user->save();

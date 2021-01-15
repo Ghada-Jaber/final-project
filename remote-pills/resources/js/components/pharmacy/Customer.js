@@ -129,11 +129,7 @@ function handleSelectChange(event){
                         className="btn btn-primary"
                             title="deliver">
                             <i className="fa fa-share fa-fw"></i>
-                         </a>:  <a 
-                        className="btn btn-primary"
-                            title="show Payment">
-                            <i className="fa fa-info fa-fw"></i>
-                         </a>}
+                         </a>: 'no action'}
                   
                    </td>
                    </>

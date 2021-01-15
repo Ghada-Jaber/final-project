@@ -92,7 +92,7 @@ function renderMedicine(){
         <div className="colorhover test templatemo-content-widget no-padding white-bg col-sm-6 col-lg-4 text-center item mb-4" >
         <br/>
         <img src={`${medicine.medicine.image}`} width="70%" height="200px" alt="Image"
-          style={{ mixBlendMode: 'multiply' }}
+          style={{ mixBlendMode: 'multiply', objectFit: 'contain' }}
         />
        
         <h3 className="text-dark">{medicine.medicine.name}</h3>

@@ -152,6 +152,8 @@ export default{
 
     
 
+    getPharmacies: () =>
+    axios.get(`${BASE_URL}/user/allPharmacy`, token),
 
     getAllMedicineAvailable: (id) =>
     axios.get(`${BASE_URL}/user/allMedicine/${id}`, token),
@@ -205,6 +207,9 @@ export default{
     getusers: () =>
     axios.get(`${BASE_URL}/all/users`, token),
 
+
+    orderMedicines:(order) =>
+    axios.post(`${BASE_URL}/user/order/medicine`, order, token),
 
     
 }
