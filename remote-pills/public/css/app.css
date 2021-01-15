@@ -152,7 +152,7 @@ nav li {
 }
 .templatemo-block {	display: block; }
 .templatemo-position-relative {	position: relative; }
-.blue-text { color: #13895F; }
+.bluetext { color: #2375b8 !important; }
 .white-text { color: white; }
 .green-bg {	background-color: #39ADB4; }
 
@@ -175,8 +175,9 @@ text-align:center !important;
 }
 
 .menuwidth a{
-	height: 5px !important;
+	font-size: 16px;
 }
+
 
 
 .navbar-nav{

@@ -150,29 +150,24 @@ function payment(){
               </table>
             </div>
 
-            <div className="row">
-          <div className="col-md-6 pl-5">
-            <div className="row justify-content-end">
-              <div className="col-md-7">
-                <div className="row">
-                  <div className="col-md-3">
-                    <span className="text-black">Price Totals</span>
+            <div >
+          <div style={{ display:'flex'}}>
+          <div  style={{ width:'75px', marginRight:'5px'}}>
+                    <span className="bluetext"><u>Price Totals</u></span>
                   </div>
-                  <div className="col-md-4 text-right">
+                  <div >
                     <strong className="text-black">{totals}</strong>
-                  </div>
-                  <div className="col-md-4">
+                    &nbsp;&nbsp;</div>
+                  <div >
                   <button  onClick={() => payment()}
                     className="btn btn-primary" >Proceed To
                       Checkout</button>
                   </div>
-                 
-                </div>
-              </div>
-            </div>
           </div>
         </div>
-              </>: 'cart is empty go buy some medicine'}
+              </>: <div className="panel panel-default white-bg text-center">
+                <h4>Cart is empty go buy some medicine!</h4>
+            </div>}
             
         </div>
     

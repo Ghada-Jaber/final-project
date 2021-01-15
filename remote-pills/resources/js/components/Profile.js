@@ -50,6 +50,8 @@ export  default function Profile(props){
     const [birthday, setBirthday] = useState('');
     const [errors, setErrors] = useState([]);
 
+    const[role, setRole] = useState('');
+
     const [id, setId] = useState('');
 
 
@@ -95,12 +97,14 @@ api.getCity(response.data[0].id).then(res => {
     setId(response.data.id)
     setName(response.data.name)
     setEmail(response.data.email)
-    setPassword(response.data.password)
+    setPassword('****')
     setBirthday(response.data.birthday)
     setImage(response.data.image)
     setAddress(response.data.street.name+", "+response.data.city.name+", "+response.data.country.name)
 
  setStreetId(response.data.street.id)
+
+ setRole(response.data.roles[0]);
 
     //setAddress(response.data.address)
       
@@ -184,6 +188,8 @@ function updateInfo(){
     street_id: streetId
   }
 
+
+
   api.changeProfile(profile)
       .then(response => {
           console.log(response.data);
@@ -193,26 +199,26 @@ function updateInfo(){
   document.getElementById('birthday').disabled= true;
 
   var user = firebase.auth().currentUser;
-  console.log(user)
-
-user.updatePassword(password).then(function() {
+if(password != "****"){
   console.log('here')
-}).catch(function(error) {
-  console.log(error)
-});
+    user.updatePassword(password).then(function() {
+      console.log('here')
+    }).catch(function(error) {
+      console.log(error)
+    });
+}
 
   //window.location.reload()
-  //       document.getElementById('price').disabled= true;
-  //       document.getElementById('mfd').disabled= true;
-  //       document.getElementById('exp').disabled= true;
-  
-  //       setQuantity(response.data.quantity);
-  //       setPrice(response.data.price);
-  //       setMfd(response.data.MFD);
-  //       setExp(response.data.EXP);
-  
-  //       document.getElementById('edit').style.display="";
-  //   document.getElementById('save').style.display="none";
+  document.getElementById('edit').style.display="";
+  document.getElementById('save').style.display="none";
+  document.getElementById('password').disabled= true;
+  document.getElementById('birthday').disabled= true;
+
+  document.getElementById('country').disabled= true;
+  document.getElementById('city').disabled= true;
+
+  document.getElementById('street').disabled= true;
+  document.getElementById('addressgroup').style.display ="none"
       }) .catch(error => {
          console.log(error)
       })
@@ -324,7 +330,8 @@ function handleStreetChange(event){
               
               <img className="avatar" alt="Avatar" src={image}/>
 
-                <div className="viewWrapInputFile">
+              {role != 'ROLE_PHARMACY' ? 
+              <div className="viewWrapInputFile">
                     <img
                         className="imgInputFile"
                         alt="icon gallery"
@@ -341,10 +348,12 @@ function handleStreetChange(event){
                         onChange={onChangeAvatar}
                     />
                 </div>
+                 : ''}
+               
               <div className="media margin-bottom-30">
                 
                 <div className="media-body">
-                  <h2 className="media-heading">{name}</h2>
+                  <h2 className="media-heading bluetext">{name}</h2>
                 </div>        
               </div>
               <div className="table-responsive">
