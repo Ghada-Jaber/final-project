@@ -32,8 +32,6 @@ class PharmacyController extends Controller
             $medicine->medicine;
         }
 
-        
-
         return response()->json($detail,200);
     }
 
@@ -62,6 +60,8 @@ class PharmacyController extends Controller
             'MFD' => $request['MFD'],
             'EXP' => $request['EXP']
         ]);
+
+        return response()->json(['add'=>'done'],200);
     }
 
     public function showMedicine(Medicine $medicine){
@@ -72,15 +72,6 @@ class PharmacyController extends Controller
     }
     
 
-
-    public function paginate($items, $perPage = 5, $page = null, $options = [])
-    {
-        $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
-        $items = $items instanceof Collection ? $items : Collection::make($items);
-        return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
-    }
-
-
     public function getMedicineByName(Request $request){
         $pharmacy = Auth::user();
 
@@ -88,8 +79,7 @@ class PharmacyController extends Controller
         
         $medicine = $pharmacy->medicine->where('name', 'LIKE' ,'%ibra%');
         
-      
-        
+   
         return response()->json($medicine,200);
         $i=0;
         foreach($medicine as $detailMedicine){
@@ -203,21 +193,17 @@ class PharmacyController extends Controller
            $customers->customer = $customer->customer;
 
            $customers->cart = $customer->cart;
-           
-            $customers->buy = $customer->buy;
+           $customers->buy = $customer->buy;
 
                 foreach($customer->buy as $payment){
                     $customer->buy->medicine = $payment->medicine;
                     $customer->buy->payment = $payment->payment;
                 }
 
-
                 foreach($customer->cart as $cart){
                     $customer->cart->medicine = $cart->medicine;
                 }
         }
-
-        
 
         return response()->json($customers,200);
     }
@@ -226,7 +212,7 @@ class PharmacyController extends Controller
     public function getPharmacyReservation(){
         $pharmacy = Auth::user();
 
-         $customers = $pharmacy->pharmacy;
+        $customers = $pharmacy->pharmacy;
 
         foreach($pharmacy->pharmacy as $customer){
 
@@ -234,14 +220,11 @@ class PharmacyController extends Controller
            $customers->address = $customer->customer->street->city->country;
 
            $customers->cart = $customer->cart;
-
-                foreach($customer->cart as $cart){
-                    $customer->cart->medicine = $cart->medicine;
-                }
+           
+           foreach($customer->cart as $cart){
+             $customer->cart->medicine = $cart->medicine;
+           }
         }
-
-        
-
         return response()->json($customers,200);
     }
 
@@ -254,30 +237,22 @@ class PharmacyController extends Controller
 
            $customers->customer = $customer->customer;
            $customers->address = $customer->customer->street->city->country;
-           
-            $customers->buy = $customer->buy;
+           $customers->buy = $customer->buy;
 
-                foreach($customer->buy as $payment){
-                    $customer->buy->medicine = $payment->medicine;
-                    $customer->buy->payment = $payment->payment;
+            foreach($customer->buy as $payment){
+                $customer->buy->medicine = $payment->medicine;
+                $customer->buy->payment = $payment->payment;
                     
-                }
-
-
+            }
         }
 
-        
-
         return response()->json($customers,200);
-
     }
 
 
     public function showCustomer(Customer $customer){
 
         $customer->buy;
-
-
         return response()->json($customer,200);
     }
 
@@ -285,17 +260,17 @@ class PharmacyController extends Controller
     public function deliver(Buy $buy, Request $request){
         $buy->update([
             'delivred' => $request['delivred']
-          ]);
+        ]);
 
-          return response()->json($buy,200);
+        return response()->json($buy,200);
     }
     
     public function confirm(Cart $cart, Request $request){
         $cart->update([
             'reservation' => $request['confirm']
-          ]);
+        ]);
 
-          return response()->json($cart,200);
+        return response()->json($cart,200);
     }
     
 }
