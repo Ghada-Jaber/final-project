@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Exception;
 use App\Models\User;
-use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Storage;
 
 use Firebase\Auth\Token\Exception\InvalidToken;
@@ -64,10 +63,9 @@ class AuthenticationController extends Controller
             'active' => 1
         ];
 
-        if(!Auth::attempt($login))
-      {
-        return response()->json(['error'=>'Unauthorised'], 401);
-      }
+        if(!Auth::attempt($login)){
+            return response()->json(['error'=>'Unauthorised'], 401);
+        }
 
 
        // Retrieve the user model linked with the Firebase UID
@@ -109,6 +107,7 @@ class AuthenticationController extends Controller
         $user = Auth::user();
         if($user instanceOf User)
             $user->token()->revoke();
+
         return response()->json([
             'information' => 'you are logout'
         ], 201);
@@ -152,51 +151,48 @@ class AuthenticationController extends Controller
         $uid = $verifiedIdToken->getClaim('sub');
         try {
 
-        if($request->hasFile('image')){
-              $image = $request['image']->store('public/uploads/userimage');
+            if($request->hasFile('image')){
+                $image = $request['image']->store('public/uploads/userimage');
 
-        }else{
-            $image = "public/uploads/userimage/NoImage.png";
-        }
+            }else{
+                $image = "public/uploads/userimage/NoImage.png";
+            }
 
-        $url = Storage::url($image);
-  
-        $user = User::create([
-            'name' => $request['name'],
-            'email' => $request['email'],
-            'password' => bcrypt($request['password']),
-            'image' => $url,
-            'birthday' => $request['birthday'],
-            'street_id' => $request['street_id'],
-            'FirebaseUID' => $uid,
-          ]);
-        
-          $user->setRoles([$request['role']]);
-          $user->save();
-
-
-          if($user instanceOf User)
-          $getToken = $user->createToken('personal token');
-      $token = $getToken->token;
+            $url = Storage::url($image);
+    
+            $user = User::create([
+                'name' => $request['name'],
+                'email' => $request['email'],
+                'password' => bcrypt($request['password']),
+                'image' => $url,
+                'birthday' => $request['birthday'],
+                'street_id' => $request['street_id'],
+                'FirebaseUID' => $uid,
+            ]);
+            
+            $user->setRoles([$request['role']]);
+            $user->save();
 
 
-      $token->save();
+            if($user instanceOf User)
+            $getToken = $user->createToken('personal token');
+            $token = $getToken->token;
+            $token->save();
 
-      return response()->json([
-          'access' => $getToken->accessToken,
-          'token' => 'Bearer',
-          'expires' => Carbon::parse(
-              $token->expires_at
-          )->toDateTimeString()
-      ],200);
+            return response()->json([
+                'access' => $getToken->accessToken,
+                'token' => 'Bearer',
+                'expires' => Carbon::parse(
+                    $token->expires_at
+                )->toDateTimeString()
+            ],200);
 
         } catch (Exception $e){
-            return response()->json(["test" => $e], 200);
             $errorCode = $e->errorInfo[1];
             if($errorCode == 1062){
                 return response()->json(['email' =>'already taken'], 200);
             }
-          }
+        }
 
           
           
