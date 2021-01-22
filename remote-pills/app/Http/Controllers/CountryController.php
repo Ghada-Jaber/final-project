@@ -8,8 +8,7 @@ use App\Models\City;
 
 class CountryController extends Controller
 {
-    public function getAllCountry()
-    {
+    public function getAllCountry(){
         $country = Country::latest()->get();
 
         return response()->json($country, 201);
