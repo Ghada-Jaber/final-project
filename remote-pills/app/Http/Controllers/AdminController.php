@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Auth;
 class AdminController extends Controller
 {
 
-    
+
     public function getUsers($type){
 
         $user = User::latest()->get()->flatten();
@@ -80,10 +80,11 @@ class AdminController extends Controller
         if($request->hasFile('image')){
         $image = $request['image']->store('public/uploads/medicine');
 
-    }else{
-        $image = "public/uploads/medicine/NoImage.png";
-    }
-    $url = Storage::url($image); 
+        }else{
+            $image = "public/uploads/medicine/NoImage.png";
+        }
+
+        $url = Storage::url($image); 
 
         $medicine = Medicine::create([
             'name' => $request['name'],
@@ -95,26 +96,23 @@ class AdminController extends Controller
             'tablet' => $request['tablet'],
             'dosage' => $request['dosage'],
             'dosage_unit' => $request['dosage_unit'],
-          ]);
+        ]);
 
 
-          $symptom = $request['symptom'];
+        $symptom = $request['symptom'];
 
-          $symptom =  explode(",", $symptom );
+        $symptom =  explode(",", $symptom );
  
-        
-
-          foreach($symptom as $id){
+        foreach($symptom as $id){
             MedicineSymptom::create([
             'medicine_id' => $medicine->id,
             'symptom_id' => $id
-          ]);
-          }
-
-        
+            ]);
+        }
 
         return response()->json($medicine, 201);
     }
+
 
     public function getInfoMedicine(Medicine $medicine){
         $medicine->symptom = $medicine->symptom->flatten();
@@ -137,6 +135,7 @@ class AdminController extends Controller
         foreach($user->doctor as $patient){
             $patient->patient;
         }
+
         $user->street->city->country;
         
         return response()->json($user, 201);
@@ -144,8 +143,6 @@ class AdminController extends Controller
 
 
     public function updateInfoMedicine(Request $request, Medicine $medicine){
-
-        
 
         $request->validate([
             'name' => 'required|string|max:255',
@@ -185,16 +182,14 @@ class AdminController extends Controller
 
         $user->update([
             'name' => $request['name'],
-          ]);
-
+        ]);
 
           return response()->json($user, 201);
 
     }
 
 
-    public function destroy(Medicine $medicine)
-    {
+    public function destroy(Medicine $medicine){
         $medicine->delete();
         return response()->json($medicine, 201);
     }
@@ -211,9 +206,6 @@ class AdminController extends Controller
         $request->validate([
             'symptomName' => 'required|string',
         ]);
-
-        
-
 
         $symptom = Symptom::create([
             'name' => $request['symptomName'],
