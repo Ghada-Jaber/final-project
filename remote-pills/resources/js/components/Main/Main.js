@@ -39,9 +39,11 @@ export  default function Main(){
     function renderListUser (){    
             return listUser.map(user => {
                 return(
-                    <i  key={user.id}>
+                    <>
                    {user.id !== detail.id ?  
-                        <button
+                   <>
+                   {(user.roles[0] != 'ROLE_NORMALUSER' && user.roles[0] != 'ROLE_ADMIN') ? 
+                   <button
                             key={user.id}
                             className={
                                 currentPeerUser &&
@@ -59,20 +61,28 @@ export  default function Main(){
                                 alt="icon avatar"
                             />
                             <div className="viewWrapContentItem">
-                <span className="textItem">{`${
+                <span className="textItem" >
+                <b>{`${
                     user.name
-                    }`}</span>
-                    <span className="textItem">
-                    Role: &nbsp;
+                    }`}</b></span>
+                    <span className="textItem" style={{fontSize:'10px'}}>
+                    Role:&nbsp;
                     {user.roles[0] == 'ROLE_ADMIN' ? 'Admin'
                     : user.roles[0] == 'ROLE_PHARMACY' ? 'Pharmacy'
                     :user.roles[0] == 'ROLE_DOCTOR' ? 'Doctor'
-                    : 'Normal user'
+                    : ''
                     }</span>
                             </div>
                         </button>
-                        : '' }
-                </i>
+                        : ''}
+                        
+                        </>
+                        : '' 
+                        }
+
+                       
+                        
+                </>
                 )
             })
         
@@ -84,7 +94,7 @@ export  default function Main(){
                 {/* Header */}
                 <Header/>
                 
-                <div className="body" style={{ marginTop:'90px' }}>
+                <div className="body" style={{ marginTop:'81px' }}>
                     <div className="viewListUser"> 
                     {listUser.length > 0 ? renderListUser() : ''}
                     </div>

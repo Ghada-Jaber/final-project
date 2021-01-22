@@ -6,6 +6,7 @@ import ForgetPassword from '../auth/ForgetPassword';
 import api from '../../api';
 import CookieService from '../../Service/CookieService';
 import logo from '../../../images/logo2.png';
+import moment from 'moment'
 
 
 import { messaging } from "../firebase/init-fcm";
@@ -170,8 +171,11 @@ function  getNotifications(userUID, click){
     snapshot.docChanges().forEach(change => { 
       if(change.type == 'added'){
         if(userUID == change.doc.data().toUserID){
-          
-          messages.push(change.doc.data().message)
+          let timestamp = change.doc.data().created.toDate();
+          let notification = {};
+          notification['message'] = change.doc.data().message;
+          notification['time'] = moment(timestamp).format('lll');
+          messages.push(notification)
           if(change.doc.data().isOpened == false){
             count++;
           }
@@ -273,7 +277,7 @@ return(
                     </ul>
                   </li>
                   <li className= {`${(page =='/manageMedicine') ? 'active' : '' }`}>
-  <a href="/manageMedicine"><i className="fa fa-medkit fa-fw"></i>manage medicine</a></li>
+  <a href="/manageMedicine"><i className="fa fa-medkit fa-fw"></i>Manage Medicines</a></li>
                   </ul>
 )
 }
@@ -282,9 +286,9 @@ function doctor(){
   return(
     <ul className="nav navbar-nav" >
     <li className= {`${(page =='/patient') ? 'active' : '' }`}>
-    <a href="/patient"><i className="fa fa-medkit fa-fw"></i>Patient</a></li>
+    <a href="/patient"><i className="fa fa-medkit fa-fw"></i>Patients</a></li>
     <li className= {`${(page =='/prescription') ? 'active' : '' }`}>
-    <a href="/prescription"><i className="fa fa-medkit fa-fw"></i>Prescription</a></li>
+    <a href="/prescription"><i className="fa fa-medkit fa-fw"></i>Prescriptions</a></li>
     </ul>
   )
   }
@@ -293,9 +297,9 @@ function pharmacy(){
 return(
   <ul className="nav navbar-nav" >
   <li className= {`${(page =='/medicine') ? 'active' : '' }`}>
-  <a href="/medicine"><i className="fa fa-medkit fa-fw"></i>Medicine</a></li>
+  <a href="/medicine"><i className="fa fa-medkit fa-fw"></i>Medicines</a></li>
   <li className= {`${(page =='/customer') ? 'active' : '' }`}>
-  <a href="/customer"><i className="fa fa-medkit fa-fw"></i>Customer</a></li>
+  <a href="/customer"><i className="fa fa-users fa-fw"></i>Customers</a></li>
   </ul>
 )
 }
@@ -306,8 +310,16 @@ function showNotifications(){
     return(
       <>
       {i != notifications.messages.length-1  ? 
-        <li key={i} style={{ borderBottom:'1px solid  rgba(0,0,0,0.1)'}}>{message}</li>
-        : <li key={i} style={{  padding:'5px'}}>{message}</li>}
+        <li key={i} >
+        {message.message}<br/>
+        <span style={{ color:'gray'}}>{message.time}</span>
+        <br/>
+        <div style={{ background: 'rgba(255,255,255,0.2)', width:'100%', height:'2px'}}/>
+        </li>
+        : <li key={i}>
+        {message.message}<br/>
+        <span style={{ color:'gray'}}>{message.time}</span>
+        </li>}
       </>
     )
   }) 
@@ -317,10 +329,10 @@ function user(){
 return(
   <ul className="nav navbar-nav" >
   <li className= {`${(page =='/buy') ? 'active' : '' }`}>
-                      <a href="/buy"><i className="fa fa-medkit fa-fw"></i>Medicine</a></li>
+                      <a href="/buy"><i className="fa fa-medkit fa-fw"></i>Medicines</a></li>
 
   <li className= {`${(page =='/doctor') ? 'active' : '' }`}>
-                      <a href="/doctor"><i className="fa fa-user-md fa-fw"></i>Doctor</a></li>
+                      <a href="/doctor"><i className="fa fa-user-md fa-fw"></i>Doctors</a></li>
 
                       
   <li className= {`${(page =='/cart') ? 'active' : '' }`}>
@@ -378,13 +390,24 @@ function auth(){
         <li className="nav-item dropdown">
                     <a id="navbarDropdown" className="nav-link dropdown-toggle"
                     role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {name}
+                     
+                       <font color="#2375b8"> {name == 'Ruba' ? 'Hamidi' : name}
+                       </font>
                     </a>
+                    <i style={{ color:"white", fontSize:"13px", display:'block', position:'absolute' }}>
+                    {role == 'ROLE_ADMIN' ? '(Admin)' : ''}
+                   
+                  {role == 'ROLE_DOCTOR' ? '(Doctor)' : ''}
+
+                  {role == 'ROLE_PHARMACY' ? '(Pharmacy)' : ''}
+
+                  {role == 'ROLE_NORMALUSER' ? '(Customer)' : ''}
+</i>
                     <div className="dropdown-menu menuwidth" 
                     style={{ padding: '12px'}} aria-labelledby="navbarDropdown">
 
     <ul>
-                         <li style={{ borderBottom: '1px solid  rgba(0,0,0,0.1)'}}
+                         <li style={{ borderBottom: '1px solid  rgba(255, 255, 255,0.1)'}}
                          ><a className="dropdown-item" href="/profile" >
                          <i className="fa fa-id-badge fa-fw"></i>Profile</a></li>
                           
@@ -414,14 +437,16 @@ function auth(){
                     data-toggle="dropdown" onClick={() => seeNotification()}>
                         <i className="fa fa-bell fa-fw"
                         style={{ fontSize:'20px'}}></i>
-                        <sup className="badge badge-primary notification-count" 
-                        >{notifications.count}</sup>
+                        <sup className={`badges ${notifications.count > 0 ? 'badge-danger' : 'badge-primary'} notification-count`}
+                        >
+                        {notifications.count}
+                        </sup>
                     </a>
 
 
                     
                     
-                    <ul className={`dropdown-menu itemstyle
+                    <ul className={`dropdown-menu itemstyle 
                     ${notifications.length!=0 ? notifications.messages.length !=0 ? 'notificationscroll' : '' : ''}
                     `}
                    
@@ -439,7 +464,7 @@ function auth(){
 
 function guest(){
 return(
-  <i>
+  <>
      <ul className="nav navbar-nav" >
                       {/* <li><a href="service"><i className="fa fa-server fa-fw"></i>Service</a></li>
                        <li className="dropdown">
@@ -464,7 +489,7 @@ return(
               </ul>
 
               
-  </i>
+  </>
 )
 }
 

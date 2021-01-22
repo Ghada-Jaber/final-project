@@ -17,7 +17,7 @@ class CreatePatientTable extends Migration
             $table->id();
             $table->foreignId('patient_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('doctor_id')->nullable()->constrained('users')->onDelete('cascade');
-
+            $table->string('name');
             $table->text('description');
             // $table->unique(['patient_id', 'doctor_id']);
             $table->timestamps();

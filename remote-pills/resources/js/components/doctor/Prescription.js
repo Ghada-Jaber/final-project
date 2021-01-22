@@ -5,6 +5,7 @@ import api from '../../api';
 import Header from '../layouts/Header';
 import Footer from '../layouts/Footer';
 import ReactDOM from 'react-dom';
+import moment from 'moment'
 
 
 export  default function Prescription(){
@@ -180,22 +181,50 @@ function handleDescriptionChange(event){
   setDescription(event.target.value)
 }
 
+function changeArrow(id){
+  if (document.getElementById("down"+id).style.display ==""){
+    document.getElementById("down"+id).style.display="none";
+    document.getElementById("arrowup"+id).style.display="";
+  } 
+    else{
+    document.getElementById("down"+id).style.display = "";
+    document.getElementById("arrowup"+id).style.display="none";
+    }
+}
 
 function renderPrescription(){
   return prescription.map(prescription => {
       return(
        
         <div key={prescription.id}
-        className="templatemo-content-widget no-padding white-bg col-sm-6 
-        col-lg-4 text-center item mb-4">
+        style={{ paddingLeft:'15px',paddingBottom:'5px', paddingTop:'5px'}}
+        className="templatemo-content-widget no-padding white-bg item mb-4">
         <h3>
+          
+          <a data-toggle="collapse" data-parent="#accordion" onClick={()=> changeArrow(prescription.id)}
+          href={`#prescribe${prescription.id}`}>
           {prescription.patient.name}
+          <span style={{float:'right',paddingRight:'15px'}}>
+          {moment(prescription.created_at).format('DD/MM/YYYY')}
+          &nbsp;
+          <img src="images/arrow.png" id={`down${prescription.id}`}/>
+          <img src="images/arrow2.png" id={`arrowup${prescription.id}`} style={{display:'none'}}/>
+          </span>
+         
+          </a>
+            
         </h3>
-        <p style={{ overflowY:'auto', width:'100%', height: '100px', whiteSpace: 'pre-line' }}>
+        <div className="panel-group" id="accordion">
+                        <div className="no-padding templatemo-overflow-hidden offset-0">
+                     <div id={`prescribe${prescription.id}`} className="panel-collapse collapse">
+                     <b>Medicine:</b>&nbsp;{prescription.name}<br/>
+        <b>Patient Note:</b><p style={{ whiteSpace: 'pre-line' }}>
         {prescription.description}</p>
          <a className="btn btn-primary"
-         href={`/prescription/${prescription.id}`}>Prescripe</a>
-         <br/><br/>
+         href={`/prescription/${prescription.id}`}>Prescribe</a>
+         </div>
+         </div>
+         </div>
       </div>
     
         )
@@ -253,7 +282,7 @@ function renderPrescription(){
        
         <div className="search" style={{ marginLeft:'10px', marginRight:'10px' }}>   		
 		              	<input type="text" className="form-control"
-						   placeholder="Serach"  
+						   placeholder="Search"  
                onChange={filterFunction}
                />   
                </div>

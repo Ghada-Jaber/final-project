@@ -37,10 +37,10 @@ export  default function Home(){
         <div className="templatemo-content col-1 light-gray-bg">
         
          <Header />
-          <div className="templatemo-flex-row flex-content-row " style={{ marginTop:'100px' }}>
+          <div className="templatemo-flex-row flex-content-row " style={{ marginTop:'71px' }}>
               <div className="col-1">	
 
-              <div className="templatemo-content-widget no-padding">
+              <div >
   <div id="myCarousel" className="carousel slide" data-ride="carousel">
     <ol className="carousel-indicators">
       <li data-target="#myCarousel" data-slide-to="0" className="active"></li>
@@ -49,7 +49,7 @@ export  default function Home(){
     </ol>
     <div className="carousel-inner">
       <div className="item active">
-        <img src="./images/hero_1.jpg" alt="Los Angeles" style={{ width: '100%', height:'500px' }}/>
+        <img src="./images/hero_1.jpg" alt="Los Angeles" style={{ width: '100%',  objectFit: 'contain' }}/>
         <div class="banner-1-inner ml-auto  align-self-center">
                 <h1>Pharmacy</h1>
                 <h2>
@@ -59,7 +59,7 @@ export  default function Home(){
       </div>
 
       <div className="item">
-        <img src="./images/bg_2.jpg" alt="Chicago" style={{ width: '100%', height:'500px'  }}/>
+        <img src="./images/bg_2.jpg" alt="Chicago" style={{ width: '100%',  objectFit: 'contain'  }}/>
         <div class="banner-1-inner ml-auto  align-self-center">
                 <h1>Doctor</h1>
                 <h2>Ask for prescription from doctor
@@ -68,7 +68,7 @@ export  default function Home(){
       </div>
     
       <div className="item">
-        <img src="./images/bg_3.jpg" alt="New york" style={{ width: '100%', height:'500px'  }}/>
+        <img src="./images/bg_3.jpg" alt="New york" style={{ width: '100%',  objectFit: 'contain'  }}/>
         <div class="banner-1-inner ml-auto  align-self-center">
                 <h1>User</h1>
                 <h2>Buy medicine from any pharmacy you need

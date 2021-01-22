@@ -324,12 +324,25 @@ function handleStreetChange(event){
         <div className="templatemo-content col-1 light-gray-bg">
         
          <Header />
-          <div style={{ marginTop:'30px' }}>
-              <div className="col-1">			
-    <div className="templatemo-content-widget  col-2">
-              
-              <img className="avatar" alt="Avatar" src={image}/>
-
+          <div style={{ marginTop:'100px' }}>
+              <div className="col-1">		
+              <div className="templatemo-content-widget templatemo-login-widget white-bg">
+        <div id="spacing"></div>
+	
+	        <form  className="templatemo-login-form" >
+          <div class="media margin-bottom-30">
+                <div class="media-left padding-right-25">
+                  <a href="#">
+                    <img class="media-object img-circle templatemo-img-bordered" 
+                    style={{    width: '120px', height: '120px'}}
+                    src={image} alt="Avatar"/>
+                  </a>
+                </div>
+                <div class="media-body">
+                <h2 className="media-heading bluetext">{name}</h2>
+                  
+                </div>        
+              </div>
               {role != 'ROLE_PHARMACY' ? 
               <div className="viewWrapInputFile">
                     <img
@@ -349,63 +362,56 @@ function handleStreetChange(event){
                     />
                 </div>
                  : ''}
-               
-              <div className="media margin-bottom-30">
-                
-                <div className="media-body">
-                  <h2 className="media-heading bluetext">{name}</h2>
-                </div>        
-              </div>
-              <div className="table-responsive">
-             
-              <a  id="save" onClick= {() => updateInfo()} className='btn btn-primary' 
+
+                 <a  id="save" onClick= {() => updateInfo()} className='btn btn-primary' 
                 style={{ display:'none' }}>
                 <i  className="fa fa-save fa-fw"></i>
                 </a> 
+              
             <a  id="edit" onClick= {() => editInfo()} className='btn btn-primary' >
              <i  className="fa fa-edit fa-fw"></i>
                 </a> 
+                <br/> <br/>
 
-                <br/><br/>
-                <table className="table" style={{ width:'50%'}}>
-                  <tbody>
-                    <tr style={{ width:'10%'}}>
-                      <td>email</td>
-                      <td>{email}</td>                    
-                    </tr> 
-                    <tr style={{ width:'10%'}}>
-                      <td>password</td>
-                      <td>
-                      <div className={`form-group ${hasErrorFor('password') ? 'has-error' : ''}`} >
-                        <input className="form-control" id="password"
-                        type="password" 
-                        value={password}
-                        onChange={handlePasswordChange} 
-                        disabled
-                        />
-                        {renderErrorFor('password')}
-                        </div>
-                      </td>                    
-                    </tr>  
-                    <tr style={{ width:'10%'}}>
-                      <td>birthday</td>
-                      <td>
-                      <div className={`form-group ${hasErrorFor('birthday') ? 'has-error' : ''}`} >
+                 <div className="form-group" >
+	        		<div className="input-group">
+		        		<div className="input-group-addon"><i className="fa fa-envelope-o fa-fw"></i></div>	        		
+		              <label className="form-control">{email}</label> 
+		          	</div>	   
+	        	</div>
+				
+                 <div className={`form-group ${hasErrorFor('password') ? 'has-error' : ''}`} >
+	        		<div className="input-group">
+		        		<div className="input-group-addon"><i className="fa fa-key fa-fw"></i></div>	        		
+		              	<input type="password" className="form-control" id="password"
+						   placeholder="Passwrod" value={password}
+                onChange={handlePasswordChange} 
+                        disabled/>   
+		          	</div>	
+                      {renderErrorFor('password')}      
+	        	</div>
+
+            <div className={`form-group ${hasErrorFor('birthday') ? 'has-error' : ''}`} >
+            <div className="input-group">
+		        		<div className="input-group-addon"><i className="fa fa-key fa-fw"></i></div>	
                         <input className="form-control" id="birthday"
                         type="date" 
                         value={birthday} 
                         onChange={handleBirthdayChange} 
                         disabled
                         />
+                        </div>
                         {renderErrorFor('birthday')}
                         </div>
-                      </td>                    
-                    </tr>  
-                    <tr>
-                      <td style={{ width:'10%'}}>Address</td>
-                      <td>
-                      {address}
-                      <div className="form-group" id="addressgroup" style={{ display:'none'}}>
+
+                        <div className="form-group" >
+	        		<div className="input-group">
+		        		<div className="input-group-addon"><i className="fa fa-map-marker fa-fw"></i></div>	        		
+                <label className="form-control">{address}</label> 
+		          	</div>	
+                </div>
+                <div  id="addressgroup" style={{ display:'none'}}>
+                <div className="form-group" >
 	        		<div className="input-group">
 		        		<div className="input-group-addon"><i className="fa fa-flag fa-fw"></i></div>	        		
 		              	<select className="form-control"   
@@ -415,6 +421,10 @@ function handleStreetChange(event){
 							{ country.length >0 ? renderCountry() : '' }
 							</optgroup>			
                          </select>	
+                         </div>
+</div>
+                         <div className="form-group" >
+                         <div className="input-group">
 		        		<div className="input-group-addon"><i className="fa fa-building fa-fw"></i></div>	        		
 		              	<select className="form-control"   
 						value={cityId} id="city" disabled
@@ -425,6 +435,10 @@ function handleStreetChange(event){
 							</optgroup>
                         					
                 </select>	
+                </div>
+                </div> 
+                <div className="form-group" >
+                <div className="input-group">
                 <div className="input-group-addon"><i className="fa fa-street-view fa-fw"></i></div>	        		
 		              	<select className="form-control"   
 						value={streetId} id="street" disabled
@@ -436,14 +450,11 @@ function handleStreetChange(event){
                         					
                 </select>						
 		          	</div>	
-	        	</div>
-                      </td>                    
-                    </tr>                                      
-                  </tbody>
-                </table>
-              </div>             
-            
-            </div>  
+                </div>
+	        	</div>  
+	        </form>
+		</div>	
+
        </div>                       
             </div>      
              <Footer />

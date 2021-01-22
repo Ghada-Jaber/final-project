@@ -150,7 +150,7 @@ function handleActiveUser(medicine_id){ //I added event here and in line 89
                     </td>
                     <td>{medicine.email}</td>
                     <td>{medicine.birthday}</td>
-                    <td>
+                    <td style={{ textAlign:'center'}}>
                     <div className="btn-group " role="group">
                     
                                

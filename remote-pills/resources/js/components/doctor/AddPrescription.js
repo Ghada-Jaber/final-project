@@ -14,7 +14,7 @@ export  default function AddPrescription(props){
 
   const [id, setMedicineId] = useState('');
 
-  const [quantity, setQuantity] = useState('');
+  const [quantity, setQuantity] = useState(0);
 
   const [medicine, setMedicine] = useState([]);
   const [errors, setErrors] = useState([]);
@@ -96,8 +96,21 @@ function renderMedicine(){
                   
                   <img src={medicine.image} width="100px" height="100px"/></td>
                   <td>{medicine.name}</td>
+                  <td>
+                  <div style={{ overflowY:'auto', width:'500px' , height: '100px', whiteSpace: 'pre-line' }}>
+                      {medicine.description}
+                      </div>
+                  </td>
+                  <td>
+                    <div style={{ overflowY:'auto', width:'500px', height: '100px', whiteSpace: 'pre-line' }}>
+
+                    {medicine.ingredient}
+                    </div>
+                    
+                    </td>
                   <td style={{ width: '100px'}}>
-                  <input type="number" id={`input${i}`} className="form-control" /></td>
+                  <input type="number" id={`input${i}`} 
+                  defaultValue={0} className="form-control" /></td>
                   <td >
                   <a onClick={()=> addArray(i)}
                               className="btn btn-primary"
@@ -119,8 +132,9 @@ function renderMedicine(){
  function renderInfo(){
      return(
          <>
-         <label><u>patient name : </u></label> <span>{name}</span> <br/>
-        <label><u>description :</u></label> <p>{prescription.description}</p>
+         <label><u>Patient Name: </u></label> <span>{name}</span> <br/>
+         <label><u>Medicine Name: </u></label>  {prescription.name}<br/>
+        <div style={{ display:'flex'}}><label><u>Description:</u></label> &nbsp;<p>{prescription.description}</p></div>
          </>
      )
  }
@@ -152,7 +166,7 @@ function sendPrescription(){
 
  api.sendPrescription(send, props.match.params.id).then(response => {
   console.log(response.data)
-  alert('give prescription done')
+  alert('Prescription has been sent')
   window.location.href = "/prescription";
 })
 }
@@ -195,6 +209,8 @@ function sendPrescription(){
                     <th>
                     Medicine image</th>
                     <th>Name</th>
+                    <th>Prescription</th>
+                    <th>Ingredients</th>
                     <th>Quantity</th>
                     <td>Add</td>
                   </tr>

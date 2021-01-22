@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
+
+    
     public function getUsers($type){
 
         $user = User::latest()->get()->flatten();
@@ -33,9 +35,6 @@ class AdminController extends Controller
             if($role[0] == $type){
                 array_push($pharmacy, $infoProject) ;
             }
-           
-             // $arr = $project[$i]->toArray();
-             // array_push($arr, $access) ;
              $i++;
          }
        

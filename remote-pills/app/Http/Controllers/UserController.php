@@ -184,6 +184,7 @@ class UserController extends Controller
        
         foreach($customer as $buy){
             $buy->pharmacy;
+            $buy->pharmacy->street->city->country;
            $buy->cart;
            
                 foreach($buy->cart as $medicine){
@@ -270,7 +271,8 @@ class UserController extends Controller
 
         $addPayment = Patient::create([
             'patient_id' => $user->id,
-            'description' => $request['name']."\n ".$request['description']
+            'name' => $request['name'],
+            'description' => $request['description']
         ]);
 
 

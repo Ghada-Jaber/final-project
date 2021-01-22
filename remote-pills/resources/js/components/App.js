@@ -34,6 +34,7 @@ import ListMedicine from './pharmacy/ListMedicine';
 import AddMedicine from './pharmacy/AddMedicine';
 import ShowMedicine from './pharmacy/ShowMedicine';
 import Customer from './pharmacy/Customer';
+import Tests from './pharmacy/Tests';
 
 
 import Patient from './doctor/Patient';
@@ -143,6 +144,7 @@ function App(){
               <Route exact path='/medicine/show/:id' component={ShowMedicine} />
 
               <Route exact path='/customer' component={Customer} />
+              <Route exact path='/tests' component={Tests} />
           </Switch>
         )
       }
@@ -160,7 +162,7 @@ function App(){
               <Route exact path='/doctor/prescription/:id' component={ShowPrescription} />
 
               <Route exact path='/map' component={ShowMap} />
-              <Route exact path='/test' component={Test} />
+             
           </Switch>
         )
       }

@@ -16,7 +16,7 @@ export  default function Buy(props){
   const [streetId, setStreetId] = useState('');
   
 
-  const [quantity, setQuantity] = useState('');
+  const [quantity, setQuantity] = useState(0);
   const [reservation, setReservation] = useState(0);
 
 
@@ -116,7 +116,7 @@ function  askPrescription(event, name){
 
   api.askPrescription(patient)
   .then(response => {
-    alert('Your request has been sent successfully')
+    // alert('Your request has been sent successfully')
   })
   .catch(error => {
      setErrors(error.response.data.errors)
@@ -136,7 +136,7 @@ function addToCart(event, medicine_id, pharmacy_id, price){
 
 api.addToCart(medicine_id, addtocart)
 .then(response => {
-  alert('Item Added To Cart')
+  // alert('Item Added To Cart')
 })
 .catch(error => {
    // setErrors(error.response.data.errors)
@@ -178,20 +178,24 @@ function renderMedicine(){
                   <tbody>
                   {pharmacy[0].map(namepharmacy=>{
              return(
-               <tr key={namepharmacy.id}>
-               <td> {namepharmacy.name} </td><td>{namepharmacy.price}</td>
-               <td>
+               <tr key={namepharmacy.id} >
+               <td style={{  verticalAlign: 'middle'}}> 
+               {namepharmacy.name} </td>
+               <td style={{  verticalAlign: 'middle'}}>{namepharmacy.price} $</td>
+               <td style={{  verticalAlign: 'middle'}}>
                <input type="number" style={{ width:'70px'}} className="form-control"
+               defaultValue={0}
           onChange={handleQuantityChange}
         />
                </td>
-               <td>
-               <input type="checkbox" style={{ display:'block' }}
-          onChange={handleReservationChange}
-        />
+               <td style={{  verticalAlign: 'middle'}} >
+            <div style={{marginTop:'5px'}}></div>
+           <input type="checkbox"  style={{display:'block', marginLeft:'20px'}}
+               onChange={handleReservationChange}/> 
                </td>
-               <td>
-               <a onClick={(event)=> addToCart(event, pharmacy.id, namepharmacy.id, namepharmacy.price)}
+               <td style={{  verticalAlign: 'middle'}} >
+               <a data-toggle="modal" data-target="#myModal"
+               onClick={(event)=> addToCart(event, pharmacy.id, namepharmacy.id, namepharmacy.price)}
                     className="btn btn-primary"
                         title="Add to cart">
                         <i className="fa fa-plus fa-fw"></i>
@@ -205,7 +209,8 @@ function renderMedicine(){
                 </table>
               </div> : 
            
-
+              <>
+              <div style={{ marginTop:'32px'}}></div>
               <div  className={`form-group ${hasErrorFor('description') ? 'has-error' : ''}`} style={{ padding: '5px'}}>
 	        		<div className="input-group">
 		        	      		
@@ -213,15 +218,15 @@ function renderMedicine(){
               placeholder="What you are feeling ?"
                className="form-control"></textarea>
                	<div className="input-group-addon">
-                <button onClick={(event) => askPrescription(event, pharmacy.name)}
+                <button data-toggle="modal" data-target="#myModal2"
+                onClick={(event) => askPrescription(event, pharmacy.name)}
                className="btn btn-danger">Ask for Prescription</button></div>	  
                                    
 		          	</div>
                  
                 {renderErrorFor('description')}  
-                <br/>	
 	        	</div>
-
+</>
               
               }
       
@@ -330,7 +335,7 @@ function handleStreetChange(event){
 				<div className="form-group" style={{ marginRight:'10px' }}>
 	        		<div className="input-group">
 		        		<div className="input-group-addon"><i className="fa fa-building fa-fw"></i></div>	        		
-		              	<select className="form-control"  value={cityId} 
+		              	<select className="form-control selectbuy"  value={cityId} 
                     onChange={handleCityChange}
               > 
 						  <optgroup label="select city" >
@@ -345,7 +350,7 @@ function handleStreetChange(event){
 				<div className="form-group">
 	        		<div className="input-group">
 		        		<div className="input-group-addon"><i className="fa fa-street-view fa-fw"></i></div>	        		
-		              	<select className="form-control"  
+		              	<select className="form-control selectbuy"  
 						value={streetId} 
 						  required onChange={handleStreetChange}
               > 
@@ -369,7 +374,34 @@ function handleStreetChange(event){
       </div>
 
      
-        </div>     
+        </div>  
+        <div className="modal fade" id="myModal" role="dialog">
+    <div className="modal-dialog">
+    
+      <div className="modal-content">
+        <div className="modal-header">
+          <a  data-dismiss="modal">
+            <i className="fa fa-times"></i>
+          </a>
+          <h4 className="modal-title">Item Added To Cart</h4>
+        </div>
+      </div>
+      
+    </div>
+  </div> 
+
+   <div className="modal fade" id="myModal2" role="dialog">
+    <div className="modal-dialog">
+    
+      <div className="modal-content">
+        <div className="modal-header">
+          <button type="button" className="close" data-dismiss="modal">&times;</button>
+          <h4 className="modal-title">Your request has been sent successfully</h4>
+        </div>
+      </div>
+      
+    </div>
+  </div>   
       </div>
        </div>                       
             </div>      

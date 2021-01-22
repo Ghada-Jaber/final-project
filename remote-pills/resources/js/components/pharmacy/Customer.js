@@ -47,6 +47,7 @@ function deliver(buy_id){
     delivred: 1
 }
   api.deliver(buy_id, deliver).then(response => {
+    alert('The medicine has been successfully received by the customer');
     window.location.reload();
 })
 }
@@ -90,25 +91,53 @@ function handleSelectChange(event){
 
 }
 
-
+function changeArrow(id){
+  if (document.getElementById("down"+id).style.display ==""){
+    document.getElementById("down"+id).style.display="none";
+    document.getElementById("arrowup"+id).style.display="";
+  } 
+    else{
+    document.getElementById("down"+id).style.display = "";
+    document.getElementById("arrowup"+id).style.display="none";
+    }
+}
 
     function renderOrders(){
       return orders.map(order => {
           return(
             <section key={order.id}>
  {order.buy.length > 0 ?  
-  <div className="templatemo-content-widget no-padding white-bg col-sm-6 col-lg-4 text-center item mb-4" >
-            <br/>
+  <div 
+   style={{ paddingLeft:'15px',paddingTop:'1px'}}
+   className="templatemo-content-widget no-padding white-bg item mb-4" >
+         
+            <h3 className="text-dark">
+            <a data-toggle="collapse" data-parent="#accordion"  onClick={()=> changeArrow(order.id)}
+            href={`#customer${order.id}`}>
+            {order.customer.name}
+            <span style={{float:'right',paddingRight:'15px'}}>
+            {order.customer.street.name},&nbsp;
+            {order.customer.street.city.name},&nbsp;
+            {order.customer.street.city.country.name}
+            &nbsp;
+          <img src="images/arrow.png" id={`down${order.id}`}/>
+          <img src="images/arrow2.png" id={`arrowup${order.id}`} style={{display:'none'}}/>
+            </span>
            
-            <h3 className="text-dark">{order.customer.name}</h3>
-           <div className="table-responsive" style={{ overflow:'auto', height:'100px'}}>
+            </a>
+            </h3>
+            <div className="panel-group" id="accordion">
+                        <div className="panel panel-default  templatemo-content-widget  no-padding templatemo-overflow-hidden offset-0">
+                     <div id={`customer${order.id}`} className="panel-collapse collapse">
+           <div className="table-responsive">
                     <table className="table">
                     <thead >
                         <tr >
-                          <td><b>medicine name</b></td>
+                          <td><b>Medicine Name</b></td>
                           <td><b>Price</b></td>
                           <td><b>Quantity</b></td>
-                          <td><b>Action</b></td>
+                          
+                          {delivred == 0 ? <td><b>Action</b></td>: ''}
                           </tr>
                         </thead>
                       <tbody>
@@ -119,19 +148,18 @@ function handleSelectChange(event){
                   {delivred == namepharmacy.delivred  ? 
                   <> 
                    <td>  
-                   {namepharmacy.medicine.name} </td><td>{namepharmacy.price}</td>
+                   {namepharmacy.medicine.name} </td><td>{namepharmacy.price} $</td>
                    <td>
                    {namepharmacy.quantity}
                    </td>
-                   <td>
                    {namepharmacy.delivred == 0 ? 
-                    <a onClick={() => deliver(namepharmacy.id)}
+                    <td><a onClick={() => deliver(namepharmacy.id)}
                         className="btn btn-primary"
                             title="deliver">
                             <i className="fa fa-share fa-fw"></i>
-                         </a>: 'no action'}
+                         </a></td>: ''}
                   
-                   </td>
+                   
                    </>
                    : <></>} 
                    
@@ -144,6 +172,9 @@ function handleSelectChange(event){
                                        
                       </tbody>
                     </table>
+                  </div> 
+                  </div> 
+                  </div> 
                   </div> 
           </div>
           : ''}
@@ -158,6 +189,7 @@ function handleSelectChange(event){
           confirm : 0
         }
         api.confirmReservation(cart_id, conf).then(response => {
+          alert('The medicine is reserved now for the customer')
           window.location.reload()
         }
       )
@@ -168,15 +200,33 @@ function handleSelectChange(event){
             return(
               <section key={order.id}>
               {order.cart.length > 0 ? 
-                <div className="templatemo-content-widget no-padding white-bg col-sm-6 col-lg-4 text-center item mb-4" >
-              <br/>
-             
-              <h3 className="text-dark">{order.customer.name}</h3>
-             <div className="table-responsive" style={{ overflow:'auto', height:'100px'}}>
+                <div style={{ paddingLeft:'15px',paddingTop:'1px'}}
+                className="templatemo-content-widget no-padding white-bg item mb-4" >
+              <h3 className="text-dark">
+              <a data-toggle="collapse" data-parent="#accordion" 
+               onClick={()=> changeArrow(order.id)}
+              href={`#reserve${order.id}`}>{order.customer.name}
+               <span style={{float:'right',paddingRight:'15px'}}>
+            {order.customer.street.name},&nbsp;
+            {order.customer.street.city.name},&nbsp;
+            {order.customer.street.city.country.name}
+            &nbsp;
+          <img src="images/arrow.png" id={`down${order.id}`}/>
+          <img src="images/arrow2.png" id={`arrowup${order.id}`} style={{display:'none'}}/>
+            </span>
+            </a>
+          </h3>
+       
+
+          <div className="panel-group" id="accordion">
+                        <div className="panel panel-default  templatemo-content-widget  no-padding templatemo-overflow-hidden offset-0">
+                     <div id={`reserve${order.id}`} className="panel-collapse collapse">
+              
+             <div className="table-responsive">
                       <table className="table">
                       <thead >
                           <tr >
-                            <td><b>medicine name</b></td>
+                            <td><b>Medicine Name</b></td>
                             <td><b>Price</b></td>
                             <td><b>Quantity</b></td>
                             <td><b>Action</b></td>
@@ -191,7 +241,7 @@ function handleSelectChange(event){
                         <>
                        {namepharmacy.reservation == 1  ? 
                         <>
-                     <td> {namepharmacy.medicine.name} </td><td>{namepharmacy.price}</td>
+                     <td> {namepharmacy.medicine.name} </td><td>{namepharmacy.price} $</td>
                      <td>
                      {namepharmacy.quantity}
                      </td>
@@ -199,7 +249,7 @@ function handleSelectChange(event){
                      <a onClick ={()=> confirmReservation(namepharmacy.id)}
                           className="btn btn-primary"
                               title="confirm">
-                              confirm
+                              Confirm
                            </a>
                      </td>
                      </>
@@ -211,6 +261,9 @@ function handleSelectChange(event){
                                          
                         </tbody>
                       </table>
+                    </div> 
+                    </div> 
+                    </div> 
                     </div> 
             </div>
             : ''}
@@ -264,16 +317,16 @@ function handleSelectChange(event){
        
         <div className="search" style={{ marginLeft:'10px', marginRight:'10px' }}>   		
 		              	<input type="text" className="form-control"
-						   placeholder="Serach"  
+						   placeholder="Search"  
                onChange={filterFunction}
                />   
                </div>
-               <select className="form-control" style={{ width: '200px'}}
+               <select className="form-control selectbuy" style={{ width: '200px'}}
             onChange={handleSelectChange}
             >
               <option value="Ordered">Ordered</option>
               <option value="Reserved">Reserved</option>
-              <option value="Delivred">Delivred</option>
+              <option value="Delivred">Delivered</option>
             </select>
             </div>
 
@@ -285,6 +338,8 @@ function handleSelectChange(event){
 					style={{ background: '#99999978', height: '5px' }}
 					thumbStyle={{ background: '#5900b3', height: '5px' }}
 				/> */}
+
+    
         <div id="showSearch" >
       {orders.length>0 ? renderOrders() :''}
       {reserve.length>0 ? renderReservation() :''}

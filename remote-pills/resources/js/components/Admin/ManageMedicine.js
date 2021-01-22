@@ -160,7 +160,7 @@ for (i = 1; i < tr.length; i++) {
                     <td>{medicine.prescription == 1 ? 'yes' : 'no'}</td>
                     <td>{medicine.tablet}</td>
                     <td>{medicine.dosage} {medicine.dosage_unit}</td>
-                    <td>
+                    <td style={{ textAlign:'center'}}>
                     <div className="btn-group " role="group">
                     
                                
@@ -261,7 +261,7 @@ for (i = 1; i < tr.length; i++) {
                     <th><a onClick={() => sortTable(3)}  className="white-text templatemo-sort-by">
                     Medicine description <span className="caret"></span></a></th>
                     <th><a onClick={() => sortTable(4)}  className="white-text templatemo-sort-by">
-                    Ingredient <span className="caret"></span></a></th>
+                    Ingredients <span className="caret"></span></a></th>
                     <th><a onClick={() => sortTable(5)}  className="white-text templatemo-sort-by">
                     Format <span className="caret"></span></a></th>
                     <th ><a onClick={() => sortTable(6)}  className="white-text templatemo-sort-by">

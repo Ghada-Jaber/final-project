@@ -97,7 +97,7 @@ function renderMedicine(){
        
         <h3 className="text-dark">{medicine.medicine.name}</h3>
         <p className="price">
-        <i className="fa fa-money fa-fw"></i> {medicine.price}
+        <i className="fa fa-money fa-fw"></i> {medicine.price} $
         
         </p>
       </div>
@@ -158,7 +158,7 @@ function renderMedicine(){
        
         <div className="search" style={{ marginRight:'10px' }}>   		
 		              	<input type="text" className="form-control"
-						   placeholder="Serach"  
+						   placeholder="Search"  
                onChange={filterFunction}
                />   
                </div>

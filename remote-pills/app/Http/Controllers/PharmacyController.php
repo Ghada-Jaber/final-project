@@ -231,6 +231,7 @@ class PharmacyController extends Controller
         foreach($pharmacy->pharmacy as $customer){
 
            $customers->customer = $customer->customer;
+           $customers->address = $customer->customer->street->city->country;
 
            $customers->cart = $customer->cart;
 
@@ -249,12 +250,10 @@ class PharmacyController extends Controller
         $pharmacy = Auth::user();
 
         $customers = $pharmacy->pharmacy;
-
-       
-
         foreach($pharmacy->pharmacy as $customer){
 
            $customers->customer = $customer->customer;
+           $customers->address = $customer->customer->street->city->country;
            
             $customers->buy = $customer->buy;
 

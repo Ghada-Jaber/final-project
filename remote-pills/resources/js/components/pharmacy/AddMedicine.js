@@ -11,7 +11,7 @@ export  default function AddMedicine(props){
     const [id, setMedicineId] = useState('');
 
     const [quantity, setQuantity] = useState(0);
-    const [price, setPrice] = useState('');
+    const [price, setPrice] = useState(0);
     const [mfd, setMfd] = useState('');
     const [exp, setExp] = useState('');
     const [errors, setErrors] = useState([]);
@@ -168,44 +168,33 @@ function filterFunction(event){
         
          <Header />
           <div className="templatemo-flex-row flex-content-row " style={{ marginTop:'100px' }}>
-              <div className="col-1">				 
-              <div className="bg-light py-3">
-      
-
-      <Back  />
-    </div>
-
-    <div style={{ marginTop:'10px' }} >
-        </div>
-
-    <div className="container">
-        <div className="row">
-          <div className="col-md-6">
-
-          <div className="form-group">
+              <div className="col-1">	
+              <div className="templatemo-content-widget templatemo-login-widget white-bg">
+              <Back  />
+              <br/>
+              <div className="form-group">
           <div className="search" style={{ marginRight:'10px' }}>  	      		
 		              	<input type="text" className="search form-control"
-						   placeholder="Serach"  
+						   placeholder="Search"  
                id="myInput" onChange={filterFunction}
 
                /> 
                </div>
                </div> 
-            
+                 
           <div className="form-group">
 
-          <select className="form-control select" size="4"  id="searchMed"
-					 value={id} 
-						 required onChange={handleMedicineChange}
-                          > 
-						  <optgroup label="select medicine" >
-							{ medicine.length >0 ? renderMedicine() : '' }
-							</optgroup>				
-            </select>	
-            </div>
+<select className="form-control select" size="4"  id="searchMed"
+ value={id} 
+   required onChange={handleMedicineChange}
+                > 
+    <optgroup label="select medicine" >
+    { medicine.length >0 ? renderMedicine() : '' }
+    </optgroup>				
+  </select>	
+  </div>
 
-
-            <div  className={`form-group ${hasErrorFor('quantity') ? 'has-error' : ''}`} >
+  <div  className={`form-group ${hasErrorFor('quantity') ? 'has-error' : ''}`} >
 	        		<div className="input-group">
 		        		<div className="input-group-addon">Quantity</div>	        		
 		              	<input type="number" className="form-control"
@@ -225,7 +214,7 @@ function filterFunction(event){
                     />      
 		          	</div>
                 {renderErrorFor('price')}   	
-	        	</div>	
+	        	</div>
 
             <div  className={`form-group ${hasErrorFor('MFD') ? 'has-error' : ''}`} >
 	        		<div className="input-group">
@@ -247,8 +236,8 @@ function filterFunction(event){
                     />      
 		          	</div>	
                 {renderErrorFor('EXP')} 
-	        	</div>	
-
+	        	</div>
+  
             <div className="form-group">
 					<button type="submit" className="templatemo-blue-button width-100"
           onClick={(event) => handleAddMedicine(event)}
@@ -256,12 +245,8 @@ function filterFunction(event){
 					Add </button>
 				</div>
 
+              </div>
 
-
-    
-          </div>
-        </div>
-      </div>
        </div>                       
             </div>      
              <Footer />

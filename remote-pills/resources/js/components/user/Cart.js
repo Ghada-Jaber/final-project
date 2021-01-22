@@ -42,6 +42,12 @@ export  default function Cart(){
             <td>
                 {carts.pharmacy.name}
             </td>
+
+            <td style={{ width:'200px'}}>
+                {carts.pharmacy.street.name}, {carts.pharmacy.street.city.name}, {carts.pharmacy.street.city.country.name}
+            </td>
+
+            
             <td > 
                 <img src={buy.medicine.image} width="120px" height="120px"
                   style={{ objectFit: 'contain', padding:'0px' }}
@@ -53,20 +59,30 @@ export  default function Cart(){
             </td>
 
             <td> 
-            {buy.price}
+            
+            <div style={{ overflowY:'auto', width:'450px' , height: '100px', whiteSpace: 'pre-line' }}>
+            {buy.medicine.description}
+                      </div>
             </td>
 
-            <td> 
+            <td  style={{ textAlign:'right'}}> 
+            {buy.price} $
+            </td>
+
+            <td  style={{ textAlign:'right'}}> 
             {buy.quantity}
             </td>
 
-            <td> 
-            {buy.price * buy.quantity}
+            <td  style={{ textAlign:'right'}}> 
+            {buy.price * buy.quantity} $
             </td>
-            <td> 
-            {buy.reservation==1 ? 'yes' : 'no'}
+            <td style={{ textAlign:'center'}}> 
+           
+                     <input type="checkbox"  id={`g${buy.medicine.id}`} name={`gg${buy.medicine.id}`} 
+             defaultChecked={buy.reservation} disabled/> 
+             <label htmlFor={`g${buy.medicine.id}`} ><span></span>&nbsp;</label> 
             </td>
-            <td>
+            <td  style={{ textAlign:'center'}}>
             <a onClick= {() => handleDeleteCartMedicine(buy.id)}
                       className="btn btn-default"
                         title="Delete">
@@ -112,6 +128,61 @@ function payment(){
     }
  }
 
+ function sortTable(n) {
+  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+  table = document.getElementById("myTable");
+  switching = true;
+  //Set the sorting direction to ascending:
+  dir = "asc"; 
+  /*Make a loop that will continue until
+  no switching has been done:*/
+  while (switching) {
+    //start by saying: no switching is done:
+    switching = false;
+    rows = table.rows;
+    /*Loop through all table rows (except the
+    first, which contains table headers):*/
+    for (i = 1; i < (rows.length - 1); i++) {
+      //start by saying there should be no switching:
+      shouldSwitch = false;
+      /*Get the two elements you want to compare,
+      one from current row and one from the next:*/
+      x = rows[i].getElementsByTagName("TD")[n];
+      y = rows[i + 1].getElementsByTagName("TD")[n];
+      /*check if the two rows should switch place,
+      based on the direction, asc or desc:*/
+      if (dir == "asc") {
+        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+          //if so, mark as a switch and break the loop:
+          shouldSwitch= true;
+          break;
+        }
+      } else if (dir == "desc") {
+        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+          //if so, mark as a switch and break the loop:
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      /*If a switch has been marked, make the switch
+      and mark that a switch has been done:*/
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      //Each time a switch is done, increase this count by 1:
+      switchcount ++;      
+    } else {
+      /*If no switching has been done AND the direction is "asc",
+      set the direction to "desc" and run the while loop again.*/
+      if (switchcount == 0 && dir == "asc") {
+        dir = "desc";
+        switching = true;
+      }
+    }
+  }
+}
+
 
     return(
         <div className="templatemo-flex-row">
@@ -132,13 +203,25 @@ function payment(){
              cellSpacing="0" width="100%">
                 <thead>
                   <tr>
-                  <th>Pharmacy</th>
+                  <th><a onClick={() => sortTable(0)} 
+                    className="white-text templatemo-sort-by">Pharmacy <span className="caret"></span></a></th>
+                    <th style={{ width:'20px'}}>
+                    <a onClick={() => sortTable(1)} 
+                    className="white-text templatemo-sort-by">Address <span className="caret"></span></a>
+                    </th>
                     <th style={{ width:'20px'}}>Image</th>
-                    <th>Medicine</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Total</th>
-                    <th>Reservation</th>
+                    
+                    <th><a onClick={() => sortTable(3)} 
+                    className="white-text templatemo-sort-by">Name <span className="caret"></span></a></th>
+                    <th><a onClick={() => sortTable(4)} 
+                    className="white-text templatemo-sort-by">Medicine Description <span className="caret"></span></a></th>
+                    <th><a onClick={() => sortTable(5)} 
+                    className="white-text templatemo-sort-by">Price <span className="caret"></span></a></th>
+                    <th><a onClick={() => sortTable(6)} 
+                    className="white-text templatemo-sort-by">Quantity <span className="caret"></span></a></th>
+                    <th><a onClick={() => sortTable(7)} 
+                    className="white-text templatemo-sort-by">Total <span className="caret"></span></a></th>
+                    <th>Reservation <br/>Required (Y/N)</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -152,11 +235,12 @@ function payment(){
 
             <div >
           <div style={{ display:'flex'}}>
-          <div  style={{ width:'75px', marginRight:'5px'}}>
+          <div  style={{ width:'75px', marginRight:'5px', marginTop:'5px'}}>
                     <span className="bluetext"><u>Price Totals</u></span>
                   </div>
-                  <div >
-                    <strong className="text-black">{totals}</strong>
+                  <div style={{marginTop:'5px'}}>
+                    <strong 
+                    className="text-black">{totals} $</strong>
                     &nbsp;&nbsp;</div>
                   <div >
                   <button  onClick={() => payment()}

@@ -114,20 +114,30 @@ function renderErrorFor (field) {
         total = total +(buy.price * buy.quantity);
         buyId.push(buy.id);
         return(
-            <div key={buy.id}>
-             <h4>  <b>Medicine:</b> {buy.medicine.name} </h4> <br/>
-               <b>Pharmacy:</b> {carts.pharmacy.name} <br/>
-          
-            <b> Quantity:</b> {buy.quantity} <br/>
-            <b> Price:</b> {buy.price} <br/>
-            
-           <b> Total:</b>  {buy.price * buy.quantity}
-           &nbsp;
-            <a onClick= {() => handleDeleteCartMedicine(buy.id)}
-                      className="btn btn-default"
-                        title="Delete">
-                        <i className="fa fa-trash fa-fw"></i>
+           <div className="templatemo-content-widget blue-bg test" 
+           style={{marginLeft:'-10px'}} key={buy.id}>
+             <a onClick= {() => handleDeleteCartMedicine(buy.id)}
+                        title="Remove">
+                       <i className="fa fa-times"></i>
                      </a>
+            
+             <h4>  <b>Medicine:</b> {buy.medicine.name} </h4>
+             <table>
+             <tbody>
+                 <tr>
+                     <td> <b>Pharmacy: </b></td><td>&nbsp;{carts.pharmacy.name}</td>
+                 </tr>
+                 <tr>
+                     <td> <b>Quantity: </b></td><td>{buy.quantity}</td>
+                 </tr>
+                 <tr>
+                     <td> <b>Price: </b></td><td>{buy.price} $ </td>
+                 </tr>
+                 <tr>
+                     <td> <b>Total:</b> </td><td>{buy.price * buy.quantity} $ </td>
+                 </tr>
+                 </tbody>
+             </table>
                      </div>
         )
 
@@ -170,8 +180,8 @@ function handleChangeCvv(event){
  function notification(fcm_token, buy_id, pharmacy_UID, user_UID, user_name, medicine){
    const notification = {
     "notification": {
-        "title": "Buy",
-        "body": user_name+" wants to buy "+medicine+" medication",
+        "title": "Order Notification",
+        "body": user_name+" wants to buy "+medicine,
         "click_action": "/customer",
         "icon": "../../../images/logo.png"
     },
@@ -188,11 +198,12 @@ const header = {
         const notificationRef = db.collection('notifications').doc(request_id_str);
 
         notificationRef.set({
-            title: 'Buy Request',
-            message: `${user_name} wants to buy ${medicine} medication`,
+            title: 'Order Notification',
+            message: `${user_name} wants to buy ${medicine}`,
             toUserID: pharmacy_UID, // pharmacy
             fromUserID: user_UID, //login user
             isOpened: false,
+            created: firebase.firestore.Timestamp.now(),
         });
 
   });
@@ -251,6 +262,7 @@ function handleAddPayment(event){
         <div className="formShow" id="close">
       <div className="col-1 " >	
       <div className="templatemo-content-widget templatemo-login-widget  white-bg"
+      style={{width:'380px'}}
 		 >
         <a onClick={() => closeForm()} ><i className="fa fa-times"></i></a>
             <div >
@@ -262,13 +274,14 @@ function handleAddPayment(event){
                          name="radio" id="r5" defaultChecked={true} />
 						<label htmlFor="r5" ><span></span>On Delivery</label> &nbsp;
                         <button onClick={(event) => handleAddPayment(event)} 
-                className="btn btn-primary">Buy</button>  			    
+                className="btn btn-primary">Purchase</button>  			    
 				</div>
 
                
-            <h4 style={{ color:'#2375b8' }}>Buy Summary</h4>
+            <h4 style={{ color:'#2375b8' }}>Order Summary</h4>
             
-            <div style={{ overflow:'auto', width:'300px', height:'400px', padding:'10px' }}>
+            <div
+            className="paymentscroll">
                 {renderCart()}
 
             </div>
@@ -276,7 +289,7 @@ function handleAddPayment(event){
           
             <b style={{ color:'#2375b8' }}><u>Total</u></b>
               &nbsp;
-              {total}
+              {total} $
             </div>
 
         
