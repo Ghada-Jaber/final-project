@@ -340,7 +340,5 @@ class UserController extends Controller
              'pharmacyUID'=>$pharma->FirebaseUID,
             'buyId'=>$buyId,
              'medicineName' => $medicineName], 201);  
-    }
-
-    
+    }    
 }
