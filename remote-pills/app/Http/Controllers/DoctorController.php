@@ -12,18 +12,19 @@ use App\Models\Prescription;
 class DoctorController extends Controller
 {
     public function getPatient(){
-            $doctor = Auth::user();
+        $doctor = Auth::user();
 
-            $doctor->doctor;
-            foreach($doctor->doctor as $patient){
-                $patient->patient;
-                foreach($patient->prescription as $prescription){
-                    $prescription->medicine;
-                }
+        $doctor->doctor;
+        foreach($doctor->doctor as $patient){
+            $patient->patient;
+            foreach($patient->prescription as $prescription){
+                $prescription->medicine;
             }
+        }
 
-            return response()->json($doctor, 201);
+        return response()->json($doctor, 201);
     }
+
 
     public function getAskPrescription(){
         $patients = Patient::all();
@@ -32,10 +33,9 @@ class DoctorController extends Controller
         foreach($patients as $patient){
             if($patient->doctor_id == null){
                 $patient->patient;
-            array_push($array, $patient);
+                array_push($array, $patient);
             }
         }
-        
 
         return response()->json($array, 201); 
     }
