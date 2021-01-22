@@ -10,10 +10,7 @@ use App\Models\Customer;
 use App\Models\Buy;
 use App\Models\Cart;
 
-use Illuminate\Pagination\Paginator;
-use Illuminate\Support\Collection;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\DB;
+
 
 class PharmacyController extends Controller
 {

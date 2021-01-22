@@ -14,30 +14,16 @@ use App\Models\Patient;
 use App\Models\Detail;
 use Illuminate\Support\Facades\DB;
 
-
-// use PHPMailer\PHPMailer\PHPMailer;
-// use PHPMailer\PHPMailer\Exception;
-// require 'PHPMailer-master/src/Exception.php';
-// require 'PHPMailer-master/src/PHPMailer.php';
-// require 'PHPMailer-master/src/SMTP.php';
-
 class UserController extends Controller
 {
 
     public function getAllUsers(){
-
         $user = User::all();
-
-
         return response()->json($user, 201);
     }
 
     public function getAllMedicinePharmacy(){
-
-
         $user = User::get();
-
-
         $pharmacy = [];
 
     
@@ -46,24 +32,17 @@ class UserController extends Controller
            $role = $detailMedicine->getRoles();
 
            if($role[0] == 'ROLE_PHARMACY'){
-            // $pharmacy[$i] = $detailMedicine;
-           
 
-            foreach($detailMedicine->medicine as $medicine){
+           foreach($detailMedicine->medicine as $medicine){
                $array= $detailMedicine->medicine->toArray();
                foreach($medicine->detail as $price){
-                $array2 = $medicine->detail->toArray();
-                array_push($array, $array2) ;
+                    $array2 = $medicine->detail->toArray();
+                    array_push($array, $array2) ;
                }
-                
 
                 array_push($array, $medicine) ;
               
             }
-            // $detail = $detailMedicine->detail;
-            // $array = $detail->toArray();
-            // array_push($array, $detailMedicine->medicine) ;
-            // $pharmacy[$i]->medicine = $detailMedicine->medicine;
 
             array_push($pharmacy, $detailMedicine) ;
            }
@@ -71,7 +50,6 @@ class UserController extends Controller
             $i++;
         }
         
-
         return response()->json($pharmacy, 201);
     }
 
@@ -88,39 +66,24 @@ class UserController extends Controller
            $array2 = [];
            foreach($pharmacy->pharmacy as $info){
                if($info->street_id == $id){
-               
-               $array3 = [];
-             
-               foreach($pharmacy->detail as $detail){
-                   if($detail->pharmacy_id == $info->id){
-                   // array_push($info->id,  $detail->price); 
-                    $info->price = $detail->price;
-                   }
-               }
+                    $array3 = [];
+                    
+                    foreach($pharmacy->detail as $detail){
+                        if($detail->pharmacy_id == $info->id){
+                            $info->price = $detail->price;
+                        }
+                    }
 
-               array_push($array2,  $info->toArray()); 
-
-            //    array_push($array2,  $array3); 
-            }
+                    array_push($array2,  $info->toArray()); 
+                }
            }
 
            array_push($array, $array2); 
            
-        array_push($near, $array);
-       }
+           array_push($near, $array);
+        }
 
-            return response()->json($near, 201);
-
-            array_push($near, $array) ;
-
-
-
-            $query = DB::table('medicine')
-            ->join('detail', 'detail.medicine_id', '=', 'medicine.id')
-            ->join('users', 'detail.pharmacy_id', '=', 'users.id')
-            ->select('medicine.name as medicine','medicine.image','price','users.name as pharmacy')
-            ->where('users.street_id', '=', $id)
-             ->get();
+        return response()->json($near, 201);
             
     }
 
@@ -139,20 +102,17 @@ class UserController extends Controller
     public function addCartMedicine(Request $request, Medicine $medicine){
 
         $user = Auth::user();
-
-
-
         $customer= Customer::where('pharmacy_id', '=', $request['pharmacy_id'])
         ->where('customer_id', '=', $user->id)->get()->flatten();
 
 
 
         if($customer->count()==0){
-        $customer =  Customer::create([
-            'pharmacy_id' => $request['pharmacy_id'],
-            'customer_id' => $user->id
-        ]);
-        $id= $customer->id;
+            $customer =  Customer::create([
+                'pharmacy_id' => $request['pharmacy_id'],
+                'customer_id' => $user->id
+            ]);
+            $id= $customer->id;
 
         }else{
             $id = $customer[0]->id;
@@ -166,8 +126,6 @@ class UserController extends Controller
             'reservation' =>$request['reservation']
         ]);
 
-       
-
         return response()->json($buy, 201);
 
     }
@@ -177,22 +135,17 @@ class UserController extends Controller
     public function getCartMedicine(){
 
         $user = Auth::user();
-
-
         $customer = $user->customer;
-
-       
         foreach($customer as $buy){
             $buy->pharmacy;
             $buy->pharmacy->street->city->country;
-           $buy->cart;
+            $buy->cart;
            
-                foreach($buy->cart as $medicine){
-                    
+            foreach($buy->cart as $medicine){ 
 
-                    $medicine->medicine; 
+                $medicine->medicine; 
 
-                }
+            }
         }
 
 
@@ -245,17 +198,11 @@ class UserController extends Controller
             ]);
 
             $cart->delete();
-             $addPayment->customer->pharmacy;
+            $addPayment->customer->pharmacy;
             $addPayment->customer->customer;
             $addPayment->medicine;
             array_push($array,  $addPayment); 
-          
-
         }
-        
-
-
-
         return response()->json($array, 201);
     }
 
@@ -342,22 +289,15 @@ class UserController extends Controller
 
         $pharmacy = $request['pharmacy'];
 
-
-        
-
-        
-
         $customer= Customer::where('pharmacy_id', '=', $pharmacy)
         ->where('customer_id', '=', $user->id)->get()->flatten();
 
-
-
         if($customer->count()==0){
-        $customer =  Customer::create([
-            'pharmacy_id' => $pharmacy,
-            'customer_id' => $user->id
-        ]);
-        $id= $customer->id;
+            $customer =  Customer::create([
+                'pharmacy_id' => $pharmacy,
+                'customer_id' => $user->id
+            ]);
+            $id= $customer->id;
 
         }else{
             $id = $customer[0]->id;
@@ -400,37 +340,6 @@ class UserController extends Controller
              'pharmacyUID'=>$pharma->FirebaseUID,
             'buyId'=>$buyId,
              'medicineName' => $medicineName], 201);  
-    }
-    
-
-    public function sendPrescriptionByMail(Request $request, User $user){
-        $u = Auth::user();
-        $mail = new PHPMailer();
-        $mail->IsSMTP();
-        $mail->Mailer = "smtp";
-
-        $mail->SMTPDebug  = 1;  
-        $mail->SMTPAuth   = TRUE;
-        $mail->SMTPSecure = "tls";
-        $mail->Port       = 587;
-        $mail->Host       = "smtp.gmail.com";
-        $mail->Username   = $user->email;
-        $mail->Password   = "your-gmail-password";
-
-        $mail->IsHTML(true);
-        $mail->AddAddress( $user->email,  $user->name);
-        $mail->SetFrom($u->email, $u->name);
-        $mail->AddReplyTo($u->email, $u->name);
-        $mail->Subject = "Prescription";
-        $content = "Hello, pharmacy "+$user->pharmacy+" \n I'am sending my prescription from my doctor to you";
-        
-        $mail->MsgHTML($content); 
-        if(!$mail->Send()) {
-          echo "Error while sending Email.";
-          var_dump($mail);
-        } else {
-          echo "Email sent successfully";
-        }
     }
 
     
