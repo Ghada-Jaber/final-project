@@ -8,7 +8,6 @@ use App\Http\Controllers\CountryController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DoctorController;
-use App\Http\Controllers\FirebaseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -181,10 +180,6 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('/details', [AuthenticationController::class, 'details']);
 
     Route::get('/logout', [AuthenticationController::class, 'logout']);
-
-
-
-    Route::post('/save_fcm_token', [FirebaseController::class, 'save_fcm_token']);
 
 
 });

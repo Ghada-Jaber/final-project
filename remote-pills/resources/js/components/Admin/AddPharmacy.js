@@ -7,16 +7,16 @@ import Back from '../Back';
 
 export  default function AddPharmacy(props){
 
-    const [name, setName] = useState('');
-    const [image, setImage] = useState('');
-    const [format, setFormat] = useState('Tablet');
-    const [description, setDescription] = useState('');
-    const [ingredient, setIngredient] = useState('');
-    const [prescription, setPrescription] = useState(0);
-    const [tablet, setTablet] = useState('');
-    const [dosage, setDosage] = useState('');
-    const [unit, setUnit] = useState('');
-    const [errors, setErrors] = useState([]);
+  const [name, setName] = useState('');
+  const [image, setImage] = useState('');
+  const [format, setFormat] = useState('Tablet');
+  const [description, setDescription] = useState('');
+  const [ingredient, setIngredient] = useState('');
+  const [prescription, setPrescription] = useState(0);
+  const [tablet, setTablet] = useState('');
+  const [dosage, setDosage] = useState('');
+  const [unit, setUnit] = useState('');
+  const [errors, setErrors] = useState([]);
 
   const history = useHistory();
 

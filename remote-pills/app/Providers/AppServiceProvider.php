@@ -34,6 +34,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Buy::observe(BuyObserver::class);
     }
 }
