@@ -1,12 +1,18 @@
 <p >
+<ol>
+<li>
+ Install laravel: Please check the official laravel installation guide for server requirements before you start. (https://laravel.com/docs/8.x/installation)
+ </li>
 
-1. Install laravel: Please check the official laravel installation guide for server requirements before you start. (https://laravel.com/docs/8.x/installation)
+<li>Clone the repository: git clone [your URL]
+</li>
 
-2. Clone the repository: git clone [your URL]
+<li> 
+Go to the project directory: composer install
+</li>
 
-3. Go to the project directory: composer install
-
-4. Copy the example env file and make the required configuration changes in the .env file:
+<li> 
+Copy the example env file and make the required configuration changes in the .env file:
     Run the command in the terminal: cp .env.example .env
     Create a new database <database-name> and edit the below in the .env accordingly: <br>
     <pre>
@@ -17,6 +23,9 @@
     DB_USERNAME= mysql-username 
     DB_PASSWORD= mysql-password 
     </pre>
+
+</li>
+</ol>
 
 5. Run command in terminal: php artisan migrate (to deploy the database)
 
@@ -82,7 +91,7 @@ Be sure to also include your Firebase Configuration to the firebase-message-sw.j
 14. Firebase Rules: <br>
 In order to have Firebase fully functioning, slight modifications in the rules are needed: <br>
 
-<u>Firestore:</u> <br>
+Firestore: <br>
 Firebase Firestore rules: (to ensure only authenticated users can access the collections) <br>
 <pre>
 rules_version = '2'; 
@@ -95,7 +104,7 @@ match /databases/{database}/documents {
 }
 </pre> 
 
-<u>Storage:</u> <br>
+Storage: <br>
 Firebase Storage rules: (to ensure only authenticated users can access the collections) <br>
 <pre>
 rules_version = '2'; 
