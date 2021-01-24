@@ -1,4 +1,4 @@
-<p align="center">
+<p style="white-space: pre-line">
 1. Install laravel: Please check the official laravel installation guide for server requirements before you start. (https://laravel.com/docs/8.x/installation)
 2. Clone the repository:
 git clone [your URL]
@@ -7,12 +7,12 @@ git clone [your URL]
    Run the command in the terminal: cp .env.example .env
 Create a new database <database-name> and edit the below in the .env accordingly:
 
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=<database-name> 
-DB_USERNAME=<mysql-username>
-DB_PASSWORD= <mysql-password>
+DB_CONNECTION=mysql <br>
+DB_HOST=127.0.0.1 <br> 
+DB_PORT=3306 <br>
+DB_DATABASE=<database-name> <br> 
+DB_USERNAME=<mysql-username> <br>
+DB_PASSWORD= <mysql-password> <br>
 
 5. Run command in terminal: php artisan migrate (to deploy the database)
 6. php artisan passport:install
@@ -30,7 +30,7 @@ Go to Authentication and enable authentication with email and password
  get the Firebase Credentials file (json file):
 From Firebase navigate to Project settings -> Service accounts -> Generate a new private key -> Generate Key.
 Open the downloaded file and copy and paste it to the firebase credentials file (json file) in the project
-The file should look like:
+The file should look like: 
 {
   "type": "",
   "project_id": "",
