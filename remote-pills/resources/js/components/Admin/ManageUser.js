@@ -3,10 +3,6 @@ import {Link, useHistory} from 'react-router-dom';
 import api from '../../api';
 import Header from '../layouts/Header';
 import Footer from '../layouts/Footer';
-import SignUp from '../auth/SignUp';
-
-import $ from 'jquery';
-import { add } from 'lodash';
 
 
 export  default function ManageUser(){
@@ -18,35 +14,35 @@ export  default function ManageUser(){
       console.log(response.data)
       setMedicine(response.data);
     })
- },[]);
+  },[]);
 
  function filterFunction(event){
     var search = event.target.value;
     // Declare variables
-var input, filter, table, tr, th, td, i ;
-input = document.getElementById("myInput");
-filter = search.toUpperCase();
-table = document.getElementById("myTable");
-tr = table.getElementsByTagName("tr"),
-th = table.getElementsByTagName("th");
+    var input, filter, table, tr, th, td, i ;
+    input = document.getElementById("myInput");
+    filter = search.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr"),
+    th = table.getElementsByTagName("th");
 
-// Loop through all table rows, and hide those who don't match the        search query
-for (i = 1; i < tr.length; i++) {
-            tr[i].style.display = "none";
-            for(var j=0; j<th.length; j++){
+    // Loop through all table rows, and hide those who don't match the        search query
+    for (i = 1; i < tr.length; i++) {
+      tr[i].style.display = "none";
+      for(var j=0; j<th.length; j++){
         td = tr[i].getElementsByTagName("td")[j];      
         if (td) {
           var txtValue = td.textContent || td.innerText;
-      if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                tr[i].style.display = "";
-                break;
+           if (txtValue.toUpperCase().indexOf(filter) > -1) {
+              tr[i].style.display = "";
+              break;
             }
         }
-        }
+      }
     }
-   }
+  }
 
-   function sortTable(n) {
+  function sortTable(n) {
     var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
     table = document.getElementById("myTable");
     switching = true;
@@ -101,16 +97,10 @@ for (i = 1; i < tr.length; i++) {
     }
   }
 
-   function addMedicine(){
-    if (document.getElementById("addmedicine").style.display =="block"){
-      document.getElementById("addmedicine").style.display="none";} 
-      else{
-      document.getElementById("addmedicine").style.display = "block";
-      }
-   }
+ 
 
 
-   function handleDeleteMedicine(medicine_id){ //I added event here and in line 89
+  function handleDeleteMedicine(medicine_id){ //I added event here and in line 89
     event.preventDefault();
     var confirm_delete = confirm('Are you sure you want to Deactivate This User?');
     if (confirm_delete == true) {
@@ -121,7 +111,7 @@ for (i = 1; i < tr.length; i++) {
         window.location.reload()
       })
     }
-}
+  }
 
 function handleActiveUser(medicine_id){ //I added event here and in line 89
   event.preventDefault();
@@ -139,120 +129,112 @@ function handleActiveUser(medicine_id){ //I added event here and in line 89
 
   
 
-   function renderMedicine(){
+  function renderMedicine(){
     return medicine.map(medicine => {
-        return(
-          <tr key={medicine.id}>
-                    <td>{medicine.id}</td>
-                    <td>
-                    
-                    <img src={medicine.image} width="100px" height="100px"/></td>
-                    <td>{medicine.name}</td>
-                    <td>{medicine.street.name}, {medicine.street.city.name}, {medicine.street.city.country.name}
-                    </td>
-                    <td>{medicine.email}</td>
-                    <td>{medicine.birthday}</td>
-                    <td style={{ textAlign:'center'}}>
-                    <div className="btn-group " role="group">
-                    
-                               
-                               <a href={`/manageUser/show/${medicine.id}`}
-                               className="btn btn-info"
-                                   title="Show">
-                                   <i className="fa fa-info fa-fw"></i>
-                                </a>
-                            
-                                {medicine.active ==1 ? 
-                                  <a  onClick= {() => handleDeleteMedicine(medicine.id)}
-                                 className="btn btn-default"
-                                   title="Deactivate">
-                                   <i className="fa fa-trash fa-fw"></i>
-                                </a>
-                                : 
-                                <a  onClick= {() => handleActiveUser(medicine.id)}
-                                 className="btn btn-default"
-                                   title="Activate">
-                                   <i className="fa fa-check fa-fw"></i>
-                                </a>
-                                }
-                            </div>
-                            </td>
-                  </tr>
-          )
-        })
-    }
-
-  
-    return(
-        <div className="templatemo-flex-row">
-	  
-        <div className="templatemo-content col-1 light-gray-bg">
-        
-         <Header />
-          <div className="templatemo-flex-row flex-content-row " style={{ marginTop:'100px' }}>
-              <div className="col-1">	
-           
-              <div className="templatemo-content-widget no-padding">
-            <div className="panel panel-default table-responsive">
-            <table id="myTable" className="table table-striped table-bordered templatemo-user-table"
-             cellSpacing="0" width="100%">
-             <caption>
-             <div className="row" style={{  display: 'flex', float:'left'}}>
-              
-             
-        <div className="search" style={{ marginLeft:'10px', marginRight:'10px' }}>  	        		
-		              	<input type="text" className="form-control"
-						   placeholder="Search" 
-                           onChange={filterFunction} 
-               />  
-               </div>
-               </div>  
-               </caption>
-                <thead>
-                  <tr>
-                    <th><a onClick={() => sortTable(0)} 
-                    className="white-text templatemo-sort-by"># <span className="caret"></span></a>
-                    </th>
-                    <th>
-                    User image</th>
-                    <th><a onClick={() => sortTable(2)} 
-                     className="white-text templatemo-sort-by">
-                    Name <span className="caret"></span></a></th>
-                    <th><a onClick={() => sortTable(3)}  className="white-text templatemo-sort-by">
-                    Address <span className="caret"></span></a></th>
-                    <th><a onClick={() => sortTable(4)}  className="white-text templatemo-sort-by">
-                    Email <span className="caret"></span></a></th>
-                    <th><a onClick={() => sortTable(5)}  className="white-text templatemo-sort-by">
-                    opened <span className="caret"></span></a></th>
-                    <td>Action</td>
-                  </tr>
-                </thead>
-                <tbody>
-
-                {medicine.length > 0 ? renderMedicine() : 
-                <tr><td colSpan="7" style={{ textAlign:'center' }} >no data</td></tr>}
-               
-
-                 
-
-                </tbody>
-              </table>    
-            </div> 
-                                     
-          </div>  
-
-  
-       </div>                       
-            </div> 
-
-            
-                     
-             <Footer />
-          </div>
-
+      return(
+        <tr key={medicine.id}>
+          <td>{medicine.id}</td>
+          <td>
           
-        </div>
+           <img src={medicine.image} width="100px" height="100px"/></td>
+          <td>{medicine.name}</td>
+          <td>{medicine.street.name}, {medicine.street.city.name}, {medicine.street.city.country.name}
+          </td>
+          <td>{medicine.email}</td>
+          <td>{medicine.birthday}</td>
+          <td style={{ textAlign:'center'}}>
+            <div className="btn-group " role="group">  
+              <a href={`/manageUser/show/${medicine.id}`}
+              className="btn btn-info"
+                  title="Show">
+                  <i className="fa fa-info fa-fw"></i>
+              </a>
+          
+              {medicine.active ==1 ? 
+                <a  onClick= {() => handleDeleteMedicine(medicine.id)}
+                className="btn btn-default"
+                  title="Deactivate">
+                  <i className="fa fa-trash fa-fw"></i>
+              </a>
+              : 
+              <a  onClick= {() => handleActiveUser(medicine.id)}
+                className="btn btn-default"
+                  title="Activate">
+                  <i className="fa fa-check fa-fw"></i>
+              </a>
+              }
+            </div>
+          </td>
+        </tr>
+      )
+    })
+  }
 
-    )
+  
+  return(
+    <div className="templatemo-flex-row">
+	  
+      <div className="templatemo-content col-1 light-gray-bg">
+        
+        <Header />
+        <div className="templatemo-flex-row flex-content-row " style={{ marginTop:'100px' }}>
+          <div className="col-1">	
+            <div className="templatemo-content-widget no-padding">
+              <div className="panel panel-default table-responsive">
+                <table id="myTable" className="table table-striped table-bordered templatemo-user-table"
+                cellSpacing="0" width="100%">
+                  <caption>
+                    <div className="row" style={{  display: 'flex', float:'left'}}>
+              
+            
+                      <div className="search" style={{ marginLeft:'10px', marginRight:'10px' }}>  	        		
+                        <input type="text" className="form-control"
+                          placeholder="Search"  onChange={filterFunction} />  
+                      </div>
+                    </div>  
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th><a onClick={() => sortTable(0)} 
+                      className="white-text templatemo-sort-by"># <span className="caret"></span></a>
+                      </th>
+                      <th>
+                      User image</th>
+                      <th><a onClick={() => sortTable(2)} 
+                      className="white-text templatemo-sort-by">
+                      Name <span className="caret"></span></a>
+                      </th>
+                      <th><a onClick={() => sortTable(3)}  
+                      className="white-text templatemo-sort-by">
+                      Address <span className="caret"></span></a>
+                      </th>
+                      <th><a onClick={() => sortTable(4)}  
+                      className="white-text templatemo-sort-by">
+                      Email <span className="caret"></span></a>
+                      </th>
+                      <th><a onClick={() => sortTable(5)}  
+                      className="white-text templatemo-sort-by">
+                      opened <span className="caret"></span></a>
+                      </th>
+                      <td>Action</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+
+                    {medicine.length > 0 ? renderMedicine() : 
+                    <tr><td colSpan="7" style={{ textAlign:'center' }} >no data</td></tr>}
+
+                  </tbody>
+                </table>    
+              </div> 
+                                     
+            </div>  
+          </div>                       
+        </div> 
+       <Footer />
+      </div>
+    </div>
+
+  )
 
 }
