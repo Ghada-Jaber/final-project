@@ -9,7 +9,8 @@
 4. Copy the example env file and make the required configuration changes in the .env file:
     Run the command in the terminal: cp .env.example .env
     Create a new database <database-name> and edit the below in the .env accordingly: <br>
-    <pre>DB_CONNECTION=mysql 
+    <pre>
+    DB_CONNECTION=mysql 
     DB_HOST=127.0.0.1 
     DB_PORT=3306 
     DB_DATABASE= database-name  
@@ -35,18 +36,19 @@ Go to Authentication and enable authentication with email and password
 From Firebase navigate to Project settings -> Service accounts -> Generate a new private key -> Generate Key. <br>
 Open the downloaded file and copy and paste it to the firebase credentials file (json file) in the project <br>
 The file should look like: <br>
-{ <br>
-  "type": "", <br>
-  "project_id": "", <br>
-  "private_key_id": "", <br>
-  "private_key": "", <br>
-  "client_id": "", <br>
-  "auth_uri": "", <br>
-  "token_uri": "", <br>
-  "auth_provider_x509_cert_url": "", <br>
-  "client_x509_cert_url": "" <br>
-} <br>
-
+    <pre>
+    { 
+    "type": "", 
+    "project_id": "", 
+    "private_key_id": "", 
+    "private_key": "", 
+    "client_id": "", 
+    "auth_uri": "", 
+    "token_uri": "", 
+    "auth_provider_x509_cert_url": "", 
+    "client_x509_cert_url": "" 
+    } 
+    </pre>
 10. php artisan ui react
 
 11. npm install 
