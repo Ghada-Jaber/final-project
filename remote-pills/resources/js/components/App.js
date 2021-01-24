@@ -14,7 +14,6 @@ import EditPharmacy from './Admin/EditPharmacy';
 
 import ManageUser from './Admin/ManageUser';
 import ShowUser from './Admin/ShowUser';
-import EditUser from './Admin/EditUser';
 
 import ManageMedicine from './Admin/ManageMedicine';
 import AdminShowMedicine from './Admin/ShowMedicine';
