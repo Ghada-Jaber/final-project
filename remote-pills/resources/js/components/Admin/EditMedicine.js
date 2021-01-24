@@ -76,9 +76,9 @@ export  default function EditMedicine(props){
   function handlePrescriptionChange(event){
     if(event.target.checked){
       setPrescription(1)
-  }else{
-      setPrescription(0)
-  }
+    }else{
+        setPrescription(0)
+    }
   }
 
 
@@ -121,7 +121,7 @@ export  default function EditMedicine(props){
     }
 
     api.updateMedicineInfo(medicine, props.match.params.id  ) //, {headers:{'Accept': "application/x-www-form-urlencoded"}}
-  .then(response => {
+    .then(response => {
       alert("update success");
 
       history.push('/manageMedicine')
@@ -137,130 +137,109 @@ export  default function EditMedicine(props){
     <div className="templatemo-flex-row">
 	  
       <div className="templatemo-content col-1 light-gray-bg">
-      
        <Header />
-        <div className="templatemo-flex-row flex-content-row " style={{ marginTop:'100px' }}>
-            <div className="col-1">	
+       <div className="templatemo-flex-row flex-content-row " style={{ marginTop:'100px' }}>
+          <div className="col-1">	
             <Back  />
+            <div className="templatemo-content-widget templatemo-login-widget  white-bg">
 
-        
-
-    <div className="templatemo-content-widget templatemo-login-widget  white-bg">
-
-    <img src= {image} 
-        width="70px" height="70px" /> <br/><br/>
-          <div className={`form-group ${hasErrorFor('name') ? 'has-error' : ''}`} >
-          <div className="input-group" >
-            <div className="input-group-addon">name</div>	        		
-            <input type="text" className="form-control"
-            value={name} onChange={handleNameChange}
-            />  
-		          	</div>
-                {renderErrorFor('name')} 
+              <img src= {image} width="70px" height="70px" /> <br/><br/>
+              <div className={`form-group ${hasErrorFor('name') ? 'has-error' : ''}`} >
+                <div className="input-group" >
+                  <div className="input-group-addon">name</div>	        		
+                  <input type="text" className="form-control"
+                  value={name} onChange={handleNameChange} />  
                 </div>
+                {renderErrorFor('name')} 
+              </div>
 
 
-                <div className={`form-group ${hasErrorFor('format') ? 'has-error' : ''}`} >
-          <div className="input-group" >
-            <div className="input-group-addon">format</div>	 
-            <select className="form-control"value={format} onChange={handleFormatChange} >
-              <option value="Tablet">Tablet</option>
-              <option value="Liquid">Liquid</option>
-              <option value="Cream">Cream</option>
-            </select>
+              <div className={`form-group ${hasErrorFor('format') ? 'has-error' : ''}`} >
+                <div className="input-group" >
+                  <div className="input-group-addon">format</div>	 
+                  <select className="form-control"value={format} onChange={handleFormatChange} >
+                    <option value="Tablet">Tablet</option>
+                    <option value="Liquid">Liquid</option>
+                    <option value="Cream">Cream</option>
+                  </select>
 		          	</div>
                 {renderErrorFor('format')} 
-                </div>
+              </div>
 
 
                 
 
-                <div className={`form-group ${hasErrorFor('description') ? 'has-error' : ''}`} >
-          <div className="input-group" >
-            <div className="input-group-addon">description</div>	        		
-            <textarea type="text" className="form-control"
-             value={description} onChange={handleDescriptionChange}
-
-               />   
-		          	</div>
+              <div className={`form-group ${hasErrorFor('description') ? 'has-error' : ''}`} >
+               <div className="input-group" >
+                 <div className="input-group-addon">description</div>	        		
+                 <textarea type="text" className="form-control"
+                 value={description} onChange={handleDescriptionChange}/>   
+		            </div>
                 {renderErrorFor('description')} 
-                </div>
+              </div>
 
-                <div className={`form-group ${hasErrorFor('ingredient') ? 'has-error' : ''}`} >
-          <div className="input-group" >
-            <div className="input-group-addon">ingredient</div>	        		
-            <textarea type="text" className="form-control"
-             value={ingredient} onChange={handleIngredientChange}
-               />   
+              <div className={`form-group ${hasErrorFor('ingredient') ? 'has-error' : ''}`} >
+               <div className="input-group" >
+                 <div className="input-group-addon">ingredient</div>	        		
+                 <textarea type="text" className="form-control"
+                 value={ingredient} onChange={handleIngredientChange}/>   
 		          	</div>
                 {renderErrorFor('ingredient')} 
-                </div>
+              </div>
 
-                <div className={`form-group ${hasErrorFor('tablet') ? 'has-error' : ''}`} >
-          <div className="input-group" >
-            <div className="input-group-addon">tablet</div>	        		
-            <input type="number" className="form-control"
-             value={tablet} onChange={handleTabletChange}
-               />   
+              <div className={`form-group ${hasErrorFor('tablet') ? 'has-error' : ''}`} >
+               <div className="input-group" >
+                 <div className="input-group-addon">tablet</div>	        		
+                 <input type="number" className="form-control"
+                 value={tablet} onChange={handleTabletChange}/>   
 		          	</div>
                 {renderErrorFor('tablet')} 
-                </div>
+              </div>
 
-                <div className={`form-group ${hasErrorFor('dosage') ? 'has-error' : ''}`} >
-          <div className="input-group" >
-            <div className="input-group-addon">dosage</div>	        		
-            <input type="number" className="form-control"
-             value={dosage} onChange={handleDosageChange}
-               />   
+              <div className={`form-group ${hasErrorFor('dosage') ? 'has-error' : ''}`} >
+                <div className="input-group" >
+                 <div className="input-group-addon">dosage</div>	        		
+                 <input type="number" className="form-control"
+                 value={dosage} onChange={handleDosageChange}/>   
 		          	</div>
                 {renderErrorFor('dosage')} 
-                </div>
+              </div>
 
-                <div className={`form-group ${hasErrorFor('dosage_unit') ? 'has-error' : ''}`} >
-          <div className="input-group" >
-            <div className="input-group-addon">dosage unit</div>	        		
-            <input type="text" className="form-control"
-               value={unit} onChange={handleUnitChange}
-               />   
+              <div className={`form-group ${hasErrorFor('dosage_unit') ? 'has-error' : ''}`} >
+               <div className="input-group" >
+                 <div className="input-group-addon">dosage unit</div>	        		
+                 <input type="text" className="form-control"
+                 value={unit} onChange={handleUnitChange} />   
 		          	</div>
                 {renderErrorFor('dosage_unit')} 
-                </div>
+              </div>
 
-                <div className="form-group">			    
-		
+              <div className="form-group">	
 
                 <div className="checkbox squaredTwo">
                 
-				        <input type="checkbox" id="c3" name="cc3"  defaultChecked={prescription}
-                onChange={handlePrescriptionChange}
-                                />
-						<label htmlFor="c3"><span></span>need prescription</label>
-				    </div>	
+                  <input type="checkbox" id="c3" name="cc3"  defaultChecked={prescription}
+                  onChange={handlePrescriptionChange}/>
+                  <label htmlFor="c3"><span></span>need prescription</label>
+				        </div>	
 
-            </div>
+              </div>
             
         
-            <div className="form-group">
-					<button type="submit" className="templatemo-blue-button width-100"
-          onClick={(event) => handleUpdateMedicine(event)}
-					 >
-					Update </button>
-				</div>
+              <div className="form-group">
+                <button type="submit" className="templatemo-blue-button width-100"
+                onClick={(event) => handleUpdateMedicine(event)}>
+                Update 
+                </button>
+				      </div>
+            </div>
+         </div>   
+        </div>         
+         <Footer />
+      </div>
 
 
-
-    
-          </div>
-        </div>   
-        </div> 
-
-            
-                     
-<Footer />
-</div>
-
-
-</div> 
+    </div> 
 
   )
 
