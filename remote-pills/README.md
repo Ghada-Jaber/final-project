@@ -54,24 +54,28 @@ The file should look like: <br>
 11. npm install 
 
 12. From Firebase navigate to Project settings -> General -> Your apps -> Copy the following:<br>
-{<br>
-  apiKey: "API_KEY",<br>
-  authDomain: "PROJECT_ID.firebaseapp.com",<br>
-  databaseURL: "https://PROJECT_ID.firebaseio.com",<br>
-  projectId: "PROJECT_ID",<br>
-  storageBucket: "PROJECT_ID.appspot.com",<br>
-  messagingSenderId: "SENDER_ID",<br>
-  appId: "APP_ID",<br>
-  measurementId: "G-MEASUREMENT_ID",<br>
-};<br>
+    <pre>
+    {
+    apiKey: "API_KEY",
+    authDomain: "PROJECT_ID.firebaseapp.com",
+    databaseURL: "https://PROJECT_ID.firebaseio.com",
+    projectId: "PROJECT_ID",
+    storageBucket: "PROJECT_ID.appspot.com",
+    messagingSenderId: "SENDER_ID",
+    appId: "APP_ID",
+    measurementId: "G-MEASUREMENT_ID",
+    };
+    </pre>
 Then paste it to the Firebase Configuration file (Javascript file)
 
 13. In the public folder, you should insert the GSM sender id in the  manifest.json file. This can be obtained from Firebase: Navigate to Project settings->Cloud Messaging -> Project credentials -> Sender ID. <br>
 
-Manifest.json should contain: <br>
-{ <br>
-    "Gsm_sender_id":"sender-id" <br>
- } <br>
+    &nbsp; &nbsp; &nbsp;&nbsp;Manifest.json should contain: <br>
+    <pre>
+    { 
+        "Gsm_sender_id":"sender-id" 
+    } 
+    </pre>
 
 Be sure to also include your Firebase Configuration to the firebase-message-sw.js file (which can also be found in the public folder)
 
@@ -80,35 +84,37 @@ In order to have Firebase fully functioning, slight modifications in the rules a
 
 <u>Firestore:</u> <br>
 Firebase Firestore rules: (to ensure only authenticated users can access the collections) <br>
-
-rules_version = '2'; <br>
-service cloud.firestore { <br>
-match /databases/{database}/documents { <br>
-   		match /{document=**} { <br>
-      			allow read, write: if true && request.auth != null; <br>
-    		} <br>
-  	} <br>
-} <br>
+<pre>
+rules_version = '2'; 
+service cloud.firestore { 
+match /databases/{database}/documents { 
+   		match /{document=**} { 
+      			allow read, write: if true && request.auth != null; 
+    		} 
+  	} 
+}
+</pre> 
 
 <u>Storage:</u> <br>
 Firebase Storage rules: (to ensure only authenticated users can access the collections) <br>
-
-rules_version = '2'; <br>
-service firebase.storage { <br>
-match /b/{bucket}/o { <br>
-   		match /{allPaths=**} { <br>
-      			allow read: if true && request.auth != null; <br>
-      			allow write: if true && request.auth != null && <br>             
-request.resource.contentType.matches('image/.*'); <br>
-    		} <br>
-  	} <br>
-} <br>
+<pre>
+rules_version = '2'; 
+service firebase.storage { 
+match /b/{bucket}/o { 
+   		match /{allPaths=**} { 
+      			allow read: if true && request.auth != null; 
+      			allow write: if true && request.auth != null &&              
+request.resource.contentType.matches('image/.*'); 
+    		} 
+  	} 
+}
+</pre> 
 
 15. Head to resources/js/Firebase <br>
 In the init-fcm.js file, insert the VapidKey which can be found in Firebase: Project settings-> Cloud Messaging -> Web Configuration -> Key pair (You should create a new one) <br>
 
-Inside Init-fcm.js, paste the vapid key in the following line:  <br>
-messaging.usePublicVapidKey(“Vapidkey”) <br>
+&nbsp; &nbsp; &nbsp; &nbsp;Inside Init-fcm.js, paste the vapid key in the following line:  <br>
+&nbsp; &nbsp; &nbsp; &nbsp;messaging.usePublicVapidKey(“Vapidkey”) <br>
 
 16. Run command in terminal: php artisan serve (to access the website)
 
