@@ -7,13 +7,13 @@ import Back from '../Back';
 
 export  default function ShowDoctor(props){
 
-    const [name, setName] = useState('');
-    const [image, setImage] = useState('');
-    const [open, setOpened] = useState('');
-    const [email, setEmail] = useState('');
-    const [address, setAddress] = useState('');
+  const [name, setName] = useState('');
+  const [image, setImage] = useState('');
+  const [open, setOpened] = useState('');
+  const [email, setEmail] = useState('');
+  const [address, setAddress] = useState('');
 
-    const [medicine, setMedicine] = useState([]);
+  const [medicine, setMedicine] = useState([]);
 
   const history = useHistory();
 
@@ -22,12 +22,12 @@ export  default function ShowDoctor(props){
 
         
       setImage(response.data.image);
-        setName(response.data.name);
-        setEmail(response.data.email);
-        setOpened(response.data.birthday);
-        setMedicine(response.data.doctor);
-        setAddress(response.data.street.name+", "+response.data.street.city.name+", "+response.data.street.city.country.name)
-      })
+      setName(response.data.name);
+      setEmail(response.data.email);
+      setOpened(response.data.birthday);
+      setMedicine(response.data.doctor);
+      setAddress(response.data.street.name+", "+response.data.street.city.name+", "+response.data.street.city.country.name)
+    })
 
   },[]);
 
@@ -35,73 +35,58 @@ export  default function ShowDoctor(props){
   function renderPharmacy(){
     return medicine.map(medicine => {
       return(
-      <li  key={medicine.id}>
-      {medicine.patient.name}
-      </li> 
+        <li  key={medicine.id}>
+        {medicine.patient.name}
+        </li> 
 
-        )
-      })
+      )
+    })
   }
 
 
-    return(
-      <div className="templatemo-flex-row">
-	  
-      <div className="templatemo-content col-1 light-gray-bg">
-      
+  return(
+    <div className="templatemo-flex-row">
+	    <div className="templatemo-content col-1 light-gray-bg">
        <Header />
         <div className="templatemo-flex-row flex-content-row " style={{ marginTop:'100px' }}>
-            <div className="col-1">	
-
+          <div className="col-1">	
             <Back  />
+            <div className="container">
+              <div className="row">
+               <div className="col-md-4" style={{ top:'10px', left:'-2%'}}>
+                 <img src={image} alt="Image" width="50px" height="50px" className="img-fluid p-5" />
+                   <h2 className="text-black">{name}</h2>
 
-  <div className="container">
-      <div className="row">
-      <div className="col-md-4" style={{ top:'10px', left:'-2%'}}>
-        <img src={image} alt="Image" width="50px" height="50px" className="img-fluid p-5" />
-          <h2 className="text-black">{name}</h2>
+                    <h3>email</h3>
+                    <p>{email}</p>
 
-          <h3>email</h3>
-          <p>{email}</p>
+                    <h3>Address</h3>
+                    <p>{address}</p>
 
-          <h3>Address</h3>
-          <p>{address}</p>
+                    <h3>Opened</h3>
+                    <p>{open}</p>
+                </div>
+                <div className="col-md-4">
+                  <h3>Doctor have {medicine.length} patient</h3>
+                  <div className="scrollform">
 
-          <h3>Opened</h3>
-          <p>{open}</p>
-
-  
-        </div>
-        <div className="col-md-4">
-        <h3>Doctor have {medicine.length} patient</h3>
-    <div className="scrollform">
-
-    <div className ="templatemo-content-widget blue-bg" >   
-   
-   <ol>
-    {medicine.length > 0 ? renderPharmacy() : 'No medicine exist yet'}
-
-    </ol>
-    
-    </div>
-
-            </div>
+                      <div className ="templatemo-content-widget blue-bg" >   
         
-          </div>
-      </div>
-   
+                        <ol>
+                          {medicine.length > 0 ? renderPharmacy() : 'No medicine exist yet'}
+
+                        </ol>
+                      </div>
+                    </div>
+          
+                </div>
+             </div>
+            </div>
+         </div> 
+        </div>                    
+        <Footer />
+     </div>
     </div>
-     </div> 
-     </div> 
-
-            
-                     
-<Footer />
-</div>
-
-
-</div>
-
-    )
+  )
 
 }
