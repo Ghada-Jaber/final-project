@@ -7,16 +7,16 @@ import Back from '../Back';
 
 export  default function EditMedicine(props){
 
-    const [name, setName] = useState('');
-    const [image, setImage] = useState('');
-    const [format, setFormat] = useState('Tablet');
-    const [description, setDescription] = useState('');
-    const [ingredient, setIngredient] = useState('');
-    const [prescription, setPrescription] = useState();
-    const [tablet, setTablet] = useState('');
-    const [dosage, setDosage] = useState('');
-    const [unit, setUnit] = useState('');
-    const [errors, setErrors] = useState([]);
+  const [name, setName] = useState('');
+  const [image, setImage] = useState('');
+  const [format, setFormat] = useState('Tablet');
+  const [description, setDescription] = useState('');
+  const [ingredient, setIngredient] = useState('');
+  const [prescription, setPrescription] = useState();
+  const [tablet, setTablet] = useState('');
+  const [dosage, setDosage] = useState('');
+  const [unit, setUnit] = useState('');
+  const [errors, setErrors] = useState([]);
 
   const history = useHistory();
 
@@ -39,107 +39,102 @@ export  default function EditMedicine(props){
 
   function hasErrorFor (field) {
     return !!errors[field]
-}
+  }
 
-function renderErrorFor (field) {
-    if (hasErrorFor(field)) {
-        return (
-            <span style={{ color: '#D7425C' }}>
-                <strong>{errors[field][0]}</strong>
-            </span>
-        )
-    }
-}
-
-
-
-function handleNameChange(event){
-  setName(event.target.value);
-}
-
-
-
-function handleFormatChange(event){
-  setFormat(event.target.value);
-}
-
-function handleDescriptionChange(event){
-  setDescription(event.target.value);
-}
-
-
-function handleIngredientChange(event){
-  setIngredient(event.target.value);
-}
-
-
-function handlePrescriptionChange(event){
-  if(event.target.checked){
-    setPrescription(1)
-}else{
-    setPrescription(0)
-}
-}
-
-
-function handleTabletChange(event){
-  setTablet(event.target.value);
-}
-
-
-function handleDosageChange(event){
-  setDosage(event.target.value);
-}
-
-function handleUnitChange(event){
-  setUnit(event.target.value);
-}
-
-
-
-
-   
-function handleUpdateMedicine(event) {
-  event.preventDefault();
-
-
-  const fd = new FormData();
-        fd.append('name', name);
-        fd.append('format', format);
-        fd.append('description', description);
-        fd.append('ingredient', ingredient);
-        fd.append('prescription', prescription);
-        fd.append('tablet', tablet);
-        fd.append('dosage', dosage);
-        fd.append('dosage_unit', unit);
-
-        const medicine = {
-          name: name,
-          format: format,
-          description: description,
-          ingredient: ingredient,
-          prescription: prescription,
-          tablet: tablet,
-          dosage: dosage,
-          dosage_unit: unit
+  function renderErrorFor (field) {
+      if (hasErrorFor(field)) {
+          return (
+              <span style={{ color: '#D7425C' }}>
+                  <strong>{errors[field][0]}</strong>
+              </span>
+          )
       }
-    
+  }
 
-  api.updateMedicineInfo(medicine, props.match.params.id  ) //, {headers:{'Accept': "application/x-www-form-urlencoded"}}
-      .then(response => {
-        alert("update success");
 
-        history.push('/manageMedicine')
-        window.location.reload();
-      })
-      .catch(error => {
-        console.log(error)
-        //  setErrors(error.response.data.errors)
-      })
-}
 
-    return(
-      <div className="templatemo-flex-row">
+  function handleNameChange(event){
+    setName(event.target.value);
+  }
+
+
+
+  function handleFormatChange(event){
+    setFormat(event.target.value);
+  }
+
+  function handleDescriptionChange(event){
+    setDescription(event.target.value);
+  }
+
+
+  function handleIngredientChange(event){
+    setIngredient(event.target.value);
+  }
+
+
+  function handlePrescriptionChange(event){
+    if(event.target.checked){
+      setPrescription(1)
+  }else{
+      setPrescription(0)
+  }
+  }
+
+
+  function handleTabletChange(event){
+    setTablet(event.target.value);
+  }
+
+
+  function handleDosageChange(event){
+    setDosage(event.target.value);
+  }
+
+  function handleUnitChange(event){
+    setUnit(event.target.value);
+  }
+   
+  function handleUpdateMedicine(event) {
+    event.preventDefault();
+
+
+   const fd = new FormData();
+    fd.append('name', name);
+    fd.append('format', format);
+    fd.append('description', description);
+    fd.append('ingredient', ingredient);
+    fd.append('prescription', prescription);
+    fd.append('tablet', tablet);
+    fd.append('dosage', dosage);
+    fd.append('dosage_unit', unit);
+
+    const medicine = {
+      name: name,
+      format: format,
+      description: description,
+      ingredient: ingredient,
+      prescription: prescription,
+      tablet: tablet,
+      dosage: dosage,
+      dosage_unit: unit
+    }
+
+    api.updateMedicineInfo(medicine, props.match.params.id  ) //, {headers:{'Accept': "application/x-www-form-urlencoded"}}
+  .then(response => {
+      alert("update success");
+
+      history.push('/manageMedicine')
+      window.location.reload();
+    })
+    .catch(error => {
+      console.log(error)
+    //  setErrors(error.response.data.errors)
+    })
+  }
+
+  return(
+    <div className="templatemo-flex-row">
 	  
       <div className="templatemo-content col-1 light-gray-bg">
       
@@ -267,6 +262,6 @@ function handleUpdateMedicine(event) {
 
 </div> 
 
-    )
+  )
 
 }
