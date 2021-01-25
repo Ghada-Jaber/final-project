@@ -14,10 +14,10 @@ import "firebase/firestore";
 import config from '../firebase/config';
 
 export  default function SignIn(){
-	const [email, setEmail] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [remember, setRemember] = useState(0);
-	const [errors, setErrors] = useState([]);
+    const [errors, setErrors] = useState([]);
     const history = useHistory();
     
 	function hasErrorFor (field) {
@@ -71,49 +71,43 @@ export  default function SignIn(){
                     password: password,
                     remember_token: remember
                 }
-            api.firebaseLogin(login).then(response => {
-                const options = {Path: "/",Expires: response.data.expires_at, Secure: true};
-                CookieService.set('access_token', response.data.access_token, options);
+                api.firebaseLogin(login).then(response => {
+                    const options = {Path: "/",Expires: response.data.expires_at, Secure: true};
+                    CookieService.set('access_token', response.data.access_token, options);
 
-                if(response.data.role[0]=='ROLE_ADMIN'){
-                    history.push('/manageMedicine') 
-                }
+                    if(response.data.role[0]=='ROLE_ADMIN'){
+                        history.push('/manageMedicine') 
+                    }
 
-                if(response.data.role[0]=='ROLE_DOCTOR'){
-                    history.push('/patient') 
-                }
-              
-                if(response.data.role[0]=='ROLE_PHARMACY'){
-                    history.push('/medicine') 
-                }
+                    if(response.data.role[0]=='ROLE_DOCTOR'){
+                        history.push('/patient') 
+                    }
+                
+                    if(response.data.role[0]=='ROLE_PHARMACY'){
+                        history.push('/medicine') 
+                    }
 
-                if(response.data.role[0]=='ROLE_NORMALUSER'){
-                    history.push('/buy') 
+                    if(response.data.role[0]=='ROLE_NORMALUSER'){
+                        history.push('/buy') 
+                    }
+                     window.location.reload();
                 }
-    
-                // history.push('/')
-               
-                window.location.reload();
-              }
-            ).catch(error => {
-                console.log('here')
+                ).catch(error => {
 
-                if(error.response.data.error == 'Unauthorised'){
-                    alert('incorrect username or password');
-                    firebase.auth().signOut()
-                    .then(function() {
-                        // Sign-out successful.
-                    }, function(error) {
-                           // An error happened. 
-                    });
-                }
-              })  
-            ;
+                    if(error.response.data.error == 'Unauthorised'){
+                        alert('incorrect username or password');
+                        firebase.auth().signOut()
+                        .then(function() {
+                            // Sign-out successful.
+                        }, function(error) {
+                            // An error happened. 
+                        });
+                    }
+                });
 
             }     
-          })
+            })
         }).catch((error) => {
-            console.log('firebase')
             if(email =='' || password==''){
                 setErrors(error)
             }else{
@@ -127,62 +121,51 @@ export  default function SignIn(){
 
     function displayFormSignIn(){
         document.getElementById("signin").style.display="none";
-      }
+    }
 
     return( 
         <div  id="signin" className="logincontainer">
-        
-        <br/>
-        <div className="templatemo-content-widget templatemo-login-widget white-bg">
-        <a onClick={() => displayFormSignIn()} ><i className="fa fa-times"></i></a>
-        <div id="spacing"></div>
+            <br/>
+            <div className="templatemo-content-widget templatemo-login-widget white-bg">
+                <a onClick={() => displayFormSignIn()} ><i className="fa fa-times"></i></a>
+                <div id="spacing"></div>
 	
-	        <form  className="templatemo-login-form" onSubmit={handleLogin}>
+	            <form  className="templatemo-login-form" onSubmit={handleLogin}>
             
-	        	<div  className={`form-group ${hasErrorFor('message') ? 'has-error' : ''}`} >
-	        		<div className="input-group">
-		        		<div className="input-group-addon"><i className="fa fa-user fa-fw"></i></div>	        		
-		              	<input type="email" className="form-control" 
+	        	   <div  className={`form-group ${hasErrorFor('message') ? 'has-error' : ''}`} >
+	        		   <div className="input-group">
+		        		  <div className="input-group-addon"><i className="fa fa-user fa-fw"></i></div>	        		
+		              	  <input type="email" className="form-control" 
 						   placeholder="Username" 
 						   value={email} onChange={handleEmailChange} />
                                    
-		          	</div>	
-                      {renderErrorFor('email field is required')}     
-	        	</div>
-	        	<div className={`form-group ${hasErrorFor('message') ? 'has-error' : ''}`} >
-	        		<div className="input-group">
-		        		<div className="input-group-addon"><i className="fa fa-key fa-fw"></i></div>	        		
-		              	<input type="password" className="form-control" name="password"
-						   placeholder="Passwrod" value={password}
-                                onChange={handlePasswordChange} />   
-		          	</div>	
+		            	</div>	
+                        {renderErrorFor('email field is required')}     
+	        	    </div>
+	        	    <div className={`form-group ${hasErrorFor('message') ? 'has-error' : ''}`} >
+                        <div className="input-group">
+                            <div className="input-group-addon"><i className="fa fa-key fa-fw"></i></div>	        		
+                            <input type="password" className="form-control" name="password"
+                            placeholder="Passwrod" value={password}
+                            onChange={handlePasswordChange} />   
+                        </div>	
                       {renderErrorFor('password field is required')}      
-	        	</div>	          	
-				<div className="form-group">
-				    <div className="checkbox squaredTwo">
-				        <input type="checkbox" className="logincheckbox" id="c1" name="cc"  defaultChecked={false}
-                                onChange={handleRememberChange}/>
-						<label htmlFor="c1"><span></span>Remember me</label>
-				    </div>				    
-				</div>
+	        	    </div>	          	
+                    <div className="form-group">
+                        <div className="checkbox squaredTwo">
+                            <input type="checkbox" className="logincheckbox" id="c1" name="cc"  defaultChecked={false}
+                                    onChange={handleRememberChange}/>
+                            <label htmlFor="c1"><span></span>Remember me</label>
+                        </div>				    
+                    </div>
 
                 
-				<div className="form-group">
-					<input type="submit" className="templatemo-blue-button width-100" value="Sign In" name="submit" />
-				</div>
-				
-				
-				
-				
-	        </form>
-		</div>
-		{/* <div className="templatemo-content-widget templatemo-login-widget templatemo-register-widget white-bg">
-			<p>Not a registered user yet? <strong>
-            <a  href="signup" >Sign up now!</a></strong><br />
-			<a  href="forpass">Forget Password!</a>
-            </p>
-		</div> */}
-
+                    <div className="form-group">
+                        <input type="submit" className="templatemo-blue-button width-100" value="Sign In" name="submit" />
+                    </div>	
+	            </form>
+		  </div>
+	
         </div>
 
     )

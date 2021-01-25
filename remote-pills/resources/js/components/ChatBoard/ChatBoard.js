@@ -4,7 +4,6 @@ import ReactLoading from 'react-loading'
 import 'react-toastify/dist/ReactToastify.css'
 import images from '../Themes/Images'
 import './ChatBoard.css'
-import {AppString} from './../Const'
 
 
 import firebase from 'firebase';

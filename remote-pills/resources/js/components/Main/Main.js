@@ -4,7 +4,6 @@ import images from '../Themes/Images'
 import WelcomeBoard from '../WelcomeBoard/WelcomeBoard'
 import './Main.css'
 import ChatBoard from './../ChatBoard/ChatBoard'
-import {AppString} from './../Const'
 
 import api from '../../api'
 import Header from '../layouts/Header';

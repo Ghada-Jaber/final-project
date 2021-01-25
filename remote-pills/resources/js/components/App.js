@@ -21,9 +21,7 @@ import AdminEditMedicine from './Admin/EditMedicine';
 
 
 import Buy from './user/Buy';
-import IndexUser from './user/IndexUser';
 import ShowMap from './user/ShowMap';
-import Test from './user/Test';
 import ShowMedicineUser from './user/ShowMedicineUser';
 import Cart from './user/Cart';
 import Doctor from './user/Doctor';
@@ -33,7 +31,6 @@ import ListMedicine from './pharmacy/ListMedicine';
 import AddMedicine from './pharmacy/AddMedicine';
 import ShowMedicine from './pharmacy/ShowMedicine';
 import Customer from './pharmacy/Customer';
-import Tests from './pharmacy/Tests';
 
 
 import Patient from './doctor/Patient';
@@ -42,7 +39,6 @@ import AddPrescription from './doctor/AddPrescription';
 
 
 import Profile from './Profile';
-import Chat from './Chat';
 import Main from './Main/Main'
 
 
@@ -186,8 +182,6 @@ function App(){
           <Route exact path='/profile' component={Profile} />
 
           <Route exact path='/chat' component={Main} />
-
-          <Route exact path='/chat2' component={Chat} />
 
           </Switch>
         )

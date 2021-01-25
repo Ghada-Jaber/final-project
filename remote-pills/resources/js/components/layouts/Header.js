@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import {Link, useHistory } from 'react-router-dom';
 import SignIn from '../auth/SignIn';
 import SignUp from '../auth/SignUp';
-import ForgetPassword from '../auth/ForgetPassword';
 import api from '../../api';
 import CookieService from '../../Service/CookieService';
 import logo from '../../../images/logo2.png';
