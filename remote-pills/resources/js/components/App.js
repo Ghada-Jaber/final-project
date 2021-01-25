@@ -47,9 +47,10 @@ function App(){
   const [role, setRole] = useState('');
   const history = useHistory();
 
-    useEffect(() => {
-      details();
-    },[]);
+  useEffect(() => {
+    details();
+  },[]);
+
   function details(){
     api.details().then(response => {
     
@@ -61,99 +62,99 @@ function App(){
   }
 
 
-      function admin(){
-        return(
-          <Switch>
-            <Route exact path='/manageMedicine' component={ManageMedicine} />
-              <Route exact path='/manageMedicine/show/:id' component={AdminShowMedicine} />
-              <Route exact path='/manageMedicine/edit/:id' component={AdminEditMedicine} />
-
-              <Route exact path='/manageUser' component={ManageUser} />
-              <Route exact path='/manageUser/show/:id' component={ShowUser} />
-
-              <Route exact path='/managePharmacy' component={ManagePharmacy} />
-              <Route exact path='/managePharmacy/show/:id' component={ShowPharmacy} />
-              <Route exact path='/managePharmacy/edit/:id' component={EditPharmacy} />
-
-              <Route exact path='/manageDoctor' component={ManageDoctor} />
-              <Route exact path='/manageDoctor/show/:id' component={ShowDoctor} />
-              <Route exact path='/manageDoctor/edit/:id' component={EditDoctor} />
-          </Switch>
-        )
-      }
-
-
-      function doctor(){
-        return(
-          <Switch>
-            <Route exact path='/patient' component={Patient} /> 
-            <Route exact path='/prescription' component={Prescription} /> 
-            <Route exact path='/prescription/:id' component={AddPrescription} /> 
-
-          </Switch>
-        )
-      }
-
-
-      function pharmacy(){
-        return(
-          <Switch>
-            <Route exact path='/medicine' component={ListMedicine} />
-              <Route exact path='/medicine/add' component={AddMedicine} />
-              <Route exact path='/medicine/show/:id' component={ShowMedicine} />
-
-              <Route exact path='/customer' component={Customer} />
-          </Switch>
-        )
-      }
-
-      function user(){
-        return(
-          <Switch>
-                <Route exact path='/buy' >
-                <Buy props={detail}/>
-              </Route>
-            
-              <Route exact path='/cart' component={Cart} />
-              <Route exact path='/user/medicine/show/:id' component={ShowMedicineUser} />
-              <Route exact path='/doctor' component={Doctor} />
-              <Route exact path='/doctor/prescription/:id' component={ShowPrescription} />
-             
-          </Switch>
-        )
-      }
-
-
-      function other(){
-        return(
-          <Switch>
-          <Route exact path='/' component={Home} />
-          <Route exact path='/home' component={Home} />
-          <Route exact path='/profile' component={Profile} />
-
-          <Route exact path='/chat' component={Main} />
-
-          </Switch>
-        )
-      }
-
-
+  function admin(){
     return(
+      <Switch>
+        <Route exact path='/manageMedicine' component={ManageMedicine} />
+        <Route exact path='/manageMedicine/show/:id' component={AdminShowMedicine} />
+        <Route exact path='/manageMedicine/edit/:id' component={AdminEditMedicine} />
 
-      <BrowserRouter>
-              
-            {other()}
+        <Route exact path='/manageUser' component={ManageUser} />
+        <Route exact path='/manageUser/show/:id' component={ShowUser} />
 
-            {role == 'ROLE_ADMIN' ? admin() : ''}
+        <Route exact path='/managePharmacy' component={ManagePharmacy} />
+        <Route exact path='/managePharmacy/show/:id' component={ShowPharmacy} />
+        <Route exact path='/managePharmacy/edit/:id' component={EditPharmacy} />
 
-            {role == 'ROLE_DOCTOR' ? doctor() : ''}
+        <Route exact path='/manageDoctor' component={ManageDoctor} />
+        <Route exact path='/manageDoctor/show/:id' component={ShowDoctor} />
+        <Route exact path='/manageDoctor/edit/:id' component={EditDoctor} />
+      </Switch>
+    )
+  }
 
-            {role == 'ROLE_PHARMACY' ? pharmacy() : ''}
+
+  function doctor(){
+    return(
+      <Switch>
+        <Route exact path='/patient' component={Patient} /> 
+        <Route exact path='/prescription' component={Prescription} /> 
+        <Route exact path='/prescription/:id' component={AddPrescription} /> 
+
+      </Switch>
+    )
+  }
+
+
+  function pharmacy(){
+    return(
+      <Switch>
+        <Route exact path='/medicine' component={ListMedicine} />
+          <Route exact path='/medicine/add' component={AddMedicine} />
+          <Route exact path='/medicine/show/:id' component={ShowMedicine} />
+
+          <Route exact path='/customer' component={Customer} />
+      </Switch>
+    )
+  }
+
+  function user(){
+    return(
+      <Switch>
+            <Route exact path='/buy' >
+            <Buy props={detail}/>
+          </Route>
+        
+          <Route exact path='/cart' component={Cart} />
+          <Route exact path='/user/medicine/show/:id' component={ShowMedicineUser} />
+          <Route exact path='/doctor' component={Doctor} />
+          <Route exact path='/doctor/prescription/:id' component={ShowPrescription} />
+          
+      </Switch>
+    )
+  }
+
+
+  function other(){
+    return(
+      <Switch>
+      <Route exact path='/' component={Home} />
+      <Route exact path='/home' component={Home} />
+      <Route exact path='/profile' component={Profile} />
+
+      <Route exact path='/chat' component={Main} />
+
+      </Switch>
+    )
+  }
+
+
+  return(
+
+    <BrowserRouter>
             
-            {role == 'ROLE_NORMALUSER' ? user() : ''}
+      {other()}
+
+      {role == 'ROLE_ADMIN' ? admin() : ''}
+
+      {role == 'ROLE_DOCTOR' ? doctor() : ''}
+
+      {role == 'ROLE_PHARMACY' ? pharmacy() : ''}
+      
+      {role == 'ROLE_NORMALUSER' ? user() : ''}
     </BrowserRouter>
 
-    )
+  )
 
 }
 
