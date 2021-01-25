@@ -12,3 +12,6 @@ npm-debug.log
 yarn-error.log
 
 firebase_credentials.json
+
+/resources/components/firebase/config.js
+/resources/components/firebase/init-fcm.js

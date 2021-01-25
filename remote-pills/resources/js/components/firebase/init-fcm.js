@@ -1,7 +1,5 @@
 import firebase from "firebase";
 import "firebase/messaging";
-
-
 import config from './config';
 
 const initializedFirebaseApp = firebase.initializeApp(config);

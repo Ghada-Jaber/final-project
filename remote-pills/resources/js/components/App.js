@@ -39,62 +39,27 @@ import AddPrescription from './doctor/AddPrescription';
 
 
 import Profile from './Profile';
-import Main from './Main/Main'
-
-
-import firebaseChat from './firebase/firebaseChat';
-
-
-// import notification from './notification';
-
-// import SignIn from './auth/SignIn';
-// import SignUp from './auth/SignUp';
-// import ForgetPassword from './auth/ForgetPassword';
+import Main from './Main/Main';
 
 import api from '../api';
 
 function App(){
   const [detail, setDetail] = useState([]);
-    const [role, setRole] = useState('');
-    const history = useHistory();
+  const [role, setRole] = useState('');
+  const history = useHistory();
 
     useEffect(() => {
-  
+      details();
+    },[]);
+  function details(){
+    api.details().then(response => {
     
-   
-
-        details();
-     },[]);
-
-
-     
-
-
-    
-
-    function details(){
-        api.details().then(response => {
-        
-            setDetail(response.data);
-            setRole(response.data.roles[0]);
-
-    //  if(response.data.roles[0] == 'ROLE_NORMALUSER'){
-    //    console.log('ere')
-    //   history.push('/buy')
-    //  }
-
-    //  if(response.data.roles[0] == 'ROLE_PHARMACY'){
-    //   history.push('/medicine')
-    //  }
-
-    //  if(response.data.roles[0] == 'ROLE_ADMIN'){
-    //   history.push('/manageMedicine')
-    //  }
+      setDetail(response.data);
+      setRole(response.data.roles[0]);
             
-        }).catch(error => {
-          //  history.push('/');
-        })
-      }
+    }).catch(error => {
+    })
+  }
 
 
       function admin(){
@@ -167,17 +132,6 @@ function App(){
           <Switch>
           <Route exact path='/' component={Home} />
           <Route exact path='/home' component={Home} />
-
-          {/* <Route exact path='/signin' component={SignIn}/> */}
-
-
-      
-
-
-          <Route exact path='/firebaseChat' component={firebaseChat} />
-          {/* <Route exact path='/notification' component={notification} /> */}
-
-
           <Route exact path='/profile' component={Profile} />
 
           <Route exact path='/chat' component={Main} />
