@@ -74,35 +74,20 @@ export  default function ChatBoard(props){
         })
 
 
-        //   return () => {
-        //     removeListener();
-        // }
-
-
     },[props.currentPeerUser, loader]);
 
 
     useEffect(() => 
     
     {
-       
-
         scrollToBottom()
    
     });
 
 
-    function removeListener(){
-        return null;
-    }
-
     function getListHistory(user_id) {
         let listMessage = [];
         let groupChatId = "";
-        // if (removeListener !=null) {
-        //     console.log('remove listenr')
-        //     removeListener()
-        // }
 
         if (
             hashString(user_id) <=
@@ -116,23 +101,20 @@ export  default function ChatBoard(props){
         setGroupChatId(groupChatId);
 
 
-        removeListener = db.collection('messages')
-            .doc(groupChatId)
-            .collection(groupChatId)
-            .onSnapshot(
-                snapshot => {
-                    snapshot.docChanges().forEach(change => {
-                        if (change.type === 'added') {
-                            listMessage.push(change.doc.data())
-                        }
-                    })
-                    setMesssages(listMessage);
-                    setLoader(false);
-                
+        db.collection('messages')
+        .doc(groupChatId)
+        .collection(groupChatId)
+        .onSnapshot(
+            snapshot => {
+                snapshot.docChanges().forEach(change => {
+                    if (change.type === 'added') {
+                        listMessage.push(change.doc.data())
+                    }
                 })
-   
-
-
+            setMesssages(listMessage);
+            setLoader(false);
+            
+        })
 
     }
 
@@ -151,9 +133,7 @@ export  default function ChatBoard(props){
             return
         }
 
-        const timestamp = moment()
-            .valueOf()
-            .toString()
+        const timestamp = moment().valueOf().toString()
 
         const itemMessage = {
             idFrom: detail.id,
@@ -165,16 +145,16 @@ export  default function ChatBoard(props){
 
 
         db.collection('messages')
-            .doc(groupChatId)
-            .collection(groupChatId)
-            .doc(timestamp)
-            .set(itemMessage)
-            .then(() => {
-                setInputValue('')
-                setLoader(false)
-            })
-            .catch(err => {
-            })
+        .doc(groupChatId)
+        .collection(groupChatId)
+        .doc(timestamp)
+        .set(itemMessage)
+        .then(() => {
+            setInputValue('')
+            setLoader(false)
+        })
+        .catch(err => {
+        })
     }
 
     function onChoosePhoto(event){
@@ -193,14 +173,9 @@ export  default function ChatBoard(props){
 
     function uploadPhoto(){
         if (currentPhotoFile) {
-            const timestamp = moment()
-                .valueOf()
-                .toString()
+            const timestamp = moment().valueOf().toString()
 
-            const uploadTask = storage
-                .ref()
-                .child(timestamp)
-                .put(currentPhotoFile)
+            const uploadTask = storage.ref().child(timestamp).put(currentPhotoFile)
 
             uploadTask.on(
                 'state_changed',
@@ -231,193 +206,190 @@ export  default function ChatBoard(props){
     }
 
    
-        return (
-            <div className="viewChatBoard">
-                <div className="headerChatBoard">
-                    <img
-                        className="viewAvatarItem"
-                        src={currentPeerUser.image}
-                        alt="icon avatar"
-                    />
-                    <span className="textHeaderChatBoard">
-            {currentPeerUser.name}
-          </span>
-                </div>
-
-                {/* List message */}
-                <div className="viewListContentChat" id="chat">
-                    {messages.length >0 ?  renderListMessage() : 
-                        <div className="viewWrapSayHi">
-                    <span className="textSayHi">Say hi to new friend</span>
-                    <img
-                        className="imgWaveHand"
-                        src={images.ic_wave_hand}
-                        alt="wave hand"
-                    />
-                </div>
-                }
-                    <div
-                        style={{float: 'left', clear: 'both'}}
-                        ref={el => {
-                            messagesEnd = el
-                        }}
-                    />
-                </div>
-
-                {/* Stickers */}
-                {isShowSticker ? renderStickers() : null}
-
-                {/* View bottom */}
-                <div className="viewBottom">
-                   <a> <img
-                        className="icOpenGallery"
-                        src={images.ic_photo}
-                        alt="icon open gallery"
-                        onClick={() => refInput.click()}
-                    />
-                    </a>
-                     <input className="hoverinput"
-                        ref={el => {
-                            refInput = el
-                        }}
-                        accept="image/*"
-                        className="viewInputGallery"
-                        type="file"
-                        onChange={onChoosePhoto}
-                    />
-
-                   <a> <img
-                        className="icOpenSticker"
-                        src={images.ic_sticker}
-                        alt="icon open sticker"
-                        onClick={openListSticker}
-                    /> </a>
-
-                    <input
-                        className="viewInput"
-                        placeholder="Type your message..."
-                        id="send"
-                        value={inputValue}
-                        onChange={event => {
-                            setInputValue(event.target.value)
-                        }}
-                        onKeyPress={onKeyboardPress}
-                    />
-                   <a> <img
-                        className="icSend"
-                        src={images.ic_send}
-                        alt="icon send"
-                        onClick={() => onSendMessage(inputValue, 0)}
-                    />
-                   
-                    </a>
-                </div>
-
+    return (
+        <div className="viewChatBoard">
+            <div className="headerChatBoard">
+                <img
+                    className="viewAvatarItem"
+                    src={currentPeerUser.image}
+                    alt="icon avatar"
+                />
+                <span className="textHeaderChatBoard">
+                 {currentPeerUser.name}
+                </span>
             </div>
-        )
+
+            {/* List message */}
+            <div className="viewListContentChat" id="chat">
+                {messages.length >0 ?  renderListMessage() : 
+                  <div className="viewWrapSayHi">
+                        <span className="textSayHi">Say hi to new friend</span>
+                        <img
+                            className="imgWaveHand"
+                            src={images.ic_wave_hand}
+                            alt="wave hand"
+                        />
+                    </div>
+                }
+                <div
+                    style={{float: 'left', clear: 'both'}}
+                    ref={el => {
+                        messagesEnd = el
+                    }}
+                />
+            </div>
+
+            {/* Stickers */}
+            {isShowSticker ? renderStickers() : null}
+
+            {/* View bottom */}
+            <div className="viewBottom">
+                <a> <img
+                    className="icOpenGallery"
+                    src={images.ic_photo}
+                    alt="icon open gallery"
+                    onClick={() => refInput.click()}
+                />
+                </a>
+                    <input className="hoverinput"
+                    ref={el => {
+                        refInput = el
+                    }}
+                    accept="image/*"
+                    className="viewInputGallery"
+                    type="file"
+                    onChange={onChoosePhoto}
+                />
+
+                <a> <img
+                    className="icOpenSticker"
+                    src={images.ic_sticker}
+                    alt="icon open sticker"
+                    onClick={openListSticker}
+                /> </a>
+
+                <input
+                    className="viewInput"
+                    placeholder="Type your message..."
+                    id="send"
+                    value={inputValue}
+                    onChange={event => {
+                        setInputValue(event.target.value)
+                    }}
+                    onKeyPress={onKeyboardPress}
+                />
+                <a> <img
+                    className="icSend"
+                    src={images.ic_send}
+                    alt="icon send"
+                    onClick={() => onSendMessage(inputValue, 0)}
+                />
+                
+                </a>
+            </div>
+
+        </div>
+    )
     
     
     function renderListMessage(){
-            let viewListMessage = []
-            messages.forEach((message, index) => {
-                if (message.idFrom === detail.id) {
-                    // Item right (my message)
-                    if (message.type === 0) {
-                        viewListMessage.push(
-                          
-                            <div className="viewItemRight" key={message.timestamp}>
-                             <p className="textContentItem">{message.content}</p>
+        let viewListMessage = []
+        messages.forEach((message, index) => {
+            if (message.idFrom === detail.id) {
+                // Item right (my message)
+                if (message.type === 0) {
+                    viewListMessage.push(
+                        <div className="viewItemRight" key={message.timestamp}>
+                            <p className="textContentItem">{message.content}</p>
                             <time >
                             {moment(Number(message.timestamp)).format('lll')}
                             </time>
+                            </div>  
+                    )
+                } else if (message.type === 1) {
+                    viewListMessage.push(
+                        <div className="viewItemRight2" key={message.timestamp}>
+                            <img
+                                className="imgItemRight"
+                                src={message.content}
+                                alt="content message"
+                            />
+                            <time className="textTimeRight">
+                                {moment(Number(message.timestamp)).format('lll')}
+                            </time>
                         </div>
-
-                            
-                        )
-                    } else if (message.type === 1) {
-                        viewListMessage.push(
-                            <div className="viewItemRight2" key={message.timestamp}>
-                                <img
-                                    className="imgItemRight"
-                                    src={message.content}
-                                    alt="content message"
-                                />
-                                   <time className="textTimeRight">
-                            {moment(Number(message.timestamp)).format('lll')}
-                            </time>
-                            </div>
-                        )
-                    } else {
-                        viewListMessage.push(
-                            <div className="viewItemRight3" key={message.timestamp}>
-                                <img
-                                    className="gifItemRight"
-                                    src={getGifImage(message.content)}
-                                    alt="content message"
-                                />
-                                   <time >
-                            {moment(Number(message.timestamp)).format('lll')}
-                            </time>
-                            </div>
-                        )
-                    }
+                    )
                 } else {
-                    // Item left (peer message)
-                    if (message.type === 0) {
-                        viewListMessage.push(
-                            <div className="viewWrapItemLeft" key={message.timestamp}>
-                                <div className="viewWrapItemLeft3">
-                                    <div className="viewItemLeft">
-                                        <p className="textContentItem">{message.content}</p>
-                                        <time >
+                    viewListMessage.push(
+                        <div className="viewItemRight3" key={message.timestamp}>
+                            <img
+                                className="gifItemRight"
+                                src={getGifImage(message.content)}
+                                alt="content message"
+                            />
+                            <time >
+                                {moment(Number(message.timestamp)).format('lll')}
+                            </time>
+                        </div>
+                    )
+                }
+            } else {
+                // Item left (peer message)
+                if (message.type === 0) {
+                    viewListMessage.push(
+                        <div className="viewWrapItemLeft" key={message.timestamp}>
+                            <div className="viewWrapItemLeft3">
+                                <div className="viewItemLeft">
+                                    <p className="textContentItem">{message.content}</p>
+                                    <time >
                                         {moment(Number(message.timestamp)).format('lll')}
-                                        </time>
-                                      
-                                    </div>
+                                    </time>
                                     
                                 </div>
-                               
+                                
                             </div>
-                        )
-                    } else if (message.type === 1) {
-                        viewListMessage.push(
-                            <div className="viewWrapItemLeft2" key={message.timestamp}>
-                                <div className="viewWrapItemLeft3">
-                                    <div className="viewItemLeft2">
-                                        <img
-                                            className="imgItemLeft"
-                                            src={message.content}
-                                            alt="content message"
-                                        />
-                                        <time >
+                            
+                        </div>
+                    )
+                } else if (message.type === 1) {
+                    viewListMessage.push(
+                        <div className="viewWrapItemLeft2" key={message.timestamp}>
+                            <div className="viewWrapItemLeft3">
+                                <div className="viewItemLeft2">
+                                    <img
+                                        className="imgItemLeft"
+                                        src={message.content}
+                                        alt="content message"
+                                    />
+                                    <time >
                                         {moment(Number(message.timestamp)).format('lll')}
-                                        </time>
-                                       
-                                    </div>
+                                    </time>
+                                    
                                 </div>
                             </div>
-                        )
-                    } else {
-                        viewListMessage.push(
-                            <div className="viewWrapItemLeft2" key={message.timestamp}>
-                                <div className="viewWrapItemLeft3">
-                                    <div className="viewItemLeft3" key={message.timestamp}>
-                                        <img
-                                            className="gifItemLeft"
-                                            src={getGifImage(message.content)}
-                                            alt="content message"
-                                        />
-                                    </div>
+                        </div>
+                    )
+                } else {
+                    viewListMessage.push(
+                        <div className="viewWrapItemLeft2" key={message.timestamp}>
+                            <div className="viewWrapItemLeft3">
+                                <div className="viewItemLeft3" key={message.timestamp}>
+                                    <img
+                                        className="gifItemLeft"
+                                        src={getGifImage(message.content)}
+                                        alt="content message"
+                                    />
                                 </div>
-                                <time style={{ float:'left'}}>
-                                        {moment(Number(message.timestamp)).format('lll')}
-                                        </time>
                             </div>
-                        )
-                    }
+                            <time style={{ float:'left'}}>
+                                {moment(Number(message.timestamp)).format('lll')}
+                            </time>
+                        </div>
+                    )
                 }
-            })
-            return viewListMessage
+            }
+        })
+        return viewListMessage
     }
 
     function renderStickers(){
@@ -531,30 +503,6 @@ export  default function ChatBoard(props){
                 return images.mimi9
             default:
                 return null
-        }
-    }
-
-    function isLastMessageLeft(index) {
-        if (
-            (index + 1 < messages.length &&
-                messages[index + 1].idFrom === detail.id) ||
-            index === messages.length - 1
-        ) {
-            return true
-        } else {
-            return false
-        }
-    }
-
-    function isLastMessageRight(index) {
-        if (
-            (index + 1 < messages.length &&
-                messages[index + 1].idFrom !== detail.id) ||
-            index === messages.length - 1
-        ) {
-            return true
-        } else {
-            return false
         }
     }
 }
