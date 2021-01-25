@@ -4,13 +4,8 @@ import api from './../../api';
 import CookieService from '../../Service/CookieService';
 
 
-import firebase from "firebase/app";
+import firebase from "firebase";
 
-// Add the Firebase services that you want to use
-import "firebase/auth";
-import "firebase/firestore";
-
-import "firebaseui";
 import config from '../firebase/config';
 
 
@@ -36,9 +31,9 @@ export  default function SignUp(props){
     useEffect(() => {
         fetchCountry();
 
-     },[]);
+    },[]);
 
-     function fetchCountry(){
+    function fetchCountry(){
         api.getCountry().then(response => {
 			setCountry(response.data);
 			setCountryId(response.data[0].id);
@@ -151,13 +146,13 @@ export  default function SignUp(props){
             setCityId(response.data[0].id)
 			setCity(response.data)
 			let city_id = response.data[0].id;
-		api.getStreet(city_id).then(res => {
+			api.getStreet(city_id).then(res => {
 			
             setStreetId(res.data[0].id)
             setStreet(res.data)
-        }) .catch(error => {
+            }) .catch(error => {
             setStreet([])
-        })
+            })
         }) .catch(error => {
             setCity([])
         })
@@ -190,8 +185,7 @@ export  default function SignUp(props){
         if (birth < date)
             setBirthday(event.target.value);
         else
-			//alert("Cannot choose a date before the current date");
-			console.log("here error")
+			alert("Cannot choose a date after the current date");
 	}
 	
 
@@ -200,7 +194,7 @@ export  default function SignUp(props){
 		if (!firebase.apps.length) {
             firebase.initializeApp(config);
         }else {
-        firebase.app(); // if already initialized
+         firebase.app(); // if already initialized
         }
 		
 		firebase.auth().createUserWithEmailAndPassword(email, password)
@@ -208,7 +202,7 @@ export  default function SignUp(props){
 
 			auth.user.getIdToken().then(function(accessToken) {
 
-					if(auth.additionalUserInfo.isNewUser == true){
+				if(auth.additionalUserInfo.isNewUser == true){
 					const fd = new FormData();
 					fd.append('Firebasetoken', accessToken);
 					fd.append('image', img);
@@ -224,9 +218,9 @@ export  default function SignUp(props){
 					api.register(fd, {headers:{'Accept': "application/json",  'Content-Type': "multipart/form-data"}})
 					.then(response => {
 						if(props.props=='ROLE_NORMALUSER'){
-						const options = {Path: "/",Expires: response.data.expires, Secure: true};
-						CookieService.set('access_token', response.data.access, options);
-						history.push('/buy');
+							const options = {Path: "/",Expires: response.data.expires, Secure: true};
+							CookieService.set('access_token', response.data.access, options);
+							history.push('/buy');
 						}
 						if(props.props=='ROLE_PHARMACY'){
 							history.push('/managePharmacy');
@@ -242,7 +236,7 @@ export  default function SignUp(props){
 						setErrors(error.response.data.errors);
 					})
 
-					}
+				}
 				  
 			})
 		})
@@ -259,135 +253,108 @@ export  default function SignUp(props){
 	function displayFormSignUp(){
 		document.getElementById("signup").style.display="none";
 		window.location.reload();
-      }
+    }
 
     return(
 		<div id="signup" className="logincontainer">
-        <br/>
-		<div className="templatemo-content-widget templatemo-login-widget  white-bg"
-		 >
-		 <a onClick={() => displayFormSignUp()} ><i className="fa fa-times"></i></a>
-		 <div id="spacing"></div>
-		 <div className="scrollform">
+        	<br/>
+			<div className="templatemo-content-widget templatemo-login-widget  white-bg">
+				<a onClick={() => displayFormSignUp()} ><i className="fa fa-times"></i></a>
+				<div id="spacing"></div>
+				<div className="scrollform">
 
-	        {/* <form className="templatemo-login-form" encType="multipart/form-data" onSubmit={() => handleCreateNewUser()}> */}
-			<div className={`form-group ${hasErrorFor('name') ? 'has-error' : ''}`} >
-	        		<div className="input-group">
-		        		<div className="input-group-addon"><i className="fa fa-user fa-fw"></i></div>	        		
-		              	<input type="text" className="form-control" placeholder="Full Name" 
-						  name="fname" 
-						  onChange={handleNameChange} value={name}
-						  /> 
-						          
-		          	</div>	
-					  {renderErrorFor('name')}  
-	        	</div>
-	        	<div className={`form-group ${hasErrorFor('email') ? 'has-error' : ''}`} >
-	        		<div className="input-group">
-		        		<div className="input-group-addon"><i className="fa fa-user fa-fw"></i></div>	        		
-		              	<input type="email" className="form-control" placeholder="Username" 
-						  name="usern" required 
-						  onChange={handleEmailChange} value={email}
-						  /> 
-						  
-				{/* <!--	<input type="text" class="form-control" placeholder="Username" name="usern" required pattern="[A-Za-z]{3}" title="Three letter country code"	 > --> */}
+					<div className={`form-group ${hasErrorFor('name') ? 'has-error' : ''}`} >
+						<div className="input-group">
+							<div className="input-group-addon"><i className="fa fa-user fa-fw"></i></div>	        		
+							<input type="text" className="form-control" placeholder="Full Name" 
+							onChange={handleNameChange} value={name}/> 
+									
+						</div>	
+						{renderErrorFor('name')}  
+					</div>
+					<div className={`form-group ${hasErrorFor('email') ? 'has-error' : ''}`} >
+						<div className="input-group">
+							<div className="input-group-addon"><i className="fa fa-user fa-fw"></i></div>	        		
+							<input type="email" className="form-control" placeholder="Username" 
+							onChange={handleEmailChange} value={email}/> 
+						
+						</div>	
+						{renderErrorFor('email')}
+					</div>
+					<div className={`form-group ${hasErrorFor('password') ? 'has-error' : ''}`} >
+						<div className="input-group">
+							<div className="input-group-addon"><i className="fa fa-key fa-fw"></i></div>	        		
+							<input type="password" className="form-control" placeholder="Password"
+							onChange={handlePasswordChange} value={password}/>  
+									
+						</div>	
+						{renderErrorFor('password')}  
+					</div>	
+
+					<div className={`form-group ${hasErrorFor('confirm_password') ? 'has-error' : ''}`} >
+						<div className="input-group">
+							<div className="input-group-addon"><i className="fa fa-key fa-fw"></i></div>	        		
+							<input type="password" className="form-control" placeholder="Re-Password" 
+							onChange={handleCPasswordChange} value={confirm_password}/>            
+						</div>	
+						{renderErrorFor('confirm_password')} 
+					</div>	
+
+					<div className={`form-group ${hasErrorFor('birthday') ? 'has-error' : ''}`} >
+						<div className="input-group">
+							<div className="input-group-addon"><i className="fa fa-birthday-cake fa-fw"></i></div>	        		
+							<input type="date" className="form-control" placeholder="birthday" 
+							onChange={handleBirthdayChange} value={birthday}/>       
+						</div>	
+						{renderErrorFor('birthday')}   
+					</div>	
 					
-		          	</div>	
-					  {renderErrorFor('email')}
-	        	</div>
-	        	<div className={`form-group ${hasErrorFor('password') ? 'has-error' : ''}`} >
-	        		<div className="input-group">
-		        		<div className="input-group-addon"><i className="fa fa-key fa-fw"></i></div>	        		
-		              	<input type="password" className="form-control" placeholder="Password"
-						   name="pass" required 
-						   onChange={handlePasswordChange}
-                                        value={password}
-						   />  
-						          
-		          	</div>	
-					  {renderErrorFor('password')}  
-	        	</div>	
-
-          <div className={`form-group ${hasErrorFor('confirm_password') ? 'has-error' : ''}`} >
-	        		<div className="input-group">
-		        		<div className="input-group-addon"><i className="fa fa-key fa-fw"></i></div>	        		
-		              	<input type="password" className="form-control" placeholder="Re-Password" 
-						  name="cpass" required 
-						  onChange={handleCPasswordChange}
-                                        value={confirm_password}
-						  /> 
-
-						           
-		          	</div>	
-					  {renderErrorFor('confirm_password')} 
-	        	</div>	
-
-				<div className={`form-group ${hasErrorFor('birthday') ? 'has-error' : ''}`} >
-	        		<div className="input-group">
-		        		<div className="input-group-addon"><i className="fa fa-birthday-cake fa-fw"></i></div>	        		
-		              	<input type="date" className="form-control" placeholder="birthday" 
-						  name="cpass" required 
-						  onChange={handleBirthdayChange}
-                                        value={birthday}
-						  /> 
-
-						        
-		          	</div>	
-					  {renderErrorFor('birthday')}   
-	        	</div>	
-				
-				<div className="form-group">
-	        		<div className="input-group">
-		        		<div className="input-group-addon"><i className="fa fa-flag fa-fw"></i></div>	        		
-		              	<select className="form-control select" size="3" 
-						  value={countryId} 
-						  required onChange={handleCountryChange}> 
-						  <optgroup label="select country" >
-							{ country.length >0 ? renderCountry() : '' }
+					<div className="form-group">
+						<div className="input-group">
+							<div className="input-group-addon"><i className="fa fa-flag fa-fw"></i></div>	        		
+							<select className="form-control select" size="3" 
+							value={countryId} onChange={handleCountryChange}> 
+							<optgroup label="select country" >
+								{ country.length >0 ? renderCountry() : '' }
 							</optgroup>
-                        					
-                         </select>						
-		          	</div>	
-	        	</div>
+												
+							</select>						
+						</div>	
+					</div>
 
-				<div className="form-group">
-	        		<div className="input-group">
-		        		<div className="input-group-addon"><i className="fa fa-building fa-fw"></i></div>	        		
-		              	<select className="form-control"   
-						value={cityId} 
-						  required onChange={handleCityChange}> 
-						  <optgroup label="select city">
-							{ city.length >0 ? renderCity() : '' }
+					<div className="form-group">
+						<div className="input-group">
+							<div className="input-group-addon"><i className="fa fa-building fa-fw"></i></div>	        		
+							<select className="form-control"   
+							value={cityId} onChange={handleCityChange}> 
+							<optgroup label="select city">
+								{ city.length >0 ? renderCity() : '' }
 
-							</optgroup>
-                        					
-                         </select>						
-		          	</div>	
-	        	</div>
+							</optgroup>					
+							</select>						
+						</div>	
+					</div>
 
-				<div className="form-group">
-	        		<div className="input-group">
-		        		<div className="input-group-addon"><i className="fa fa-street-view fa-fw"></i></div>	        		
-		              	<select className="form-control"  
-						value={streetId} 
-						  required onChange={handleStreetChange}> 
-						  <optgroup label="select street">
-							  { street.length >0 ? renderStreet() : '' }
-							</optgroup>
-                        					
-                         </select>						
-		          	</div>	
-	        	</div>
+					<div className="form-group">
+						<div className="input-group">
+							<div className="input-group-addon"><i className="fa fa-street-view fa-fw"></i></div>	        		
+							<select className="form-control"  
+							value={streetId} onChange={handleStreetChange}> 
+							<optgroup label="select street">
+								{ street.length >0 ? renderStreet() : '' }
+								</optgroup>
+												
+							</select>						
+						</div>	
+					</div>
 
-<div className="form-group">
-	        		<div className="input-group">
-		        		<div className="input-group-addon"><i className="fa fa-photo fa-fw"></i></div>	        		
-		              	<input type="file" className="form-control" name="file"
-						  id="file"  required 
-							   onChange={handleImageChange}
-						  />           
-		          	</div>	
-	        	</div>				
+					<div className="form-group">
+						<div className="input-group">
+							<div className="input-group-addon"><i className="fa fa-photo fa-fw"></i></div>	        		
+							<input type="file" className="form-control" id="file" 
+								onChange={handleImageChange}/>           
+						</div>	
+					</div>				
 				</div>
 				<div className="form-group"></div>
 				<div className="form-group">
@@ -395,12 +362,9 @@ export  default function SignUp(props){
 					onClick={(event) => handleCreateNewUser(event)} >
 					Sign Up </button>
 				</div>
-		</div>
+			</div>
 		
-</div>
-
- 
-	
+        </div>
 
     )
 
