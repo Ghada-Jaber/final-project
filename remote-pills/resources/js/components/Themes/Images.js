@@ -18,4 +18,5 @@ const images = {
     mimi9: require('../../images/mimi9.gif')
 }
 
+
 export default images
