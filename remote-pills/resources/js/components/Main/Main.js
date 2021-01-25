@@ -29,99 +29,91 @@ export  default function Main(){
         api.getusers().then(response => {
 
             setListUser(response.data)
-          })
+        })
     }
 
 
 
 
     function renderListUser (){    
-            return listUser.map(user => {
-                return(
-                    <>
+        return listUser.map(user => {
+            return(
+                <>
                    {user.id !== detail.id ?  
                    <>
-                   {(user.roles[0] != 'ROLE_NORMALUSER' && user.roles[0] != 'ROLE_ADMIN') ? 
-                   <button
-                            key={user.id}
-                            className={
-                                currentPeerUser &&
-                                currentPeerUser.id === user.id
-                                    ? 'viewWrapItemFocused'
-                                    : 'viewWrapItem'
-                            }
-                            onClick={() => { 
-                                setCurrentPeerUser(user)
-                            }}
-                        >
-                            <img
-                                className="viewAvatarItem"
-                                src={user.image}
-                                alt="icon avatar"
-                            />
-                            <div className="viewWrapContentItem">
-                <span className="textItem" >
-                <b>{`${
-                    user.name
-                    }`}</b></span>
-                    <span className="textItem" style={{fontSize:'10px'}}>
-                    Role:&nbsp;
-                    {user.roles[0] == 'ROLE_ADMIN' ? 'Admin'
-                    : user.roles[0] == 'ROLE_PHARMACY' ? 'Pharmacy'
-                    :user.roles[0] == 'ROLE_DOCTOR' ? 'Doctor'
-                    : ''
-                    }</span>
-                            </div>
-                        </button>
+                    {(user.roles[0] != 'ROLE_NORMALUSER' && user.roles[0] != 'ROLE_ADMIN') ? 
+                    <button key={user.id}
+                        className={
+                            currentPeerUser &&
+                            currentPeerUser.id === user.id
+                                ? 'viewWrapItemFocused'
+                                : 'viewWrapItem'
+                        }
+                        onClick={() => { 
+                            setCurrentPeerUser(user)
+                        }}
+                    >
+                        <img
+                            className="viewAvatarItem"
+                            src={user.image}
+                            alt="icon avatar"
+                        />
+                        <div className="viewWrapContentItem">
+                            <span className="textItem" >
+                            <b>{`${
+                                user.name
+                                }`}
+                            </b></span>
+                            <span className="textItem" style={{fontSize:'10px'}}>
+                                Role:&nbsp;
+                                {user.roles[0] == 'ROLE_ADMIN' ? 'Admin'
+                                : user.roles[0] == 'ROLE_PHARMACY' ? 'Pharmacy'
+                                :user.roles[0] == 'ROLE_DOCTOR' ? 'Doctor'
+                                : ''
+                                }
+                            </span>
+                        </div>
+                    </button>
                         : ''}
                         
-                        </>
-                        : '' 
-                        }
+                    </>
+                    : '' 
+                    }
 
                        
                         
                 </>
-                )
-            })
+            )
+        })
         
     }
 
   
-        return (
-            <div className="root">
-                {/* Header */}
-                <Header/>
-                
-                <div className="body" style={{ marginTop:'81px' }}>
-                    <div className="viewListUser"> 
+    return (
+        <div className="root">
+            <Header/>
+            <div className="body" style={{ marginTop:'81px' }}>
+                <div className="viewListUser"> 
                     {listUser.length > 0 ? renderListUser() : ''}
-                    </div>
-
-                    
-                    
-                    <div className="viewBoard">
-                        {currentPeerUser.length != 0 ? (
-                            <ChatBoard
-                                currentUser={detail}
-                                currentPeerUser={currentPeerUser}
-                            />
-                        ) : (
-                            <WelcomeBoard
-                                currentUserNickname={detail.name}
-                                currentUserAvatar={detail.image}
-                            />
-                        )}
-
-                        
-                    </div>
                 </div>
 
-                {/* Dialog confirm */}
-              
-<Footer/>
-            
+                <div className="viewBoard">
+                    {currentPeerUser.length != 0 ? (
+                        <ChatBoard
+                            currentUser={detail}
+                            currentPeerUser={currentPeerUser}
+                        />
+                    ) : (
+                        <WelcomeBoard
+                            currentUserNickname={detail.name}
+                            currentUserAvatar={detail.image}
+                        />
+                    )}    
+                </div>
             </div>
-        )
+              
+            <Footer/>
+        </div>
+    )
 
 }
