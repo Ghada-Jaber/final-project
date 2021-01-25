@@ -21,7 +21,6 @@ import AdminEditMedicine from './Admin/EditMedicine';
 
 
 import Buy from './user/Buy';
-import ShowMap from './user/ShowMap';
 import ShowMedicineUser from './user/ShowMedicineUser';
 import Cart from './user/Cart';
 import Doctor from './user/Doctor';
@@ -119,8 +118,6 @@ function App(){
               <Route exact path='/user/medicine/show/:id' component={ShowMedicineUser} />
               <Route exact path='/doctor' component={Doctor} />
               <Route exact path='/doctor/prescription/:id' component={ShowPrescription} />
-
-              <Route exact path='/map' component={ShowMap} />
              
           </Switch>
         )

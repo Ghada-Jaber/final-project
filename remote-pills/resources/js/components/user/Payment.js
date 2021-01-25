@@ -17,14 +17,15 @@ firebase.app(); // if already initialized
 
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker
-      .register("./firebase-messaging-sw.js")
-      .then(function(registration) {
-        console.log("Registration successful, scope is:", registration.scope);
-      })
-      .catch(function(err) {
-        console.log("Service worker registration failed, error:", err);
-      });
-    }
+    .register("./firebase-messaging-sw.js")
+    .then(function(registration) {
+    console.log("Registration successful, scope is:", registration.scope);
+    })
+    .catch(function(err) {
+    console.log("Service worker registration failed, error:", err);
+    });
+}
+
 const db = firebase.firestore();
 db.settings({
  timestampsInSnapshots: true
@@ -34,27 +35,7 @@ export  default function Payment(){
     const [cart, setCart] = useState([]);
 
     const [type, setType] = useState('on delivery');
-
-    const [number, setNumber] = useState('');
-    const [name, setName] = useState('');
-    const [expiry, setExpiry] = useState('');
-    const [cvv, setCvv] = useState('');
     const [errors, setErrors] = useState([]);
-
-
-
-    const [pharmacyBuy, setBuy] = useState('');
-
-    const [UserBuy, setUserBuy] = useState('');
-
-    const [username, setUserName] = useState('');
-
-
-    
-
-    
-
-    const history = useHistory();
     
 
     useEffect(() => {
@@ -63,196 +44,144 @@ export  default function Payment(){
      api.getCartMedicine().then(response => {
       setCart(response.data)
     
-  })
-  
-      
-   },[]);
+     })
+    },[]);
 
    function details(){
-    api.details().then(response => {
-        setUserName(reponse.data.name)
-    }).catch(error => {
-      //  history.push('/');
-    })
-  }
-
-
-   function hasErrorFor (field) {
-    return !!errors[field]
-}
-
-function renderErrorFor (field) {
-    if (hasErrorFor(field)) {
-        return (
-            <span style={{ color: '#D7425C' }}>
-                <strong>{errors[field][0]}</strong>
-            </span>
-        )
-    }
-}
-
-
-   var total =0;
-
-   var buyId = [];
-
-
-
-  function  handleDeleteCartMedicine(buy_id){ //I added event here and in line 89
-    event.preventDefault();
-    var confirm_delete = confirm('Are you sure you want to Delete ?');
-    if (confirm_delete == true) {
-        api.deleteCartMedicine(buy_id).then(response => {
-            window.location.reload();
+        api.details().then(response => {
+        }).catch(error => {
         })
     }
-  }
-
- function renderBuy(carts){
-   
-    return carts.cart.map(buy=>{
-        total = total +(buy.price * buy.quantity);
-        buyId.push(buy.id);
-        return(
-           <div className="templatemo-content-widget blue-bg test" 
-           style={{marginLeft:'-10px'}} key={buy.id}>
-             <a onClick= {() => handleDeleteCartMedicine(buy.id)}
-                        title="Remove">
-                       <i className="fa fa-times"></i>
-                     </a>
-            
-             <h4>  <b>Medicine:</b> {buy.medicine.name} </h4>
-             <table>
-             <tbody>
-                 <tr>
-                     <td> <b>Pharmacy: </b></td><td>&nbsp;{carts.pharmacy.name}</td>
-                 </tr>
-                 <tr>
-                     <td> <b>Quantity: </b></td><td>{buy.quantity}</td>
-                 </tr>
-                 <tr>
-                     <td> <b>Price: </b></td><td>{buy.price} $ </td>
-                 </tr>
-                 <tr>
-                     <td> <b>Total:</b> </td><td>{buy.price * buy.quantity} $ </td>
-                 </tr>
-                 </tbody>
-             </table>
-                     </div>
-        )
-
-    })
-
-    
- }
-
-  function renderCart(){
-    return cart.map(cart => {
-return(
-   
-          renderBuy(cart)
-    )
-})
-
-}
 
 
-function handleChangeType(event){
-    setType(event.target.value)
-}
+    var total =0;
 
-function handleChangeNumber(event){
-    setNumber(event.target.value)
-}
+    var buyId = [];
 
-function handleChangeName(event){
-    setName(event.target.value)
-}
-
-function handleChangeExpiry(event){
-    setExpiry(event.target.value)
-}
-
-function handleChangeCvv(event){
-    setCvv(event.target.value)
-}
-
- function notification(fcm_token, buy_id, pharmacy_UID, user_UID, user_name, medicine){
-   const notification = {
-    "notification": {
-        "title": "Order Notification",
-        "body": user_name+" wants to buy "+medicine,
-        "click_action": "/customer",
-        "icon": "../../../images/logo.png"
-    },
-    "to":fcm_token
-}
-const header = {
-  headers: {
-    'Content-type': 'application/json',
-    'Authorization': 'Key=AAAAdCJ4zKc:APA91bHIE-xEiS_CqK4cSBnLVrwaQ1_p7Y1lwpTeem-RRmMwVjh1RNKHlaeHbkpcoewfDOkeoZDpUPjw9U_Tb8H81mXJZguyt3oyNs4_ns4EQL6kW1-7g44JM1RdpGO6_AKq7voO6wha'
-},
-}
-    axios.post('https://fcm.googleapis.com/fcm/send',notification , header).then((response) => {
-        let request_id_str = String(buy_id);
-        const notificationRef = db.collection('notifications').doc(request_id_str);
-
-        notificationRef.set({
-            title: 'Order Notification',
-            message: `${user_name} wants to buy ${medicine}`,
-            toUserID: pharmacy_UID, // pharmacy
-            fromUserID: user_UID, //login user
-            isOpened: false,
-            created: firebase.firestore.Timestamp.now(),
-        });
-
-  });
-
-
-
- }
-
-function handleAddPayment(event){
-    event.preventDefault();
-
-    const payment = {
-        buy: buyId,
-        type: type,
-        price: total,
-        creditCardNumber: number,
-        nameOnCard: name,
-        expiryDate: expiry,
-        cvvCode: cvv
+    function  handleDeleteCartMedicine(buy_id){ //I added event here and in line 89
+        event.preventDefault();
+        var confirm_delete = confirm('Are you sure you want to Delete ?');
+        if (confirm_delete == true) {
+            api.deleteCartMedicine(buy_id).then(response => {
+                window.location.reload();
+            })
+        }
     }
 
+    function renderBuy(carts){
+        return carts.cart.map(buy=>{
+            total = total +(buy.price * buy.quantity);
+            buyId.push(buy.id);
+            return(
+            <div className="templatemo-content-widget blue-bg test" 
+            style={{marginLeft:'-10px'}} key={buy.id}>
+                <a onClick= {() => handleDeleteCartMedicine(buy.id)}
+                    title="Remove">
+                    <i className="fa fa-times"></i>
+                </a>
+                <h4>  <b>Medicine:</b> {buy.medicine.name} </h4>
+                <table>
+                    <tbody>
+                    <tr>
+                        <td> <b>Pharmacy: </b></td><td>&nbsp;{carts.pharmacy.name}</td>
+                    </tr>
+                    <tr>
+                        <td> <b>Quantity: </b></td><td>{buy.quantity}</td>
+                    </tr>
+                    <tr>
+                        <td> <b>Price: </b></td><td>{buy.price} $ </td>
+                    </tr>
+                    <tr>
+                        <td> <b>Total:</b> </td><td>{buy.price * buy.quantity} $ </td>
+                    </tr>
+                    </tbody>
+                </table>
+                </div>
+            )
 
-    api.addPayment(payment)
-    .then(response => {
-       let array = Array.from(Array(response.data.length), () => new Array(6))
-       var count = 0;
-        for(var i =0 ; i<response.data.length; i++){
-            const query = db.collection('fcm_token').where('userID', '==', response.data[i].customer.pharmacy.FirebaseUID).get();
-            query.then(snapshot => {
-                console.log(snapshot.docs)
-                
-                notification(snapshot.docs[0].data().userToken, response.data[count].id, response.data[count].customer.pharmacy.FirebaseUID, response.data[count].customer.customer.FirebaseUID, response.data[count].customer.customer.name, response.data[count].medicine.name)
-            
-                count++;
-                     document.getElementById('close').style.display = 'none';
-             setTimeout(function(){
-                 location.reload();
-             },1000);
-            })  
-            
+        })
+    }
+
+    function renderCart(){
+        return cart.map(cart => {
+            return(
+                renderBuy(cart)
+            )
+        })
+    }
+
+    function handleChangeType(event){
+     setType(event.target.value)
+    }
+
+    function notification(fcm_token, buy_id, pharmacy_UID, user_UID, user_name, medicine){
+        const notification = {
+            "notification": {
+                "title": "Order Notification",
+                "body": user_name+" wants to buy "+medicine,
+                "click_action": "/customer",
+                "icon": "../../../images/logo.png"
+            },
+            "to":fcm_token
+        }  
+        const header = {
+            headers: {
+                'Content-type': 'application/json',
+                'Authorization': 'Key=AAAAdCJ4zKc:APA91bHIE-xEiS_CqK4cSBnLVrwaQ1_p7Y1lwpTeem-RRmMwVjh1RNKHlaeHbkpcoewfDOkeoZDpUPjw9U_Tb8H81mXJZguyt3oyNs4_ns4EQL6kW1-7g44JM1RdpGO6_AKq7voO6wha'
+            },
         }
-       
-       
-    })
-    .catch(error => {
-        console.log(error)
-        setErrors(error.response.data.errors)
-    })
-}
+        axios.post('https://fcm.googleapis.com/fcm/send',notification , header).then((response) => {
+            let request_id_str = String(buy_id);
+            const notificationRef = db.collection('notifications').doc(request_id_str);
+
+            notificationRef.set({
+                title: 'Order Notification',
+                message: `${user_name} wants to buy ${medicine}`,
+                toUserID: pharmacy_UID, // pharmacy
+                fromUserID: user_UID, //login user
+                isOpened: false,
+                created: firebase.firestore.Timestamp.now(),
+            });
+
+        });
+    }   
+
+    function handleAddPayment(event){
+        event.preventDefault();
+
+        const payment = {
+            buy: buyId,
+            type: type,
+            price: total,
+            creditCardNumber: number,
+            nameOnCard: name,
+            expiryDate: expiry,
+            cvvCode: cvv
+        }
+
+
+        api.addPayment(payment)
+        .then(response => {
+        let array = Array.from(Array(response.data.length), () => new Array(6))
+        var count = 0;
+            for(var i =0 ; i<response.data.length; i++){
+                const query = db.collection('fcm_token').where('userID', '==', response.data[i].customer.pharmacy.FirebaseUID).get();
+                query.then(snapshot => {
+                    notification(snapshot.docs[0].data().userToken, response.data[count].id, response.data[count].customer.pharmacy.FirebaseUID, response.data[count].customer.customer.FirebaseUID, response.data[count].customer.customer.name, response.data[count].medicine.name)
+                
+                    count++;
+                    document.getElementById('close').style.display = 'none';
+                    setTimeout(function(){
+                    location.reload();
+                    },1000);
+                })  
+            
+            }
+        })
+        .catch(error => {
+            setErrors(error.response.data.errors)
+        })
+    } 
   
    function closeForm(){
        document.getElementById('close').style.display = 'none';
@@ -260,41 +189,32 @@ function handleAddPayment(event){
 
     return(
         <div className="formShow" id="close">
-      <div className="col-1 " >	
-      <div className="templatemo-content-widget templatemo-login-widget  white-bg"
-      style={{width:'380px'}}
-		 >
-        <a onClick={() => closeForm()} ><i className="fa fa-times"></i></a>
-            <div >
-            <h2 className="text-black">Payment Method</h2>
-
-                <div className="form-group">
+          <div className="col-1 " >	
+            <div className="templatemo-content-widget templatemo-login-widget  white-bg"
+            style={{width:'380px'}}>
+                <a onClick={() => closeForm()} ><i className="fa fa-times"></i></a>
+                 <div >
+                    <h2 className="text-black">Payment Method</h2>
+                    <div className="form-group">
 				        <input type="radio" onChange={handleChangeType}
-                        value="on delivery"
-                         name="radio" id="r5" defaultChecked={true} />
+                        value="on delivery" name="radio" id="r5" defaultChecked={true} />
 						<label htmlFor="r5" ><span></span>On Delivery</label> &nbsp;
                         <button onClick={(event) => handleAddPayment(event)} 
-                className="btn btn-primary">Purchase</button>  			    
-				</div>
-
-               
-            <h4 style={{ color:'#2375b8' }}>Order Summary</h4>
+                        className="btn btn-primary">Purchase</button>  			    
+				    </div>
+                    <h4 style={{ color:'#2375b8' }}>Order Summary</h4>
             
-            <div
-            className="paymentscroll">
-                {renderCart()}
-
-            </div>
-<hr/>
+                    <div className="paymentscroll">
+                        {renderCart()}
+                    </div>
+                    <hr/>
           
-            <b style={{ color:'#2375b8' }}><u>Total</u></b>
-              &nbsp;
-              {total} $
-            </div>
-
-        
-      </div>
-       </div>   
+                    <b style={{ color:'#2375b8' }}><u>Total</u></b>
+                    &nbsp;
+                    {total} $
+                </div>
+          </div>
+         </div>   
        </div>
 
     )
