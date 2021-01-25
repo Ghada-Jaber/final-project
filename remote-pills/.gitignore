@@ -13,5 +13,7 @@ yarn-error.log
 
 firebase_credentials.json
 
-/resources/components/firebase/config.js
-/resources/components/firebase/init-fcm.js
+/public/manifest.json
+/public/firebase-messaging-sw.js
+/resources/js/components/firebase/config.js
+/resources/js/components/firebase/init-fcm.js
