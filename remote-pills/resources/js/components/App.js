@@ -139,7 +139,6 @@ function App(){
               <Route exact path='/medicine/show/:id' component={ShowMedicine} />
 
               <Route exact path='/customer' component={Customer} />
-              <Route exact path='/tests' component={Tests} />
           </Switch>
         )
       }

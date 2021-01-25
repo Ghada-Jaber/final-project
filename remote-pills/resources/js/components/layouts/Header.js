@@ -531,9 +531,6 @@ return(
                 <SignUp props={roles}/>
               </div>
 
-              <div id="forgetpass" style={{ display: 'none'}}>
-                <ForgetPassword/>
-              </div>
           
           
           </>

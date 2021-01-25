@@ -5,10 +5,7 @@ import CookieService from '../../Service/CookieService';
 import logo from '../../../images/logo.png';
 
 
-import firebase from "firebase/app";
-
-import "firebase/auth";
-import "firebase/firestore";
+import firebase from "firebase";
 
 
 import config from '../firebase/config';
@@ -57,20 +54,20 @@ export  default function SignIn(){
         if (!firebase.apps.length) {
             firebase.initializeApp(config);
         }else {
-        firebase.app(); // if already initialized
+            firebase.app(); // if already initialized
         }
 
         firebase.auth().signInWithEmailAndPassword(email, password)
         .then((auth) => {
             auth.user.getIdToken().then(function(accessToken) {
-            if(auth.additionalUserInfo.isNewUser == false){
-                console.log(accessToken)
-                  const login = {
-                    Firebasetoken : accessToken,
-                    email: email,
-                    password: password,
-                    remember_token: remember
-                }
+                 if(auth.additionalUserInfo.isNewUser == false){
+                        console.log(accessToken)
+                        const login = {
+                            Firebasetoken : accessToken,
+                            email: email,
+                            password: password,
+                            remember_token: remember
+                        }
                 api.firebaseLogin(login).then(response => {
                     const options = {Path: "/",Expires: response.data.expires_at, Secure: true};
                     CookieService.set('access_token', response.data.access_token, options);
