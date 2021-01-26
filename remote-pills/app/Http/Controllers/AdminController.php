@@ -81,7 +81,7 @@ class AdminController extends Controller
         $image = $request['image']->store('public/uploads/medicine');
 
         }else{
-            $image = "public/uploads/medicine/NoImage.png";
+            $image = "";
         }
 
         $url = Storage::url($image); 

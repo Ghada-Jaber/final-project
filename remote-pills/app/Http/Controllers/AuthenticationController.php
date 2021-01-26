@@ -154,11 +154,15 @@ class AuthenticationController extends Controller
             if($request->hasFile('image')){
                 $image = $request['image']->store('public/uploads/userimage');
 
+                $url = Storage::url($image);
+
             }else{
-                $image = "public/uploads/userimage/NoImage.png";
+                $image = "";
+
+                $url = $image;
             }
 
-            $url = Storage::url($image);
+            
     
             $user = User::create([
                 'name' => $request['name'],

@@ -4,6 +4,7 @@ import api from '../../api';
 import Header from '../layouts/Header';
 import Footer from '../layouts/Footer';
 import SignUp from '../auth/SignUp';
+import avatar from '../../../images/ic_default_avatar.png';
 
 
 export  default function ManageDoctor(){
@@ -142,7 +143,11 @@ export  default function ManageDoctor(){
         <tr key={medicine.id}>
           <td>{medicine.id}</td>
           <td>
-           <img src={medicine.image} width="100px" height="100px"/>
+          {medicine.image != "" ? 
+            <img src={medicine.image} width="100px" height="100px"/>
+            : 
+            <img src={avatar} width="100px" height="100px"/>
+            }
           </td>
           <td>{medicine.name}</td>
           <td>

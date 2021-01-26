@@ -3,6 +3,8 @@ import {Link, useHistory} from 'react-router-dom';
 import api from '../../api';
 import Header from '../layouts/Header';
 import Footer from '../layouts/Footer';
+import avatar from '../../../images/ic_default_avatar.png';
+
 
 
 export  default function ManageUser(){
@@ -135,8 +137,13 @@ function handleActiveUser(medicine_id){ //I added event here and in line 89
         <tr key={medicine.id}>
           <td>{medicine.id}</td>
           <td>
-          
-           <img src={medicine.image} width="100px" height="100px"/></td>
+            {medicine.image != "" ? 
+            <img src={medicine.image} width="100px" height="100px"/>
+            : 
+            <img src={avatar} width="100px" height="100px"/>
+            }
+           
+          </td>
           <td>{medicine.name}</td>
           <td>{medicine.street.name}, {medicine.street.city.name}, {medicine.street.city.country.name}
           </td>

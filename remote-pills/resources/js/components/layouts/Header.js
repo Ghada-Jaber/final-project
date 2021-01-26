@@ -4,7 +4,8 @@ import SignIn from '../auth/SignIn';
 import SignUp from '../auth/SignUp';
 import api from '../../api';
 import CookieService from '../../Service/CookieService';
-import logo from '../../../images/logo2.png';
+import logo from '../../../images/logo.png';
+import avatar from '../../../images/ic_default_avatar.png';
 import moment from 'moment'
 
 
@@ -324,7 +325,12 @@ export default function Header(props){
         
             <div className=" offset-0" style={{ padding: '5px'}} >
               <div style={{ display:'flex', flexFlow: 'row wrap'}}>
-                <img src= {image} width="50px" height="50px" className="img"/>&nbsp;&nbsp;
+                {image!="" ?
+                <img src= {image} width="50px" height="50px" className="img"/>
+                :
+                <img src= {avatar} width="50px" height="50px" className="img"/> 
+                }
+                &nbsp;&nbsp;
                 <div style={{ display:'flex', flexFlow: 'column wrap'}}>
                   <font color="white">{greeting}</font>
 
