@@ -51,7 +51,9 @@ To create a symbolic link from public/storage to storage/app/public
 Go to Authentication and enable authentication with email and password
  get the Firebase Credentials file (json file):
 From Firebase navigate to Project settings -> Service accounts -> Generate a new private key -> Generate Key. <br>
-Open the downloaded file and copy and paste it to the firebase credentials file (json file) in the project <br>
+Copy the example firebase credentials file and make the required configuration changes in the firebase_credentials file:
+    Run the command in the terminal: cp firebase_credentials-example.json firebase_credentials.json
+Open the downloaded file from firebase and copy and paste it to the firebase credentials file (json file) in the project <br>
 The file should look like: <br>
     <pre>
     { 
@@ -91,20 +93,27 @@ From Firebase navigate to Project settings -> General -> Your apps -> Copy the f
     measurementId: "G-MEASUREMENT_ID",
     };
     </pre>
-Then paste it to the Firebase Configuration file (Javascript file)
+Then paste it to the Firebase Configuration file (Javascript file) in:<br>
+1) resources/components/firebase make a copy the example config file and make the required configuration changes in the config.js file:
+    Run the command in the terminal: cp config-example.js config.js <br>
+2) public folder make a copy the example firebase-messaging-sw-example.js and make the required configuration changes in the firebase-messaging-sw.js file:
+Run the command in the terminal: cp firebase-messaging-sw-example.js firebase-messaging-sw.js
+
+Be sure to also include your Firebase Configuration to the firebase-message-sw.js file (which can also be found in the public folder)
 </li> 
 
 <li>  
-In the public folder, you should insert the GSM sender id in the  manifest.json file. This can be obtained from Firebase: Navigate to Project settings->Cloud Messaging -> Project credentials -> Sender ID. <br>
+In the public folder, you should insert the GSM sender id in the  manifest.json file(rename the file manifest-example.json to manifest.json). This can be obtained from Firebase: Navigate to Project settings->Cloud Messaging -> Project credentials -> Sender ID. <br>
 
-    Manifest.json should contain: <br>
-    <pre>
-    { 
-        "Gsm_sender_id":"sender-id" 
-    } 
-    </pre>
+Manifest.json should contain: <br>
 
-Be sure to also include your Firebase Configuration to the firebase-message-sw.js file (which can also be found in the public folder)
+<pre>
+{ 
+    "Gsm_sender_id":"sender-id" 
+} 
+</pre>
+
+
 
 </li> 
 
@@ -144,7 +153,7 @@ request.resource.contentType.matches('image/.*');
 
 <li> 
 Head to resources/js/components/Firebase <br>
-In the init-fcm.js file, insert the VapidKey which can be found in Firebase: Project settings-> Cloud Messaging -> Web Configuration -> Key pair (You should create a new one) <br>
+In the init-fcm.js file (rename file init-fcm-example.js to init-fcm.js), insert the VapidKey which can be found in Firebase: Project settings-> Cloud Messaging -> Web Configuration -> Key pair (You should create a new one) <br>
 
 Inside Init-fcm.js, paste the vapid key in the following line:  <br>
 messaging.usePublicVapidKey(“Vapidkey”)
@@ -152,7 +161,7 @@ messaging.usePublicVapidKey(“Vapidkey”)
 
 <li> 
 Head to resources/js/components/user <br>
-In the Payment.js file, on line 130 insert the Service Key which can be found in Firebase: Project settings>Cloud Messaging -> project credentials -> Server key<br>
+In the Payment.js file (rename file Payment-example.js to Payment.js), on line 130 insert the Service Key which can be found in Firebase: Project settings>Cloud Messaging -> project credentials -> Server key<br>
 
 Inside Init-fcm.js, paste the vapid key in the following line:  <br>
 messaging.usePublicVapidKey(“Vapidkey”)
