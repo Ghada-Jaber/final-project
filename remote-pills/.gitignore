@@ -17,3 +17,4 @@ firebase_credentials.json
 /public/firebase-messaging-sw.js
 /resources/js/components/firebase/config.js
 /resources/js/components/firebase/init-fcm.js
+/resources/js/components/user/Payment.js
