@@ -143,11 +143,20 @@ request.resource.contentType.matches('image/.*');
 </li> 
 
 <li> 
-Head to resources/js/Firebase <br>
+Head to resources/js/components/Firebase <br>
 In the init-fcm.js file, insert the VapidKey which can be found in Firebase: Project settings-> Cloud Messaging -> Web Configuration -> Key pair (You should create a new one) <br>
 
 Inside Init-fcm.js, paste the vapid key in the following line:  <br>
 messaging.usePublicVapidKey(“Vapidkey”)
+</li>
+
+<li> 
+Head to resources/js/components/user <br>
+In the Payment.js file, on line 130 insert the Service Key which can be found in Firebase: Project settings>Cloud Messaging -> project credentials -> Server key<br>
+
+Inside Init-fcm.js, paste the vapid key in the following line:  <br>
+messaging.usePublicVapidKey(“Vapidkey”)
+</li>
 
 <li> 
  Run command in terminal: php artisan serve (to access the website)
