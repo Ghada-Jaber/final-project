@@ -34,7 +34,7 @@
     background: #2375b8;
 }
 
-.ml-auto{margin-left:auto!important}
+
   
  
 
@@ -673,15 +673,6 @@ select option{
   option:not(:checked) {
 	background-color: #fff !important;
   }
-
-
-  
- 
-  
-
-  
-  
-
 
 
   .notificationscroll{

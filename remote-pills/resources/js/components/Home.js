@@ -40,7 +40,7 @@ export  default function Home(){
                   <div className="carousel-inner">
                     <div className="item active">
                       <img src="./images/hero_1.jpg" alt="Los Angeles" style={{ width: '100%',  objectFit: 'contain' }}/>
-                      <div className="banner-1-inner ml-auto  align-self-center">
+                      <div className="banner-1-inner  align-self-center">
                         <h1>Pharmacy</h1>
                         <h2>
                         Find the medication you need near a location
@@ -50,7 +50,7 @@ export  default function Home(){
 
                     <div className="item">
                       <img src="./images/bg_2.jpg" alt="Chicago" style={{ width: '100%',  objectFit: 'contain'  }}/>
-                      <div className="banner-1-inner ml-auto  align-self-center">
+                      <div className="banner-1-inner align-self-center">
                         <h1>Doctor</h1>
                         <h2>Ask for prescription from doctor
                         </h2>
@@ -59,7 +59,7 @@ export  default function Home(){
   
                     <div className="item">
                       <img src="./images/bg_3.jpg" alt="New york" style={{ width: '100%',  objectFit: 'contain'  }}/>
-                      <div className="banner-1-inner ml-auto  align-self-center">
+                      <div className="banner-1-inner align-self-center">
                           <h1>User</h1>
                           <h2>Buy medicine from any pharmacy you need
                           </h2>
