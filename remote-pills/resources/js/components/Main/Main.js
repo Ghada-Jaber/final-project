@@ -8,7 +8,6 @@ import ChatBoard from './../ChatBoard/ChatBoard'
 import api from '../../api'
 import Header from '../layouts/Header';
 import Footer from '../layouts/Footer';
-import avatar from '../../../images/ic_default_avatar.png';
 
 export  default function Main(){
     const [currentPeerUser, setCurrentPeerUser] =  useState([]);
@@ -108,7 +107,7 @@ export  default function Main(){
 
                                 <img
                                     className="viewAvatarItem"
-                                    src={avatar}
+                                    src={images.ic_default_avatar}
                                     alt="icon avatar"
                                 />
                             }

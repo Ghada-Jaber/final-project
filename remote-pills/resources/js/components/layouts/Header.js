@@ -4,8 +4,7 @@ import SignIn from '../auth/SignIn';
 import SignUp from '../auth/SignUp';
 import api from '../../api';
 import CookieService from '../../Service/CookieService';
-import logo from '../../../images/logo.png';
-import avatar from '../../../images/ic_default_avatar.png';
+import images from '../Themes/Images';
 import moment from 'moment'
 
 
@@ -328,7 +327,7 @@ export default function Header(props){
                 {image!="" ?
                 <img src= {image} width="50px" height="50px" className="img"/>
                 :
-                <img src= {avatar} width="50px" height="50px" className="img"/> 
+                <img src= {images.ic_default_avatar} width="50px" height="50px" className="img"/> 
                 }
                 &nbsp;&nbsp;
                 <div style={{ display:'flex', flexFlow: 'column wrap'}}>
@@ -428,7 +427,7 @@ export default function Header(props){
               <span className="icon-bar"></span>
               <span className="icon-bar"></span>                        
             </button>
-              <img src={logo} width="200" height="70" alt="" style={{ marginTop:'10px' , marginRight:'5px' }}/>    
+              <img src={images.logo} width="200" height="70" alt="" style={{ marginTop:'10px' , marginRight:'5px' }}/>    
           </div>
           <div className="collapse navbar-collapse" id="myNavbar">
               <ul className="nav navbar-nav" >
