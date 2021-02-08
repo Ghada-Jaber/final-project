@@ -312,7 +312,7 @@ export  default function SignUp(props){
 					<div className="form-group">
 						<div className="input-group">
 							<div className="input-group-addon"><i className="fa fa-flag fa-fw"></i></div>	        		
-							<select className="form-control select" size="3" 
+							<select className="form-control" size="3" 
 							value={countryId} onChange={handleCountryChange}> 
 							<optgroup label="select country" >
 								{ country.length >0 ? renderCountry() : '' }
