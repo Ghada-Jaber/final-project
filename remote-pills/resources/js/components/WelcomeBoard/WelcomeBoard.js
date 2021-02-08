@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
-import 'react-toastify/dist/ReactToastify.css'
+
 import './WelcomeBoard.css'
+import images from '../Themes/Images'
 
 export  default function WelcomeBoard(props){
     return (
@@ -9,11 +10,20 @@ export  default function WelcomeBoard(props){
                 props.currentUserNickname
                 
                 }`}</span>
-                    <img
-                        className="avatarWelcome"
-                        src={props.currentUserAvatar}
-                        alt="icon avatar"
-                    />
+                    {props.currentUserAvatar!= "" ?
+                        <img
+                            className="avatarWelcome"
+                            src={props.currentUserAvatar}
+                            alt="icon avatar"
+                        />
+                    : 
+
+                        <img
+                            className="avatarWelcome"
+                            src={images.ic_default_avatar}
+                            alt="icon avatar"
+                        />
+                    }
                     <span className="textDesciptionWelcome">
                     Let's start talking. Great things might happen.
             </span>
