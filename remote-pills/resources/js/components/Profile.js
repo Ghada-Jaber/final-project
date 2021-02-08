@@ -274,12 +274,21 @@ export  default function Profile(props){
                   <div class="media margin-bottom-30">
                     <div class="media-left padding-right-25">
                      <a href="#">
-                      <img class="media-object img-circle templatemo-img-bordered" 
+                     {image!="" ? 
+                     <img class="media-object img-circle templatemo-img-bordered" 
                       style={{    width: '120px', height: '120px'}}
                       src={image} alt="Avatar"/>
+                      :
+
+                      <img class="media-object img-circle templatemo-img-bordered" 
+                      style={{    width: '120px', height: '120px'}}
+                      src={images.ic_default_avatar} alt="Avatar"/>
+                     
+                     }
+                      
                       </a>
                     </div>
-                    <div class="media-body">
+                    <div >
                       <h2 className="media-heading bluetext">{name}</h2>
                     </div>        
                   </div>

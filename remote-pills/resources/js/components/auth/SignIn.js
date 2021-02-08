@@ -158,7 +158,7 @@ export  default function SignIn(){
 
                 
                     <div className="form-group">
-                        <input type="submit" className="templatemo-blue-button width-100" value="Sign In" name="submit" />
+                        <input type="submit" className="btn btn-primary width-100" value="Sign In" name="submit" />
                     </div>	
 	            </form>
 		  </div>

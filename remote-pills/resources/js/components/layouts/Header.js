@@ -15,7 +15,7 @@ import { messaging } from "../firebase/init-fcm";
 import firebase from 'firebase';
 import config from '../firebase/config';
 
-
+// to avoid initializing it multiple time
 if (!firebase.apps.length) {
   firebase.initializeApp(config);
 }else {

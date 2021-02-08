@@ -227,7 +227,7 @@ export  default function EditMedicine(props){
             
         
               <div className="form-group">
-                <button type="submit" className="templatemo-blue-button width-100"
+                <button type="submit" className="btn btn-primary width-100"
                 onClick={(event) => handleUpdateMedicine(event)}>
                 Update 
                 </button>
